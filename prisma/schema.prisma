@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id // Clerk user ID
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
+  stars         Int       @default(10) // start with 10 free stars
+  lastSolvedAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  solves        Solve[]
+  hintPurchases HintPurchase[]
+}
+
+model Problem {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  description String // markdown
+  difficulty  Difficulty
+  topic       Topic
+  starterCode String // default code shown in editor
+  testCases   Json // [{ input, expected }] — never sent to client
+  hints       Json // [{ tier, cost, content }]
+  createdAt   DateTime   @default(now())
+
+  dailySlots DailyProblem[]
+  solves     Solve[]
+}
+
+model DailyProblem {
+  id        String  @id @default(cuid())
+  date      String  @unique // "YYYY-MM-DD"
+  problem   Problem @relation(fields: [problemId], references: [id])
+  problemId String
+}
+
+model Solve {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  problem    Problem  @relation(fields: [problemId], references: [id])
+  problemId  String
+  code       String
+  passed     Boolean
+  usedHints  Boolean  @default(false)
+  cleanSolve Boolean  @default(false) // passed + no hints
+  solvedAt   DateTime @default(now())
+}
+
+model HintPurchase {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  problemId String
+  tier      Int // 1–4
+  cost      Int
+  boughtAt  DateTime @default(now())
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Topic {
+  ARRAYS
+  STRINGS
+  LINKED_LISTS
+  TREES
+  GRAPHS
+  DYNAMIC_PROGRAMMING
+  SORTING
+  BINARY_SEARCH
+  STACK_QUEUE
+  HASH_MAP
+}
+
+// generator client {
+//   provider = "prisma-client"
+//   output   = "../src/generated/prisma"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+// }
