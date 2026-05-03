@@ -11,21 +11,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      if (!user.email || !user.id) return false;
-      try {
-        await prisma.user.upsert({
-          where: { id: user.id },
-          update: {},
-          create: { id: user.id },
-        });
-        return true; // ← just return boolean, nothing else
-      } catch {
-        return false;
-      }
+      if (!user.email) return false;
+      await prisma.user.upsert({
+        where: { id: user.email },
+        update: {},
+        create: { id: user.email },
+      });
+      return true;
     },
     async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
+      if (session.user && token.email) {
+        session.user.id = token.email; // stable across all sessions
       }
       return session;
     },
