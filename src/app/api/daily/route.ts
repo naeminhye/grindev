@@ -57,7 +57,7 @@ export async function GET() {
     where: { date: { in: pastDates } },
     include: {
       problem: {
-        select: { id: true, title: true, difficulty: true, topic: true },
+        select: { id: true, title: true, difficulty: true, topics: true },
       },
     },
   });
@@ -78,7 +78,7 @@ export async function GET() {
       problemId: d.problemId,
       problemTitle: d.problem.title,
       difficulty: d.problem.difficulty,
-      topic: d.problem.topic,
+      topics: d.problem.topics,
       starCost: getMakeupCost(getDaysAgo(d.date)),
       alreadySolved: solvedProblemIds.has(d.problemId),
     }))
@@ -91,7 +91,7 @@ export async function GET() {
       slug: problem.slug,
       description: problem.description,
       difficulty: problem.difficulty,
-      topic: problem.topic,
+      topics: problem.topics,
       starterCode: problem.starterCode as StarterCode,
     },
     alreadySolved: !!existingSolve?.passed,

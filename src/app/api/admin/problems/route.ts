@@ -2,6 +2,36 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getAdminUserId } from "@/lib/admin-auth";
+import { Topic } from "@prisma/client";
+
+const TOPICS = [
+  "ARRAYS",
+  "STRINGS",
+  "LINKED_LISTS",
+  "TREES",
+  "GRAPHS",
+  "DYNAMIC_PROGRAMMING",
+  "SORTING",
+  "BINARY_SEARCH",
+  "STACK_QUEUE",
+  "HASH_MAP",
+  "HEAPS",
+  "TWO_POINTERS",
+  "SLIDING_WINDOW",
+  "DFS_BFS",
+  "BACKTRACKING",
+  "GREEDY",
+  "RECURSION",
+  "DIVIDE_AND_CONQUER",
+  "BIT_MANIPULATION",
+  "MATH",
+  "TRIE",
+  "UNION_FIND",
+  "SEGMENT_TREE",
+  "FENWICK_TREE",
+  "MONOTONIC_STACK",
+  "MONOTONIC_QUEUE",
+] as const;
 
 const schema = z.object({
   title: z.string().min(1),
@@ -12,18 +42,7 @@ const schema = z.object({
   functionName: z.string().min(1).optional(),
   description: z.string().min(1),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
-  topic: z.enum([
-    "ARRAYS",
-    "STRINGS",
-    "LINKED_LISTS",
-    "TREES",
-    "GRAPHS",
-    "DYNAMIC_PROGRAMMING",
-    "SORTING",
-    "BINARY_SEARCH",
-    "STACK_QUEUE",
-    "HASH_MAP",
-  ]),
+  topics: z.array(z.enum(TOPICS)).min(1),
   starterCode: z.record(z.string(), z.string()),
   testCases: z
     .array(z.object({ input: z.string(), expected: z.string() }))
@@ -45,7 +64,7 @@ export async function GET() {
       title: true,
       slug: true,
       difficulty: true,
-      topic: true,
+      topics: true,
       createdAt: true,
     },
   });
@@ -74,6 +93,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Slug already exists" }, { status: 409 });
   }
 
-  const problem = await prisma.problem.create({ data: parsed.data });
+  const problem = await prisma.problem.create({
+    data: {
+      ...parsed.data,
+      topics: parsed.data.topics.map((t) => t as Topic),
+    },
+  });
   return NextResponse.json({ problem }, { status: 201 });
 }

@@ -71,7 +71,7 @@ export async function GET(
       slug: problem.slug,
       description: problem.description,
       difficulty: problem.difficulty,
-      topic: problem.topic,
+      topics: problem.topics,
       starterCode: problem.starterCode as any,
     },
     date,

@@ -21,7 +21,7 @@ export type PublicProblem = {
   slug: string;
   description: string;
   difficulty: Difficulty;
-  topic: Topic;
+  topics: Topic[];
   starterCode: StarterCode;
 };
 

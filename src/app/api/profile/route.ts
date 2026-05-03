@@ -20,7 +20,7 @@ export async function GET() {
       isMakeup: true,
       makeupDate: true,
       solvedAt: true,
-      problem: { select: { topic: true, difficulty: true } },
+      problem: { select: { topics: true, difficulty: true } },
     },
     orderBy: { solvedAt: "desc" },
   });
@@ -33,7 +33,9 @@ export async function GET() {
   // Topic breakdown
   const topicMap: Record<string, number> = {};
   for (const s of solves) {
-    topicMap[s.problem.topic] = (topicMap[s.problem.topic] ?? 0) + 1;
+    for (const topic of s.problem.topics ?? []) {
+      topicMap[topic] = (topicMap[topic] ?? 0) + 1;
+    }
   }
   const topicBreakdown = Object.entries(topicMap)
     .map(([topic, count]) => ({ topic, count }))

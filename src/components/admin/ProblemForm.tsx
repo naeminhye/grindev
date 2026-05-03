@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LANGUAGES } from "@/lib/languages";
+import { TopicTagInput } from "@/components/admin/TopicTagInput";
 
 const TOPICS = [
   "ARRAYS",
@@ -16,6 +17,22 @@ const TOPICS = [
   "BINARY_SEARCH",
   "STACK_QUEUE",
   "HASH_MAP",
+  "HEAPS",
+  "TWO_POINTERS",
+  "SLIDING_WINDOW",
+  "DFS_BFS",
+  "BACKTRACKING",
+  "GREEDY",
+  "RECURSION",
+  "DIVIDE_AND_CONQUER",
+  "BIT_MANIPULATION",
+  "MATH",
+  "TRIE",
+  "UNION_FIND",
+  "SEGMENT_TREE",
+  "FENWICK_TREE",
+  "MONOTONIC_STACK",
+  "MONOTONIC_QUEUE",
 ];
 
 const HINT_DEFAULTS = [
@@ -31,7 +48,7 @@ export type ProblemFormData = {
   functionName: string;
   description: string;
   difficulty: "EASY" | "MEDIUM" | "HARD";
-  topic: string;
+  topics: string[];
   starterCode: Record<string, string>;
   testCases: { input: string; expected: string }[];
   hints: { tier: number; cost: number; content: string }[];
@@ -52,7 +69,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
     functionName: initial?.functionName ?? "",
     description: initial?.description ?? "",
     difficulty: initial?.difficulty ?? "EASY",
-    topic: initial?.topic ?? "ARRAYS",
+    topics: initial?.topics ?? [],
     starterCode:
       initial?.starterCode ??
       Object.fromEntries(LANGUAGES.map((l) => [l.id, ""])),
@@ -315,20 +332,11 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
                 <option value="HARD">Hard</option>
               </select>
             </Field>
-            <Field label="Topic">
-              <select
-                value={form.topic}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, topic: e.target.value }))
-                }
-                className={inputCls}
-              >
-                {TOPICS.map((t) => (
-                  <option key={t} value={t}>
-                    {t.replace(/_/g, " ")}
-                  </option>
-                ))}
-              </select>
+            <Field label="Topics" required>
+              <TopicTagInput
+                value={form.topics ?? []}
+                onChange={(topics) => setForm((f) => ({ ...f, topics }))}
+              />
             </Field>
           </div>
 

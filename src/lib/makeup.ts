@@ -6,7 +6,7 @@ export type MakeupDay = {
   problemId: string;
   problemTitle: string;
   difficulty: string;
-  topic: string;
+  topics: string[];
   starCost: number;
   alreadySolved: boolean;
 };
