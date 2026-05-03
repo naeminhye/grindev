@@ -1,5 +1,7 @@
-// npx prisma generate
-// npx prisma db push
+// npx prisma generate # generates the Prisma Client based on the schema
+// npx prisma db push # pushes the schema to the database (creates tables, etc.)
+// npx tsx prisma/seed.ts   # re-seeds if seed.ts is modified
+// npx tsx --env-file=.env.local prisma/seed.ts # re-seeds with .env.local (e.g. for different DB connection string)
 
 generator client {
   provider = "prisma-client-js"
@@ -10,14 +12,15 @@ datasource db {
 }
 
 model User {
-  id            String        @id
-  currentStreak Int           @default(0)
-  longestStreak Int           @default(0)
-  stars         Int           @default(10)
-  lastSolvedAt  DateTime?
-  challengeMode ChallengeMode @default(NORMAL)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now()) @updatedAt
+  id             String        @id
+  currentStreak  Int           @default(0)
+  longestStreak  Int           @default(0)
+  stars          Int           @default(10)
+  lastSolvedAt   DateTime?
+  lastMakeupDate String? // "YYYY-MM-DD" — tracks if makeup reward already given today
+  challengeMode  ChallengeMode @default(NORMAL)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
 
   solves        Solve[]
   hintPurchases HintPurchase[]
@@ -30,9 +33,9 @@ model Problem {
   description String
   difficulty  Difficulty
   topic       Topic
-  starterCode String
-  testCases   Json
-  hints       Json
+  starterCode Json // Record<Language, string> — per-language starter code
+  testCases   Json // Array<{ input, expected }>
+  hints       Json // Array<{ tier, cost, content }>
   createdAt   DateTime   @default(now())
 
   dailySlots DailyProblem[]
@@ -51,13 +54,15 @@ model Solve {
   userId        String
   problemId     String
   code          String
-  language      String        @default("javascript")
+  language      Language      @default(JAVASCRIPT)
   passed        Boolean
   usedHints     Boolean       @default(false)
   cleanSolve    Boolean       @default(false)
   challengeMode ChallengeMode @default(NORMAL)
   timeExpired   Boolean       @default(false)
   attempts      Int           @default(1)
+  isMakeup      Boolean       @default(false)
+  makeupDate    String? // "YYYY-MM-DD" of the original missed day
   solvedAt      DateTime      @default(now())
 
   user    User    @relation(fields: [userId], references: [id])
@@ -99,4 +104,12 @@ enum Topic {
 enum ChallengeMode {
   NORMAL
   HARD
+}
+
+enum Language {
+  JAVASCRIPT
+  TYPESCRIPT
+  PYTHON
+  CPP
+  JAVA
 }

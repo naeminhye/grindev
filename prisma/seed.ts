@@ -1,12 +1,34 @@
-import dotenv from "dotenv"
-dotenv.config({ path: ".env.local" })  // ← must be before ALL other imports
-
+import "dotenv/config";
 import { PrismaClient, Difficulty, Topic } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { format, addDays } from "date-fns";
 
 const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter } as any);
+
+const starterCodes = {
+  twoSum: {
+    JAVASCRIPT: `function twoSum(nums, target) {\n  // your solution here\n}`,
+    TYPESCRIPT: `function twoSum(nums: number[], target: number): number[] {\n  // your solution here\n}`,
+    PYTHON: `def two_sum(nums: list[int], target: int) -> list[int]:\n    # your solution here\n    pass`,
+    CPP: `#include <vector>\nusing namespace std;\n\nvector<int> twoSum(vector<int>& nums, int target) {\n    // your solution here\n}`,
+    JAVA: `import java.util.*;\n\nclass Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // your solution here\n    }\n}`,
+  },
+  isValid: {
+    JAVASCRIPT: `function isValid(s) {\n  // your solution here\n}`,
+    TYPESCRIPT: `function isValid(s: string): boolean {\n  // your solution here\n}`,
+    PYTHON: `def is_valid(s: str) -> bool:\n    # your solution here\n    pass`,
+    CPP: `#include <string>\nusing namespace std;\n\nbool isValid(string s) {\n    // your solution here\n}`,
+    JAVA: `class Solution {\n    public boolean isValid(String s) {\n        // your solution here\n    }\n}`,
+  },
+  maxSubArray: {
+    JAVASCRIPT: `function maxSubArray(nums) {\n  // your solution here\n}`,
+    TYPESCRIPT: `function maxSubArray(nums: number[]): number {\n  // your solution here\n}`,
+    PYTHON: `def max_sub_array(nums: list[int]) -> int:\n    # your solution here\n    pass`,
+    CPP: `#include <vector>\nusing namespace std;\n\nint maxSubArray(vector<int>& nums) {\n    // your solution here\n}`,
+    JAVA: `class Solution {\n    public int maxSubArray(int[] nums) {\n        // your solution here\n    }\n}`,
+  },
+};
 
 const problems = [
   {
@@ -15,36 +37,8 @@ const problems = [
     slug: "two-sum",
     difficulty: Difficulty.EASY,
     topic: Topic.HASH_MAP,
-    description: `## Two Sum
-
-Given an array of integers \`nums\` and an integer \`target\`, return the **indices** of the two numbers that add up to \`target\`.
-
-You may assume each input has exactly one solution, and you may not use the same element twice.
-
-**Example 1**
-\`\`\`
-Input:  nums = [2, 7, 11, 15], target = 9
-Output: [0, 1]
-\`\`\`
-
-**Example 2**
-\`\`\`
-Input:  nums = [3, 2, 4], target = 6
-Output: [1, 2]
-\`\`\`
-
-**Constraints**
-- \`2 <= nums.length <= 10^4\`
-- \`-10^9 <= nums[i] <= 10^9\`
-- Only one valid answer exists.`,
-    starterCode: `/**
- * @param {number[]} nums
- * @param {number} target
- * @return {number[]}
- */
-function twoSum(nums, target) {
-  // your solution here
-}`,
+    description: `## Two Sum\n\nGiven an array of integers \`nums\` and an integer \`target\`, return the **indices** of the two numbers that add up to \`target\`.\n\n**Example 1**\n\`\`\`\nInput:  nums = [2, 7, 11, 15], target = 9\nOutput: [0, 1]\n\`\`\`\n\n**Example 2**\n\`\`\`\nInput:  nums = [3, 2, 4], target = 6\nOutput: [1, 2]\n\`\`\`\n\n**Constraints**\n- \`2 <= nums.length <= 10^4\`\n- \`-10^9 <= nums[i] <= 10^9\`\n- Only one valid answer exists.`,
+    starterCode: starterCodes.twoSum,
     testCases: [
       { input: "[2,7,11,15]\n9", expected: "[0,1]" },
       { input: "[3,2,4]\n6", expected: "[1,2]" },
@@ -73,7 +67,7 @@ function twoSum(nums, target) {
         tier: 4,
         cost: 15,
         content:
-          "Full solution:\n```js\nfunction twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (map.has(comp)) return [map.get(comp), i];\n    map.set(nums[i], i);\n  }\n}\n```\nTime: O(n) · Space: O(n)",
+          "Full solution:\n```js\nfunction twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (map.has(comp)) return [map.get(comp), i];\n    map.set(nums[i], i);\n  }\n}\n```",
       },
     ],
   },
@@ -83,43 +77,8 @@ function twoSum(nums, target) {
     slug: "valid-parentheses",
     difficulty: Difficulty.EASY,
     topic: Topic.STACK_QUEUE,
-    description: `## Valid Parentheses
-
-Given a string \`s\` containing only \`(\`, \`)\`, \`{\`, \`}\`, \`[\`, \`]\`, determine if the input string is valid.
-
-A string is valid if:
-- Open brackets are closed by the same type of bracket
-- Open brackets are closed in the correct order
-- Every close bracket has a corresponding open bracket
-
-**Example 1**
-\`\`\`
-Input:  s = "()"
-Output: true
-\`\`\`
-
-**Example 2**
-\`\`\`
-Input:  s = "()[]{}"
-Output: true
-\`\`\`
-
-**Example 3**
-\`\`\`
-Input:  s = "(]"
-Output: false
-\`\`\`
-
-**Constraints**
-- \`1 <= s.length <= 10^4\`
-- \`s\` consists of brackets only`,
-    starterCode: `/**
- * @param {string} s
- * @return {boolean}
- */
-function isValid(s) {
-  // your solution here
-}`,
+    description: `## Valid Parentheses\n\nGiven a string \`s\` containing only \`(\`, \`)\`, \`{\`, \`}\`, \`[\`, \`]\`, determine if the input string is valid.\n\n**Example 1**\n\`\`\`\nInput:  s = "()"\nOutput: true\n\`\`\`\n\n**Example 2**\n\`\`\`\nInput:  s = "()[]{}"\nOutput: true\n\`\`\`\n\n**Example 3**\n\`\`\`\nInput:  s = "(]"\nOutput: false\n\`\`\`\n\n**Constraints**\n- \`1 <= s.length <= 10^4\`\n- \`s\` consists of brackets only`,
+    starterCode: starterCodes.isValid,
     testCases: [
       { input: '"()"', expected: "true" },
       { input: '"()[]{}"', expected: "true" },
@@ -160,33 +119,8 @@ function isValid(s) {
     slug: "maximum-subarray",
     difficulty: Difficulty.MEDIUM,
     topic: Topic.DYNAMIC_PROGRAMMING,
-    description: `## Maximum Subarray
-
-Given an integer array \`nums\`, find the subarray with the largest sum and return its sum.
-
-**Example 1**
-\`\`\`
-Input:  nums = [-2,1,-3,4,-1,2,1,-5,4]
-Output: 6
-Explanation: [4,-1,2,1] has the largest sum = 6
-\`\`\`
-
-**Example 2**
-\`\`\`
-Input:  nums = [1]
-Output: 1
-\`\`\`
-
-**Constraints**
-- \`1 <= nums.length <= 10^5\`
-- \`-10^4 <= nums[i] <= 10^4\``,
-    starterCode: `/**
- * @param {number[]} nums
- * @return {number}
- */
-function maxSubArray(nums) {
-  // your solution here
-}`,
+    description: `## Maximum Subarray\n\nGiven an integer array \`nums\`, find the subarray with the largest sum and return its sum.\n\n**Example 1**\n\`\`\`\nInput:  nums = [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6\n\`\`\`\n\n**Example 2**\n\`\`\`\nInput:  nums = [1]\nOutput: 1\n\`\`\`\n\n**Constraints**\n- \`1 <= nums.length <= 10^5\`\n- \`-10^4 <= nums[i] <= 10^4\``,
+    starterCode: starterCodes.maxSubArray,
     testCases: [
       { input: "[-2,1,-3,4,-1,2,1,-5,4]", expected: "6" },
       { input: "[1]", expected: "1" },
@@ -216,7 +150,7 @@ function maxSubArray(nums) {
         tier: 4,
         cost: 15,
         content:
-          "Full solution:\n```js\nfunction maxSubArray(nums) {\n  let cur = nums[0], max = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    cur = Math.max(nums[i], cur + nums[i]);\n    max = Math.max(max, cur);\n  }\n  return max;\n}\n```\nTime: O(n) · Space: O(1)",
+          "Full solution:\n```js\nfunction maxSubArray(nums) {\n  let cur = nums[0], max = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    cur = Math.max(nums[i], cur + nums[i]);\n    max = Math.max(max, cur);\n  }\n  return max;\n}\n```",
       },
     ],
   },
@@ -228,7 +162,7 @@ async function main() {
   for (const p of problems) {
     await prisma.problem.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: { starterCode: p.starterCode }, // update starter code to new format
       create: p,
     });
     console.log(`  ✓ ${p.title}`);
@@ -236,7 +170,7 @@ async function main() {
 
   const today = new Date();
   for (let i = 0; i < problems.length; i++) {
-    const date = format(addDays(today, i), "yyyy-MM-dd");
+    const date = format(addDays(today, i - 2), "yyyy-MM-dd"); // seed some past days too
     await prisma.dailyProblem.upsert({
       where: { date },
       update: {},

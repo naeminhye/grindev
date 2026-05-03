@@ -185,9 +185,11 @@ export default function ProfilePage() {
               title={day.date}
               className={cn(
                 "w-7 h-7 rounded-sm border transition-colors",
-                day.solved
+                day.solved && !day.isMakeup
                   ? "bg-lime-400/80 border-lime-400/50"
-                  : "bg-zinc-800 border-zinc-700",
+                  : day.isMakeup
+                    ? "bg-blue-400/60 border-blue-400/40"
+                    : "bg-zinc-800 border-zinc-700",
               )}
             />
           ))}
@@ -196,6 +198,10 @@ export default function ProfilePage() {
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-lime-400/80 inline-block" />{" "}
             Solved
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-sm bg-blue-400/60 inline-block" />{" "}
+            Make-up
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-zinc-800 border border-zinc-700 inline-block" />{" "}

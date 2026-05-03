@@ -1,4 +1,6 @@
-import { Difficulty, Topic } from "@prisma/client";
+import type { Difficulty, Topic } from "@prisma/client";
+import type { Language } from "@/lib/languages";
+import type { MakeupDay } from "@/lib/makeup";
 
 export type HintData = {
   tier: 1 | 2 | 3 | 4;
@@ -11,6 +13,8 @@ export type TestCase = {
   expected: string;
 };
 
+export type StarterCode = Record<Language, string>;
+
 export type PublicProblem = {
   id: string;
   title: string;
@@ -18,7 +22,7 @@ export type PublicProblem = {
   description: string;
   difficulty: Difficulty;
   topic: Topic;
-  starterCode: string;
+  starterCode: StarterCode;
 };
 
 export type TestResult = {
@@ -27,6 +31,7 @@ export type TestResult = {
   stderr: string;
   actual?: string;
   expected?: string;
+  input?: string;
 };
 
 export type SolveResponse = {
@@ -59,12 +64,27 @@ export type DailyResponse = {
   hintsUnlocked: number[];
   unlockedHintContents: Record<number, string>;
   userStats: UserStats;
+  makeupDays: MakeupDay[]; // available makeup tasks
+  makeupRewardGivenToday: boolean; // whether star reward already given today
+};
+
+export type MakeupProblemResponse = {
+  problem: PublicProblem;
+  date: string;
+  daysAgo: number;
+  starCost: number;
+  alreadySolved: boolean;
+  hintsUnlocked: number[];
+  unlockedHintContents: Record<number, string>;
+  makeupRewardGivenToday: boolean;
+  userStats: UserStats;
 };
 
 export type ProfileStats = {
   totalSolves: number;
   cleanSolves: number;
   hardModeSolves: number;
+  makeupSolves: number;
   totalAttempts: number;
   currentStreak: number;
   longestStreak: number;
@@ -72,5 +92,5 @@ export type ProfileStats = {
   challengeMode: "NORMAL" | "HARD";
   topicBreakdown: { topic: string; count: number }[];
   difficultyBreakdown: { difficulty: string; count: number }[];
-  recentActivity: { date: string; solved: boolean }[];
+  recentActivity: { date: string; solved: boolean; isMakeup: boolean }[];
 };

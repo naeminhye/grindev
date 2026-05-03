@@ -15,7 +15,14 @@ export async function GET() {
 
   const solves = await prisma.solve.findMany({
     where: { userId, passed: true },
-    include: { problem: { select: { topic: true, difficulty: true } } },
+    select: {
+      cleanSolve: true,
+      challengeMode: true,
+      isMakeup: true,
+      makeupDate: true,
+      solvedAt: true,
+      problem: { select: { topic: true, difficulty: true } },
+    },
     orderBy: { solvedAt: "desc" },
   });
 
@@ -45,12 +52,38 @@ export async function GET() {
   // Last 30 days activity
   const today = new Date();
   const recentActivity = [];
+
+  // Use makeupDate for makeup solves, solvedAt for regular ones
   const solvedDates = new Set(
-    solves.map((s) => format(new Date(s.solvedAt), "yyyy-MM-dd")),
+    solves.map((s) =>
+      s.isMakeup && s.makeupDate
+        ? s.makeupDate
+        : format(new Date(s.solvedAt), "yyyy-MM-dd"),
+    ),
   );
+
+  // Regular solves (not makeup)
+  const regularSolvedDates = new Set(
+    solves
+      .filter((s) => !s.isMakeup)
+      .map((s) => format(new Date(s.solvedAt), "yyyy-MM-dd")),
+  );
+
+  // Makeup solves — use the original missed date
+  const makeupDates = new Set(
+    solves.filter((s) => s.isMakeup && s.makeupDate).map((s) => s.makeupDate!),
+  );
+
+  // Combined for "solved" check
+  const allSolvedDates = new Set([...regularSolvedDates, ...makeupDates]);
+
   for (let i = 29; i >= 0; i--) {
     const date = format(subDays(today, i), "yyyy-MM-dd");
-    recentActivity.push({ date, solved: solvedDates.has(date) });
+    recentActivity.push({
+      date,
+      solved: regularSolvedDates.has(date), // green = regular solve
+      isMakeup: makeupDates.has(date), // blue = makeup (even if also regular)
+    });
   }
 
   const totalAttempts = allSolves.reduce((sum, s) => sum + s.attempts, 0);
@@ -67,6 +100,7 @@ export async function GET() {
     topicBreakdown,
     difficultyBreakdown,
     recentActivity,
+    makeupSolves: solves.filter((s) => s.isMakeup).length,
   };
 
   return NextResponse.json(stats);

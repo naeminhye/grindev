@@ -1,61 +1,5 @@
-// const JUDGE0_URL = "https://judge0-ce.p.rapidapi.com";
-// const HEADERS = {
-//   "Content-Type": "application/json",
-//   "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-//   "X-RapidAPI-Key": process.env.JUDGE0_API_KEY!,
-// };
-
-// // Judge0 language IDs
-// const LANGUAGE_IDS: Record<string, number> = {
-//   javascript: 93, // Node.js 18
-//   typescript: 74,
-//   python: 71, // Python 3
-//   java: 62,
-//   cpp: 54,
-// };
-
-// export type ExecutionResult = {
-//   stdout: string;
-//   stderr: string;
-//   status: string;
-// };
-
-// export async function runCode(
-//   language: string,
-//   code: string,
-//   stdin = "",
-// ): Promise<ExecutionResult> {
-//   const languageId = LANGUAGE_IDS[language] ?? LANGUAGE_IDS["javascript"];
-
-//   // Submit
-//   const submitRes = await fetch(
-//     `${JUDGE0_URL}/submissions?base64_encoded=false&wait=true`,
-//     {
-//       method: "POST",
-//       headers: HEADERS,
-//       body: JSON.stringify({
-//         language_id: languageId,
-//         source_code: code,
-//         stdin,
-//         cpu_time_limit: 5,
-//         memory_limit: 128000,
-//       }),
-//     },
-//   );
-
-//   const data = await submitRes.json();
-//   console.log('RAW JUDGE0:', JSON.stringify(data))
-
-//   return {
-//     stdout: data.stdout ?? "",
-//     stderr: data.stderr ?? data.compile_output ?? "",
-//     status: data.status?.description ?? "Unknown",
-//   };
-// }
-
-// export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_IDS);
-
 import vm from "vm";
+import type { Language } from "./languages";
 
 export type ExecutionResult = {
   stdout: string;
@@ -64,20 +8,35 @@ export type ExecutionResult = {
 };
 
 export async function runCode(
-  language: string,
+  language: Language,
   code: string,
-  _stdin = "",
 ): Promise<ExecutionResult> {
+  if (language === "JAVASCRIPT" || language === "TYPESCRIPT") {
+    return runInVm(code);
+  }
+  // Python, C++, Java — requires external executor
+  // Wire up Glot.io or similar when ready
+  return {
+    stdout: "",
+    stderr: `${language} execution not yet configured. Please use JavaScript or TypeScript.`,
+    status: "Not Supported",
+  };
+}
+
+function runInVm(code: string): ExecutionResult {
   let stdout = "";
   let stderr = "";
 
   try {
-    const context = vm.createContext({
+    const sandbox = vm.createContext({
       console: {
         log: (...args: any[]) => {
           stdout += args.map(String).join(" ") + "\n";
         },
         error: (...args: any[]) => {
+          stderr += args.map(String).join(" ") + "\n";
+        },
+        warn: (...args: any[]) => {
           stderr += args.map(String).join(" ") + "\n";
         },
       },
@@ -94,11 +53,12 @@ export async function runCode(
       parseFloat,
       isNaN,
       isFinite,
+      Infinity,
+      NaN,
       undefined,
-      null: null,
     });
 
-    vm.runInContext(code, context, { timeout: 5000 });
+    vm.runInContext(code, sandbox, { timeout: 5000 });
 
     return { stdout: stdout.trim(), stderr: stderr.trim(), status: "Accepted" };
   } catch (e: any) {
@@ -109,5 +69,3 @@ export async function runCode(
     };
   }
 }
-
-export const SUPPORTED_LANGUAGES = ["javascript"];

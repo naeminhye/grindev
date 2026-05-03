@@ -2,7 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
-import type { DailyResponse, HintData } from "@/types";
+import { getMakeupDates, getMakeupCost, getDaysAgo } from "@/lib/makeup";
+import { format } from "date-fns";
+import type { DailyResponse, HintData, StarterCode } from "@/types";
 
 export async function GET() {
   const { userId } = await auth();
@@ -37,23 +39,58 @@ export async function GET() {
     where: { userId_problemId: { userId, problemId: problem.id } },
   });
 
-  // Fetch hint purchases with tier info
   const purchases = await prisma.hintPurchase.findMany({
     where: { userId, problemId: problem.id },
     select: { tier: true },
-    orderBy: { tier: "asc" },
   });
 
-  // Return hint contents for already-purchased tiers
   const allHints = problem.hints as HintData[];
   const unlockedTiers = purchases.map((p) => p.tier);
-  const unlockedHints: Record<number, string> = {};
+  const unlockedHintContents: Record<number, string> = {};
   for (const tier of unlockedTiers) {
     const hint = allHints.find((h) => h.tier === tier);
-    if (hint) unlockedHints[tier] = hint.content;
+    if (hint) unlockedHintContents[tier] = hint.content;
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  // ── Build makeup days list ────────────────────────────────────────────
+  const pastDates = getMakeupDates(30);
+
+  // Get all daily problems for past dates that exist
+  const pastDailyProblems = await prisma.dailyProblem.findMany({
+    where: { date: { in: pastDates } },
+    include: {
+      problem: {
+        select: { id: true, title: true, difficulty: true, topic: true },
+      },
+    },
+  });
+
+  // Get user's existing solves for those problems
+  const pastProblemIds = pastDailyProblems.map((d) => d.problemId);
+  const existingSolves = await prisma.solve.findMany({
+    where: { userId, problemId: { in: pastProblemIds } },
+    select: { problemId: true, passed: true },
+  });
+  const solvedProblemIds = new Set(
+    existingSolves.filter((s) => s.passed).map((s) => s.problemId),
+  );
+
+  const makeupDays = pastDailyProblems
+    .map((d) => ({
+      date: d.date,
+      daysAgo: getDaysAgo(d.date),
+      problemId: d.problemId,
+      problemTitle: d.problem.title,
+      difficulty: d.problem.difficulty,
+      topic: d.problem.topic,
+      starCost: getMakeupCost(getDaysAgo(d.date)),
+      alreadySolved: solvedProblemIds.has(d.problemId),
+    }))
+    .sort((a, b) => a.daysAgo - b.daysAgo); // most recent first
+
+  const makeupRewardGivenToday = user?.lastMakeupDate === today;
 
   const publicProblem = {
     id: problem.id,
@@ -62,14 +99,16 @@ export async function GET() {
     description: problem.description,
     difficulty: problem.difficulty,
     topic: problem.topic,
-    starterCode: problem.starterCode,
+    starterCode: problem.starterCode as StarterCode,
   };
 
   const response: DailyResponse = {
     problem: publicProblem,
     alreadySolved: !!existingSolve?.passed,
     hintsUnlocked: unlockedTiers,
-    unlockedHintContents: unlockedHints, // ← new
+    unlockedHintContents,
+    makeupDays,
+    makeupRewardGivenToday,
     userStats: {
       currentStreak: user?.currentStreak ?? 0,
       longestStreak: user?.longestStreak ?? 0,

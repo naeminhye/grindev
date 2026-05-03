@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { TimerDisplay } from "@/components/ui/TimerDisplay";
+import { LanguageSelector } from "@/components/editor/LanguageSelector";
 import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
 import { getTimeLimit, calculateStarDelta } from "@/lib/challenge";
+import { getMonacoLanguage, LANGUAGE_MAP } from "@/lib/languages";
+import type { Language } from "@/lib/languages";
 import type { DailyResponse, SolveResponse, HintResponse } from "@/types";
 import type { ChallengeMode } from "@/lib/challenge";
+import type { MakeupDay } from "@/lib/makeup";
 import { cn } from "@/lib/utils";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 
 export default function TodayPage() {
+  const router = useRouter();
   const [daily, setDaily] = useState<DailyResponse | null>(null);
   const [code, setCode] = useState("");
+  const [language, setLanguage] = useState<Language>("JAVASCRIPT");
   const [pageState, setPageState] = useState<PageState>("loading");
   const [solveResult, setSolveResult] = useState<SolveResponse | null>(null);
   const [stars, setStars] = useState(0);
@@ -35,7 +42,6 @@ export default function TodayPage() {
     onExpire: () => {},
   });
 
-  // ── Load daily + settings ─────────────────────────────────────────────
   useEffect(() => {
     Promise.all([
       fetch("/api/daily").then((r) => r.json()),
@@ -47,10 +53,12 @@ export default function TodayPage() {
           { challengeMode: ChallengeMode },
         ]) => {
           setDaily(dailyData);
-          setCode(dailyData.problem.starterCode);
+          const starterCode =
+            (dailyData.problem.starterCode as any)["JAVASCRIPT"] ?? "";
+          setCode(starterCode);
           setStars(dailyData.userStats.stars);
           setHintsUnlocked(dailyData.hintsUnlocked);
-          setHintContents(dailyData.unlockedHintContents ?? {}); // ← restore on reload
+          setHintContents(dailyData.unlockedHintContents ?? {});
           setChallengeMode(settingsData.challengeMode);
           setPageState(dailyData.alreadySolved ? "solved" : "ready");
           if (dailyData.alreadySolved) setModeLocked(true);
@@ -59,7 +67,18 @@ export default function TodayPage() {
       .catch(() => setPageState("error"));
   }, []);
 
-  // ── Tab close warning ─────────────────────────────────────────────────
+  // Update starter code when language changes (only if not started typing)
+  const handleLanguageChange = useCallback(
+    (lang: Language) => {
+      setLanguage(lang);
+      if (!hasStartedTyping.current && daily) {
+        const starter = (daily.problem.starterCode as any)[lang] ?? "";
+        setCode(starter);
+      }
+    },
+    [daily],
+  );
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasStartedTyping.current && pageState === "ready") {
@@ -71,20 +90,21 @@ export default function TodayPage() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [pageState]);
 
-  // ── Code change — lock mode + start timer on first edit ──────────────
   const handleCodeChange = useCallback(
     (value: string) => {
       setCode(value);
-      if (!hasStartedTyping.current && value !== daily?.problem.starterCode) {
+      const starter = daily
+        ? ((daily.problem.starterCode as any)[language] ?? "")
+        : "";
+      if (!hasStartedTyping.current && value !== starter) {
         hasStartedTyping.current = true;
         setModeLocked(true);
         if (challengeMode === "HARD") timer.start();
       }
     },
-    [daily, challengeMode, timer],
+    [daily, language, challengeMode, timer],
   );
 
-  // ── Run code ──────────────────────────────────────────────────────────
   const handleRun = useCallback(async () => {
     if (!daily || pageState === "running") return;
     setPageState("running");
@@ -98,7 +118,7 @@ export default function TodayPage() {
         body: JSON.stringify({
           problemId: daily.problem.id,
           code,
-          language: "javascript",
+          language,
           challengeMode,
           timeExpired: timer.isExpired,
         }),
@@ -120,9 +140,8 @@ export default function TodayPage() {
     } catch {
       setPageState("ready");
     }
-  }, [daily, code, pageState, challengeMode, timer]);
+  }, [daily, code, language, pageState, challengeMode, timer]);
 
-  // ── Buy hint ──────────────────────────────────────────────────────────
   const handleBuyHint = useCallback(
     async (tier: number) => {
       if (!daily || hintLoading !== null) return;
@@ -174,6 +193,115 @@ export default function TodayPage() {
 
   const { problem, userStats } = daily;
   const isHard = challengeMode === "HARD";
+  const isSolved = pageState === "solved";
+
+  // ── Show makeup section after solving ─────────────────────────────────
+  if (isSolved && daily.makeupDays.length > 0) {
+    const unsolvedMakeups = daily.makeupDays.filter((d) => !d.alreadySolved);
+
+    return (
+      <div className="flex-1 flex flex-col">
+        {/* Solved banner */}
+        <div className="bg-lime-400/10 border-b border-lime-500/20 px-6 py-4 flex items-center gap-3">
+          <i className="ri-checkbox-circle-fill text-lime-400 text-xl" />
+          <div>
+            <p className="font-heading font-bold text-sm text-lime-400">
+              Today's problem solved!
+            </p>
+            <p className="text-xs font-mono text-zinc-400 mt-0.5">
+              {solveResult?.streak?.isNewRecord
+                ? `New record — ${solveResult.streak.currentStreak} day streak 🔥`
+                : `${userStats.currentStreak} day streak`}
+              {starDelta !== null && starDelta !== 0 && (
+                <span className="ml-2 text-yellow-400">
+                  {starDelta > 0 ? `+${starDelta}` : starDelta} ⭐
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="ml-auto flex items-center gap-3">
+            <StreakBadge streak={userStats.currentStreak} />
+            <StarCount stars={stars} />
+          </div>
+        </div>
+
+        {/* Makeup section */}
+        <div className="max-w-2xl mx-auto w-full px-6 py-10 space-y-6">
+          <div>
+            <h2 className="font-heading text-xl font-bold tracking-tight">
+              Make-Up Tasks
+            </h2>
+            <p className="text-sm font-mono text-zinc-400 mt-1">
+              Catch up on missed problems. Costs stars to attempt.
+            </p>
+          </div>
+
+          {/* Reward notice */}
+          <div
+            className={cn(
+              "flex items-start gap-3 p-4 rounded-md border text-xs font-mono",
+              daily.makeupRewardGivenToday
+                ? "bg-zinc-900 border-zinc-700 text-zinc-500"
+                : "bg-yellow-500/5 border-yellow-500/20 text-yellow-400",
+            )}
+          >
+            <i
+              className={cn(
+                "text-base mt-0.5",
+                daily.makeupRewardGivenToday
+                  ? "ri-information-line text-zinc-600"
+                  : "ri-star-line",
+              )}
+            />
+            <div>
+              {daily.makeupRewardGivenToday
+                ? "You've already received your makeup star reward today. Additional make-ups will not award stars — only the star cost will be deducted."
+                : "First make-up solve today earns stars (minus the attempt cost). After that, additional make-ups only cost stars with no reward."}
+            </div>
+          </div>
+
+          {unsolvedMakeups.length === 0 ? (
+            <div className="text-center py-12 space-y-2">
+              <i className="ri-check-double-line text-3xl text-lime-400" />
+              <p className="font-mono text-sm text-zinc-400">
+                All missed problems are caught up!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {unsolvedMakeups.map((day) => (
+                <MakeupCard
+                  key={day.date}
+                  day={day}
+                  userStars={stars}
+                  onStart={() => router.push(`/makeup/${day.date}`)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Already solved makeups */}
+          {daily.makeupDays.filter((d) => d.alreadySolved).length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-mono text-zinc-600 uppercase tracking-widest">
+                Already completed
+              </p>
+              {daily.makeupDays
+                .filter((d) => d.alreadySolved)
+                .map((day) => (
+                  <MakeupCard
+                    key={day.date}
+                    day={day}
+                    userStars={stars}
+                    completed
+                  />
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)]">
@@ -187,7 +315,6 @@ export default function TodayPage() {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          {/* Challenge mode badge */}
           <div
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1 rounded border text-xs font-mono",
@@ -198,15 +325,8 @@ export default function TodayPage() {
           >
             <i className={isHard ? "ri-sword-line" : "ri-shield-line"} />
             {isHard ? "Hard" : "Normal"}
-            {modeLocked && (
-              <i
-                className="ri-lock-line text-zinc-600 ml-0.5"
-                title="Mode locked for this problem"
-              />
-            )}
+            {modeLocked && <i className="ri-lock-line text-zinc-600 ml-0.5" />}
           </div>
-
-          {/* Timer */}
           {isHard && modeLocked && (
             <TimerDisplay
               secondsLeft={timer.secondsLeft}
@@ -215,15 +335,14 @@ export default function TodayPage() {
               onToggleVisibility={timer.toggleVisibility}
             />
           )}
-
           <StreakBadge streak={userStats.currentStreak} />
           <StarCount stars={stars} />
         </div>
       </div>
 
-      {/* Main split */}
+      {/* Main layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT — Problem + Hints */}
+        {/* LEFT */}
         <div className="w-[42%] flex flex-col border-r border-border overflow-y-auto">
           <div
             className="p-6 prose prose-invert prose-sm max-w-none font-mono
@@ -246,12 +365,10 @@ export default function TodayPage() {
               </span>
               <span className="text-xs text-zinc-600 ml-auto">costs stars</span>
             </div>
-
             {HINT_TIERS.map((tier) => {
               const isUnlocked = hintsUnlocked.includes(tier.tier);
               const content = hintContents[tier.tier];
               const isLoading = hintLoading === tier.tier;
-
               return (
                 <div
                   key={tier.tier}
@@ -313,9 +430,8 @@ export default function TodayPage() {
           </div>
         </div>
 
-        {/* RIGHT — Editor + Results */}
+        {/* RIGHT */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Mode bar */}
           <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border-b border-border shrink-0">
             {isHard ? (
               <>
@@ -332,24 +448,25 @@ export default function TodayPage() {
                 </span>
               </>
             )}
-            <span className="ml-auto text-xs font-mono text-zinc-600">
-              JavaScript
-            </span>
+            <div className="ml-auto">
+              <LanguageSelector
+                value={language}
+                onChange={handleLanguageChange}
+                disabled={modeLocked}
+              />
+            </div>
           </div>
 
-          {/* Editor */}
           <CodeEditor
             value={code}
             onChange={handleCodeChange}
-            language="javascript"
-            disabled={pageState === "solved"}
+            language={getMonacoLanguage(language)}
+            disabled={isSolved}
             pasteBlocked={isHard}
             className="flex-1 rounded-none border-0"
           />
 
-          {/* Footer */}
           <div className="border-t border-border p-4 shrink-0 space-y-3">
-            {/* Test results */}
             {solveResult && solveResult.results && (
               <div className="space-y-2">
                 {solveResult.results.map((r) => (
@@ -411,7 +528,6 @@ export default function TodayPage() {
                     )}
                   </div>
                 ))}
-
                 {solveResult.passed && (
                   <div className="flex items-center gap-3 pt-1">
                     {solveResult.starDelta !== undefined &&
@@ -430,11 +546,6 @@ export default function TodayPage() {
                             : solveResult.starDelta}
                         </span>
                       )}
-                    {timer.isExpired && isHard && (
-                      <span className="text-red-400 text-xs flex items-center gap-1">
-                        <i className="ri-alarm-warning-line" /> Time expired
-                      </span>
-                    )}
                     <span className="text-lime-400 text-sm font-mono flex items-center gap-1.5">
                       <i className="ri-trophy-line" />
                       {solveResult.streak?.isNewRecord
@@ -446,8 +557,7 @@ export default function TodayPage() {
               </div>
             )}
 
-            {/* Already solved */}
-            {pageState === "solved" && !solveResult && (
+            {isSolved && !solveResult && (
               <div className="flex items-center gap-2 text-sm font-mono text-lime-400">
                 <i className="ri-checkbox-circle-line" />
                 Already solved today. Come back tomorrow!
@@ -455,20 +565,18 @@ export default function TodayPage() {
             )}
 
             <div className="flex items-center justify-between">
-              {/* Attempts counter */}
               <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5">
                 <i className="ri-refresh-line" />
                 {attempts === 0
                   ? "No attempts yet"
                   : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
               </span>
-
               <button
                 onClick={handleRun}
-                disabled={pageState === "running" || pageState === "solved"}
+                disabled={pageState === "running" || isSolved}
                 className={cn(
                   "flex items-center gap-2 px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
-                  pageState === "solved"
+                  isSolved
                     ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
                     : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
                 )}
@@ -487,6 +595,76 @@ export default function TodayPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function MakeupCard({
+  day,
+  userStars,
+  completed = false,
+  onStart,
+}: {
+  day: MakeupDay;
+  userStars: number;
+  completed?: boolean;
+  onStart?: () => void;
+}) {
+  const canAfford = userStars >= day.starCost;
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-4 p-4 rounded-md border transition-colors",
+        completed
+          ? "border-border bg-zinc-900/30 opacity-60"
+          : "border-border bg-zinc-900 hover:border-zinc-600",
+      )}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="font-mono text-sm font-medium truncate">
+            {day.problemTitle}
+          </span>
+          <DifficultyBadge difficulty={day.difficulty as any} />
+        </div>
+        <div className="flex items-center gap-3 text-xs font-mono text-zinc-500">
+          <span>
+            {day.daysAgo === 1 ? "Yesterday" : `${day.daysAgo} days ago`}
+          </span>
+          <span>·</span>
+          <span>{day.topic.replace(/_/g, " ")}</span>
+        </div>
+      </div>
+
+      {completed ? (
+        <span className="flex items-center gap-1.5 text-xs font-mono text-lime-400">
+          <i className="ri-check-line" /> Done
+        </span>
+      ) : (
+        <div className="flex items-center gap-3 shrink-0">
+          <span
+            className={cn(
+              "flex items-center gap-1 text-xs font-mono",
+              canAfford ? "text-yellow-400" : "text-red-400",
+            )}
+          >
+            <i className="ri-star-fill" /> {day.starCost}
+          </span>
+          <button
+            onClick={onStart}
+            disabled={!canAfford}
+            className={cn(
+              "px-3 py-1.5 rounded text-xs font-mono font-bold transition-all",
+              canAfford
+                ? "bg-lime-400 text-zinc-950 hover:bg-lime-300"
+                : "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700",
+            )}
+          >
+            {canAfford ? "Start" : "Not enough ⭐"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
