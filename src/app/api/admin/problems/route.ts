@@ -9,6 +9,7 @@ const schema = z.object({
     .string()
     .min(1)
     .regex(/^[a-z0-9-]+$/),
+  functionName: z.string().min(1).optional(),
   description: z.string().min(1),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
   topic: z.enum([

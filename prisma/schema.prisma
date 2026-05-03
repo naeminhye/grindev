@@ -39,6 +39,7 @@ model Problem {
   deletedAt   DateTime? // soft delete — history still works
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
+  functionName  String   @default("solution")
 
   dailySlots DailyProblem[]
   solves     Solve[]

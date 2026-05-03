@@ -17,6 +17,7 @@ export default async function EditProblemPage({
   const initial: Partial<ProblemFormData> = {
     title: problem.title,
     slug: problem.slug,
+    functionName: problem.functionName,
     description: problem.description,
     difficulty: problem.difficulty as any,
     topic: problem.topic as any,

@@ -28,6 +28,7 @@ const HINT_DEFAULTS = [
 export type ProblemFormData = {
   title: string;
   slug: string;
+  functionName: string;
   description: string;
   difficulty: "EASY" | "MEDIUM" | "HARD";
   topic: string;
@@ -48,6 +49,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
   const [form, setForm] = useState<ProblemFormData>({
     title: initial?.title ?? "",
     slug: initial?.slug ?? "",
+    functionName: initial?.functionName ?? "",
     description: initial?.description ?? "",
     difficulty: initial?.difficulty ?? "EASY",
     topic: initial?.topic ?? "ARRAYS",
@@ -146,9 +148,13 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      const data = await res.json();
+
+      // Guard against empty response
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
+
       if (!res.ok) {
-        setError(data.error ?? "Failed to save");
+        setError(data.error ?? `Server error: ${res.status}`);
         return;
       }
       router.push("/admin");
@@ -283,6 +289,17 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
               />
             </Field>
           </div>
+
+          <Field label="Function Name" required>
+            <input
+              value={(form as any).functionName ?? ""}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, functionName: e.target.value }))
+              }
+              placeholder="twoSum"
+              className={inputCls}
+            />
+          </Field>
 
           <div className="grid grid-cols-2 gap-4">
             <Field label="Difficulty">
