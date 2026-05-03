@@ -20,8 +20,8 @@ export function AppNav({ userName, userImage }: AppNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="h-14 border-b border-border flex items-center justify-between px-6 shrink-0">
-      <div className="flex items-center gap-6">
+    <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
+      <div className="flex items-center gap-4 md:gap-6">
         <Link
           href="/today"
           className="font-heading font-bold text-base tracking-tight"
@@ -29,7 +29,8 @@ export function AppNav({ userName, userImage }: AppNavProps) {
           Grin<span className="text-lime-400">Dev</span>
         </Link>
 
-        <div className="flex items-center gap-1">
+        {/* Desktop nav links — hidden on mobile */}
+        <div className="hidden md:flex items-center gap-1">
           {menus.map((menu) => (
             <Link
               key={menu.href}
@@ -47,7 +48,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 md:gap-3">
         {userImage && (
           <img
             src={userImage}
@@ -55,7 +56,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
             className="w-7 h-7 rounded-full border border-zinc-700"
           />
         )}
-        <span className="text-xs font-mono text-zinc-400 max-w-[120px] truncate">
+        <span className="hidden sm:block text-xs font-mono text-zinc-400 max-w-[120px] truncate">
           {userName}
         </span>
         <SignOutButton />

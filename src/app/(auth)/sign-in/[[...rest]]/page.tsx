@@ -5,27 +5,31 @@ import { cn } from "@/lib/utils";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background bg-grid">
-      <div className="space-y-8 text-center w-full max-w-sm px-6">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      {/* Subtle grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--border)/0.3)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border)/0.3)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+
+      <div className="relative space-y-6 md:space-y-8 text-center w-full max-w-sm">
         <div>
-          <h1 className="font-heading text-3xl font-bold tracking-tight">
+          <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight">
             Grin<span className="text-lime-400">Dev</span>
           </h1>
-          <p className="text-sm text-zinc-500 font-mono mt-1">
+          <p className="text-sm text-zinc-500 font-mono mt-2">
             Sharpen your edge. Daily.
           </p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-8 space-y-4">
-          <p className="font-mono text-sm text-zinc-400">Sign in to continue</p>
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-6 md:p-8 space-y-3">
+          <p className="font-mono text-sm text-zinc-400 mb-5">
+            Sign in to continue
+          </p>
 
-          {/* Google */}
           <button
             onClick={() => signIn("google", { callbackUrl: "/today" })}
             className={cn(
               "w-full flex items-center justify-center gap-3",
               "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 transition-colors",
+              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
               "font-mono text-sm text-zinc-200",
             )}
           >
@@ -55,13 +59,12 @@ export default function SignInPage() {
             Continue with Google
           </button>
 
-          {/* GitHub */}
           <button
             onClick={() => signIn("github", { callbackUrl: "/today" })}
             className={cn(
               "w-full flex items-center justify-center gap-3",
               "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 transition-colors",
+              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
               "font-mono text-sm text-zinc-200",
             )}
           >
@@ -79,7 +82,7 @@ export default function SignInPage() {
         </div>
 
         <p className="text-xs font-mono text-zinc-600">
-          No account needed — sign in with Google or GitHub to start.
+          No account needed — sign in to start.
         </p>
       </div>
     </div>
