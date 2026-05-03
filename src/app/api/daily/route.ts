@@ -1,15 +1,13 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
 import { getMakeupDates, getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { format } from "date-fns";
+import { getAuthUserId } from "@/lib/auth-helper";
 import type { DailyResponse, HintData, StarterCode } from "@/types";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { userId, error } = await getAuthUserId();
+  if (error) return error;
 
   await prisma.user.upsert({
     where: { id: userId },
@@ -54,10 +52,7 @@ export async function GET() {
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  // ── Build makeup days list ────────────────────────────────────────────
   const pastDates = getMakeupDates(30);
-
-  // Get all daily problems for past dates that exist
   const pastDailyProblems = await prisma.dailyProblem.findMany({
     where: { date: { in: pastDates } },
     include: {
@@ -67,7 +62,6 @@ export async function GET() {
     },
   });
 
-  // Get user's existing solves for those problems
   const pastProblemIds = pastDailyProblems.map((d) => d.problemId);
   const existingSolves = await prisma.solve.findMany({
     where: { userId, problemId: { in: pastProblemIds } },
@@ -88,27 +82,23 @@ export async function GET() {
       starCost: getMakeupCost(getDaysAgo(d.date)),
       alreadySolved: solvedProblemIds.has(d.problemId),
     }))
-    .sort((a, b) => a.daysAgo - b.daysAgo); // most recent first
-
-  const makeupRewardGivenToday = user?.lastMakeupDate === today;
-
-  const publicProblem = {
-    id: problem.id,
-    title: problem.title,
-    slug: problem.slug,
-    description: problem.description,
-    difficulty: problem.difficulty,
-    topic: problem.topic,
-    starterCode: problem.starterCode as StarterCode,
-  };
+    .sort((a, b) => a.daysAgo - b.daysAgo);
 
   const response: DailyResponse = {
-    problem: publicProblem,
+    problem: {
+      id: problem.id,
+      title: problem.title,
+      slug: problem.slug,
+      description: problem.description,
+      difficulty: problem.difficulty,
+      topic: problem.topic,
+      starterCode: problem.starterCode as StarterCode,
+    },
     alreadySolved: !!existingSolve?.passed,
     hintsUnlocked: unlockedTiers,
     unlockedHintContents,
     makeupDays,
-    makeupRewardGivenToday,
+    makeupRewardGivenToday: user?.lastMakeupDate === today,
     userStats: {
       currentStreak: user?.currentStreak ?? 0,
       longestStreak: user?.longestStreak ?? 0,

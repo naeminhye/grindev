@@ -1,13 +1,12 @@
-import { auth } from "@clerk/nextjs/server";
+import { getAuthUserId } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { subDays, format } from "date-fns";
 import type { ProfileStats } from "@/types";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { userId, error } = await getAuthUserId();
+  if (error) return NextResponse.json({ error }, { status: 401 });
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user)
