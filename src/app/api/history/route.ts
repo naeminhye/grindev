@@ -15,7 +15,7 @@ export async function GET() {
           title: true,
           slug: true,
           difficulty: true,
-          topic: true,
+          topics: true,
         },
       },
     },

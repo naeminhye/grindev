@@ -20,7 +20,7 @@ export default async function EditProblemPage({
     functionName: problem.functionName,
     description: problem.description,
     difficulty: problem.difficulty as any,
-    topic: problem.topic as any,
+    topics: problem.topics as any,
     starterCode: problem.starterCode as any,
     testCases: problem.testCases as any,
     hints: problem.hints as any,

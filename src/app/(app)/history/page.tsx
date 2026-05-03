@@ -20,7 +20,7 @@ type SolveRecord = {
     title: string;
     slug: string;
     difficulty: Difficulty;
-    topic: string;
+    topics: string[];
   };
 };
 
@@ -259,7 +259,10 @@ export default function HistoryPage() {
                     </div>
                     <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-zinc-950">
                       <span className="text-xs font-mono text-zinc-500">
-                        {solve.problem.topic.replace(/_/g, " ")} · JavaScript
+                        {(solve.problem.topics ?? [])
+                          .map((t: string) => t.replace(/_/g, " "))
+                          .join(", ")}{" "}
+                        · JavaScript
                       </span>
                       <span className="hidden sm:block text-xs font-mono text-zinc-600">
                         {new Date(solve.solvedAt).toLocaleString()}

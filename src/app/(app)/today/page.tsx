@@ -70,7 +70,7 @@ export default function TodayPage() {
         if (err.name === "AbortError") return; // ignore cancellation
         setPageState("error");
       });
-      
+
     return () => controller.abort();
   }, []);
 
@@ -312,7 +312,9 @@ export default function TodayPage() {
         </h1>
         <DifficultyBadge difficulty={problem.difficulty} />
         <span className="hidden sm:block text-xs text-zinc-500 font-mono uppercase tracking-wider">
-          {problem.topic.replace(/_/g, " ")}
+          {(problem.topics ?? [])
+            .map((t: string) => t.replace(/_/g, " "))
+            .join(", ")}
         </span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
@@ -692,7 +694,7 @@ function MakeupCard({
             {day.daysAgo === 1 ? "Yesterday" : `${day.daysAgo} days ago`}
           </span>
           <span className="hidden sm:inline">
-            · {day.topic.replace(/_/g, " ")}
+            · {(day.topics ?? []).map((t) => t.replace(/_/g, " ")).join(", ")}
           </span>
         </div>
       </div>
