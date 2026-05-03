@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import "dotenv/config";
 import { PrismaClient, Difficulty, Topic } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";

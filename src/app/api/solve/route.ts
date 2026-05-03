@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { getAuthUserId } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -17,9 +17,8 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { userId, error } = await getAuthUserId();
+  if (error) return NextResponse.json({ error }, { status: 401 });
 
   const body = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(body);
