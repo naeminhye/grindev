@@ -2,21 +2,19 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
-import type { DailyResponse } from "@/types";
+import type { DailyResponse, HintData } from "@/types";
 
 export async function GET() {
   const { userId } = await auth();
   if (!userId)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Upsert user — creates on first login
   await prisma.user.upsert({
     where: { id: userId },
     update: {},
     create: { id: userId },
   });
 
-  // Check if streak should be reset (missed a day)
   await checkAndResetStreak(userId);
 
   const today = getTodayUTC();
@@ -35,23 +33,28 @@ export async function GET() {
 
   const { problem } = daily;
 
-  // Check if already solved today
-  // const existingSolve = await prisma.solve.findUnique({
-  //   where: { userId_problemId: { userId, problemId: problem.id } },
-  // });
-  const existingSolve = await prisma.solve.findFirst({
-    where: { userId, problemId: problem.id },
+  const existingSolve = await prisma.solve.findUnique({
+    where: { userId_problemId: { userId, problemId: problem.id } },
   });
 
-  // Which hint tiers has this user already purchased for today's problem?
-  const purchases: { tier: number }[] = await prisma.hintPurchase.findMany({
+  // Fetch hint purchases with tier info
+  const purchases = await prisma.hintPurchase.findMany({
     where: { userId, problemId: problem.id },
     select: { tier: true },
+    orderBy: { tier: "asc" },
   });
+
+  // Return hint contents for already-purchased tiers
+  const allHints = problem.hints as HintData[];
+  const unlockedTiers = purchases.map((p) => p.tier);
+  const unlockedHints: Record<number, string> = {};
+  for (const tier of unlockedTiers) {
+    const hint = allHints.find((h) => h.tier === tier);
+    if (hint) unlockedHints[tier] = hint.content;
+  }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  // Return public problem — strip testCases and raw hints content
   const publicProblem = {
     id: problem.id,
     title: problem.title,
@@ -65,7 +68,8 @@ export async function GET() {
   const response: DailyResponse = {
     problem: publicProblem,
     alreadySolved: !!existingSolve?.passed,
-    hintsUnlocked: purchases.map((p) => p.tier),
+    hintsUnlocked: unlockedTiers,
+    unlockedHintContents: unlockedHints, // ← new
     userStats: {
       currentStreak: user?.currentStreak ?? 0,
       longestStreak: user?.longestStreak ?? 0,

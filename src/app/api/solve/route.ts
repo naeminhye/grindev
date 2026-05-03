@@ -4,12 +4,15 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { runCode } from "@/lib/piston";
 import { updateStreak } from "@/lib/streak";
+import { calculateStarDelta } from "@/lib/challenge";
 import type { SolveResponse, TestCase } from "@/types";
 
 const bodySchema = z.object({
   problemId: z.string().min(1),
   code: z.string().min(1).max(50_000),
   language: z.enum(["javascript", "typescript", "python", "java", "cpp"]),
+  challengeMode: z.enum(["NORMAL", "HARD"]).default("NORMAL"),
+  timeExpired: z.boolean().default(false),
 });
 
 export async function POST(req: Request) {
@@ -23,81 +26,68 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { problemId, code, language } = parsed.data;
+  const { problemId, code, language, challengeMode, timeExpired } = parsed.data;
 
-  // Fetch test cases server-side only
   const problem = await prisma.problem.findUnique({ where: { id: problemId } });
   if (!problem)
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
+
+  const existing = await prisma.solve.findUnique({
+    where: { userId_problemId: { userId, problemId } },
+  });
+  if (existing?.passed) {
+    return NextResponse.json({ error: "Already solved" }, { status: 400 });
+  }
 
   const testCases = problem.testCases as TestCase[];
   const results = [];
 
   for (let i = 0; i < testCases.length; i++) {
     const tc = testCases[i];
-
-    // Wrap solution in a runner that reads stdin and prints result
     const runner = wrapWithRunner(code, language, tc.input);
 
     let result;
     try {
-      result = await runCode(language, runner, tc.input);
+      result = await runCode(language, runner);
     } catch (e) {
-      console.error("Piston error:", e);
+      console.error("Execution error:", e);
       return NextResponse.json(
         { error: "Execution service unavailable" },
         { status: 503 },
       );
     }
 
-    // status descriptions from Judge0: "Accepted", "Wrong Answer", "Runtime Error", etc.
-    // stdout is null on error, so guard it:
     const actual = (result.stdout ?? "").trim();
     const expected = tc.expected.trim();
-    const passed = actual === expected;
 
     results.push({
       index: i + 1,
-      passed,
+      passed: actual === expected,
       stderr: result.stderr,
-      // Never include tc.input or tc.expected in response
+      actual,
+      expected,
     });
   }
 
   const allPassed = results.every((r) => r.passed);
-
-  // Check if user has used any hints for this problem
   const hintCount = await prisma.hintPurchase.count({
     where: { userId, problemId },
   });
+  const usedHints = hintCount > 0;
+  const cleanSolve = allPassed && !usedHints;
 
-  // Upsert solve record
-  // await prisma.solve.upsert({
-  //   where: { userId_problemId: { userId, problemId } },
-  //   update: { code, passed: allPassed, usedHints: hintCount > 0, cleanSolve: allPassed && hintCount === 0 },
-  //   create: {
-  //     userId,
-  //     problemId,
-  //     code,
-  //     language,
-  //     passed: allPassed,
-  //     usedHints: hintCount > 0,
-  //     cleanSolve: allPassed && hintCount === 0,
-  //   },
-  // })
-
-  const existingSolve = await prisma.solve.findFirst({
-    where: { userId, problemId },
-  });
-
-  if (existingSolve) {
+  // Upsert — increment attempts on every run
+  if (existing) {
     await prisma.solve.update({
-      where: { id: existingSolve.id },
+      where: { userId_problemId: { userId, problemId } },
       data: {
         code,
         passed: allPassed,
-        usedHints: hintCount > 0,
-        cleanSolve: allPassed && hintCount === 0,
+        usedHints,
+        cleanSolve,
+        challengeMode,
+        timeExpired,
+        attempts: { increment: 1 },
       },
     });
   } else {
@@ -108,47 +98,60 @@ export async function POST(req: Request) {
         code,
         language,
         passed: allPassed,
-        usedHints: hintCount > 0,
-        cleanSolve: allPassed && hintCount === 0,
+        usedHints,
+        cleanSolve,
+        challengeMode,
+        timeExpired,
+        attempts: 1,
       },
     });
   }
 
   let streakUpdate;
+  let starDelta = 0;
+
   if (allPassed) {
     streakUpdate = await updateStreak(userId);
+    starDelta = calculateStarDelta({
+      mode: challengeMode,
+      passed: true,
+      usedHints,
+      timeExpired,
+    });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { stars: true },
+    });
+    const newStars = Math.max(0, (user?.stars ?? 0) + starDelta);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { stars: newStars },
+    });
   }
 
-  const response: SolveResponse = {
+  return NextResponse.json({
     passed: allPassed,
     results,
+    starDelta,
     ...(allPassed && streakUpdate ? { streak: streakUpdate } : {}),
-  };
-
-  return NextResponse.json(response);
+  } satisfies SolveResponse);
 }
 
-/**
- * Wraps the user's solution function with a stdin-reading runner.
- * The test harness calls the function with parsed input and prints the result.
- * This is JavaScript-specific — extend per language as needed.
- */
 function wrapWithRunner(code: string, language: string, input: string): string {
   if (language === "javascript" || language === "typescript") {
+    const escapedInput = input.replace(/\\/g, "\\\\").replace(/`/g, "\\`");
     return `
 ${code}
 
-const lines = \`${input.replace(/`/g, "\\`")}\`.trim().split('\\n');
-const args = lines.map(l => { try { return JSON.parse(l) } catch { return l } });
+const __input = \`${escapedInput}\`.trim().split('\\n');
+const __args = __input.map(l => { try { return JSON.parse(l) } catch { return l } });
 
-const fns = [twoSum, isValid, maxSubArray].filter(name => {
-  try { return typeof eval(name) === 'function' } catch { return false }
-});
+let __result;
+if (typeof isValid !== 'undefined') __result = isValid(...__args);
+else if (typeof twoSum !== 'undefined') __result = twoSum(...__args);
+else if (typeof maxSubArray !== 'undefined') __result = maxSubArray(...__args);
 
-if (fns.length > 0) {
-  const result = fns[0](...args);
-  process.stdout.write(JSON.stringify(result));
-}
+console.log(JSON.stringify(__result));
 `;
   }
   return code;

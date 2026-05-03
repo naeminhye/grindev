@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
+import { TimerDisplay } from "@/components/ui/TimerDisplay";
+import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
+import { getTimeLimit, calculateStarDelta } from "@/lib/challenge";
 import type { DailyResponse, SolveResponse, HintResponse } from "@/types";
+import type { ChallengeMode } from "@/lib/challenge";
 import { cn } from "@/lib/utils";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 
-export default function DailyPage() {
+export default function TodayPage() {
   const [daily, setDaily] = useState<DailyResponse | null>(null);
   const [code, setCode] = useState("");
   const [pageState, setPageState] = useState<PageState>("loading");
@@ -20,40 +24,74 @@ export default function DailyPage() {
   const [hintsUnlocked, setHintsUnlocked] = useState<number[]>([]);
   const [hintContents, setHintContents] = useState<Record<number, string>>({});
   const [hintLoading, setHintLoading] = useState<number | null>(null);
+  const [challengeMode, setChallengeMode] = useState<ChallengeMode>("NORMAL");
+  const [modeLocked, setModeLocked] = useState(false);
+  const [starDelta, setStarDelta] = useState<number | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const hasStartedTyping = useRef(false);
 
+  const timer = useTimer({
+    initialSeconds: daily ? getTimeLimit(daily.problem.difficulty) : 15 * 60,
+    onExpire: () => {},
+  });
+
+  // ── Load daily + settings ─────────────────────────────────────────────
   useEffect(() => {
-    fetch("/api/daily")
-      .then((r) => r.json())
-      .then((data: DailyResponse) => {
-        setDaily(data);
-        setCode(data.problem.starterCode);
-        setStars(data.userStats.stars);
-        setHintsUnlocked(data.hintsUnlocked);
-        setPageState(data.alreadySolved ? "solved" : "ready");
-      })
+    Promise.all([
+      fetch("/api/daily").then((r) => r.json()),
+      fetch("/api/settings").then((r) => r.json()),
+    ])
+      .then(
+        ([dailyData, settingsData]: [
+          DailyResponse,
+          { challengeMode: ChallengeMode },
+        ]) => {
+          setDaily(dailyData);
+          setCode(dailyData.problem.starterCode);
+          setStars(dailyData.userStats.stars);
+          setHintsUnlocked(dailyData.hintsUnlocked);
+          setHintContents(dailyData.unlockedHintContents ?? {}); // ← restore on reload
+          setChallengeMode(settingsData.challengeMode);
+          setPageState(dailyData.alreadySolved ? "solved" : "ready");
+          if (dailyData.alreadySolved) setModeLocked(true);
+        },
+      )
       .catch(() => setPageState("error"));
   }, []);
 
+  // ── Tab close warning ─────────────────────────────────────────────────
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasStartedTyping.current && pageState === "ready") {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [pageState]);
+
+  // ── Code change — lock mode + start timer on first edit ──────────────
+  const handleCodeChange = useCallback(
+    (value: string) => {
+      setCode(value);
+      if (!hasStartedTyping.current && value !== daily?.problem.starterCode) {
+        hasStartedTyping.current = true;
+        setModeLocked(true);
+        if (challengeMode === "HARD") timer.start();
+      }
+    },
+    [daily, challengeMode, timer],
+  );
+
+  // ── Run code ──────────────────────────────────────────────────────────
   const handleRun = useCallback(async () => {
     if (!daily || pageState === "running") return;
     setPageState("running");
     setSolveResult(null);
+    setStarDelta(null);
 
     try {
-      // 1. Run code via Piston from browser (avoids server egress block)
-      const pistonRes = await fetch("https://emkc.org/api/v2/piston/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: "javascript",
-          version: "18.15.0",
-          files: [{ content: code }],
-        }),
-      });
-      const pistonData = await pistonRes.json();
-      console.log("piston output:", pistonData);
-
-      // 2. Send code + piston output to your API for test validation
       const res = await fetch("/api/solve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,37 +99,44 @@ export default function DailyPage() {
           problemId: daily.problem.id,
           code,
           language: "javascript",
-          pistonOutput: pistonData.run?.stdout ?? "",
+          challengeMode,
+          timeExpired: timer.isExpired,
         }),
       });
       const result: SolveResponse = await res.json();
-      console.log("solve result:", result);
       setSolveResult(result);
-      setPageState(result.passed ? "solved" : "ready");
-    } catch (e) {
-      console.error(e);
+      setAttempts((a) => a + 1);
+
+      if (result.passed) {
+        setPageState("solved");
+        timer.stop();
+        if (result.starDelta !== undefined) {
+          setStarDelta(result.starDelta);
+          setStars((s) => Math.max(0, s + result.starDelta!));
+        }
+      } else {
+        setPageState("ready");
+      }
+    } catch {
       setPageState("ready");
     }
-  }, [daily, code, pageState]);
+  }, [daily, code, pageState, challengeMode, timer]);
 
+  // ── Buy hint ──────────────────────────────────────────────────────────
   const handleBuyHint = useCallback(
     async (tier: number) => {
       if (!daily || hintLoading !== null) return;
       setHintLoading(tier);
-
       try {
         const res = await fetch("/api/hints", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ problemId: daily.problem.id, tier }),
         });
-
         if (!res.ok) {
-          const err = await res.json();
-          alert(err.error);
+          alert((await res.json()).error);
           return;
         }
-
         const data: HintResponse = await res.json();
         setStars(data.starsRemaining);
         setHintsUnlocked((prev) => [...new Set([...prev, tier])]);
@@ -128,6 +173,7 @@ export default function DailyPage() {
   }
 
   const { problem, userStats } = daily;
+  const isHard = challengeMode === "HARD";
 
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)]">
@@ -137,20 +183,48 @@ export default function DailyPage() {
           <h1 className="font-heading font-bold text-base">{problem.title}</h1>
           <DifficultyBadge difficulty={problem.difficulty} />
           <span className="text-xs text-zinc-500 font-mono uppercase tracking-wider">
-            {problem.topic.replace("_", " ")}
+            {problem.topic.replace(/_/g, " ")}
           </span>
         </div>
         <div className="flex items-center gap-3">
+          {/* Challenge mode badge */}
+          <div
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded border text-xs font-mono",
+              isHard
+                ? "bg-orange-500/10 border-orange-500/30 text-orange-400"
+                : "bg-zinc-800 border-zinc-700 text-zinc-400",
+            )}
+          >
+            <i className={isHard ? "ri-sword-line" : "ri-shield-line"} />
+            {isHard ? "Hard" : "Normal"}
+            {modeLocked && (
+              <i
+                className="ri-lock-line text-zinc-600 ml-0.5"
+                title="Mode locked for this problem"
+              />
+            )}
+          </div>
+
+          {/* Timer */}
+          {isHard && modeLocked && (
+            <TimerDisplay
+              secondsLeft={timer.secondsLeft}
+              isExpired={timer.isExpired}
+              isVisible={timer.isVisible}
+              onToggleVisibility={timer.toggleVisibility}
+            />
+          )}
+
           <StreakBadge streak={userStats.currentStreak} />
           <StarCount stars={stars} />
         </div>
       </div>
 
-      {/* Main split layout */}
+      {/* Main split */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT — Problem + Hints */}
         <div className="w-[42%] flex flex-col border-r border-border overflow-y-auto">
-          {/* Problem description */}
           <div
             className="p-6 prose prose-invert prose-sm max-w-none font-mono
             prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
@@ -163,7 +237,7 @@ export default function DailyPage() {
             />
           </div>
 
-          {/* Hint panel */}
+          {/* Hints */}
           <div className="border-t border-border p-6 space-y-3 mt-auto">
             <div className="flex items-center gap-2 mb-4">
               <i className="ri-lightbulb-line text-yellow-400" />
@@ -226,7 +300,6 @@ export default function DailyPage() {
                       </button>
                     )}
                   </div>
-
                   {isUnlocked && content && (
                     <div className="px-3 pb-3">
                       <div className="text-xs text-zinc-300 font-mono leading-relaxed whitespace-pre-wrap border-t border-lime-500/10 pt-3">
@@ -242,59 +315,138 @@ export default function DailyPage() {
 
         {/* RIGHT — Editor + Results */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Paste warning bar */}
+          {/* Mode bar */}
           <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border-b border-border shrink-0">
-            <i className="ri-forbid-2-line text-red-400 text-sm" />
-            <span className="text-xs font-mono text-zinc-500">
-              Paste disabled — type your solution from scratch
-            </span>
+            {isHard ? (
+              <>
+                <i className="ri-forbid-2-line text-red-400 text-sm" />
+                <span className="text-xs font-mono text-zinc-500">
+                  Hard mode — paste disabled
+                </span>
+              </>
+            ) : (
+              <>
+                <i className="ri-information-line text-zinc-600 text-sm" />
+                <span className="text-xs font-mono text-zinc-600">
+                  Normal mode — paste allowed, fewer stars
+                </span>
+              </>
+            )}
             <span className="ml-auto text-xs font-mono text-zinc-600">
               JavaScript
             </span>
           </div>
 
-          {/* Monaco */}
+          {/* Editor */}
           <CodeEditor
             value={code}
-            onChange={setCode}
+            onChange={handleCodeChange}
             language="javascript"
             disabled={pageState === "solved"}
+            pasteBlocked={isHard}
             className="flex-1 rounded-none border-0"
           />
 
-          {/* Footer — run button + results */}
+          {/* Footer */}
           <div className="border-t border-border p-4 shrink-0 space-y-3">
             {/* Test results */}
             {solveResult && solveResult.results && (
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="space-y-2">
                 {solveResult.results.map((r) => (
                   <div
                     key={r.index}
                     className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono",
+                      "rounded-md border p-3 text-xs font-mono space-y-2",
                       r.passed
-                        ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                        : "bg-red-500/10 text-red-400 border border-red-500/20",
+                        ? "bg-green-500/5 border-green-500/20"
+                        : "bg-red-500/5 border-red-500/20",
                     )}
                   >
-                    <i
-                      className={r.passed ? "ri-check-line" : "ri-close-line"}
-                    />
-                    Test {r.index}
+                    <div className="flex items-center gap-2">
+                      <i
+                        className={
+                          r.passed
+                            ? "ri-check-line text-green-400"
+                            : "ri-close-line text-red-400"
+                        }
+                      />
+                      <span
+                        className={r.passed ? "text-green-400" : "text-red-400"}
+                      >
+                        Test {r.index}
+                      </span>
+                      {r.passed && (
+                        <span className="text-green-600">Passed</span>
+                      )}
+                    </div>
+                    {!r.passed && (
+                      <div className="space-y-1 pl-5">
+                        <div className="flex gap-3">
+                          <span className="text-zinc-600 w-24 shrink-0">
+                            Expected
+                          </span>
+                          <span className="text-green-400">{r.expected}</span>
+                        </div>
+                        <div className="flex gap-3">
+                          <span className="text-zinc-600 w-24 shrink-0">
+                            Your output
+                          </span>
+                          <span className="text-red-400">
+                            {r.actual || (
+                              <em className="text-zinc-600">empty</em>
+                            )}
+                          </span>
+                        </div>
+                        {r.stderr && (
+                          <div className="flex gap-3">
+                            <span className="text-zinc-600 w-24 shrink-0">
+                              Error
+                            </span>
+                            <span className="text-red-400 break-all">
+                              {r.stderr}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
+
                 {solveResult.passed && (
-                  <div className="ml-auto flex items-center gap-2 text-sm font-mono text-lime-400">
-                    <i className="ri-trophy-line" />
-                    {solveResult.streak?.isNewRecord
-                      ? `New record! ${solveResult.streak.currentStreak} day streak 🔥`
-                      : `All tests passed · ${solveResult.streak?.currentStreak ?? 0} day streak`}
+                  <div className="flex items-center gap-3 pt-1">
+                    {solveResult.starDelta !== undefined &&
+                      solveResult.starDelta !== 0 && (
+                        <span
+                          className={cn(
+                            "flex items-center gap-1 text-sm font-mono",
+                            solveResult.starDelta > 0
+                              ? "text-yellow-400"
+                              : "text-red-400",
+                          )}
+                        >
+                          <i className="ri-star-fill text-xs" />
+                          {solveResult.starDelta > 0
+                            ? `+${solveResult.starDelta}`
+                            : solveResult.starDelta}
+                        </span>
+                      )}
+                    {timer.isExpired && isHard && (
+                      <span className="text-red-400 text-xs flex items-center gap-1">
+                        <i className="ri-alarm-warning-line" /> Time expired
+                      </span>
+                    )}
+                    <span className="text-lime-400 text-sm font-mono flex items-center gap-1.5">
+                      <i className="ri-trophy-line" />
+                      {solveResult.streak?.isNewRecord
+                        ? `New record! ${solveResult.streak.currentStreak} days 🔥`
+                        : `${solveResult.streak?.currentStreak ?? 0} day streak`}
+                    </span>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Already solved banner */}
+            {/* Already solved */}
             {pageState === "solved" && !solveResult && (
               <div className="flex items-center gap-2 text-sm font-mono text-lime-400">
                 <i className="ri-checkbox-circle-line" />
@@ -303,14 +455,14 @@ export default function DailyPage() {
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-zinc-600">
-                <i className="ri-time-line mr-1" />
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "short",
-                  day: "numeric",
-                })}
+              {/* Attempts counter */}
+              <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5">
+                <i className="ri-refresh-line" />
+                {attempts === 0
+                  ? "No attempts yet"
+                  : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
               </span>
+
               <button
                 onClick={handleRun}
                 disabled={pageState === "running" || pageState === "solved"}
@@ -339,7 +491,6 @@ export default function DailyPage() {
   );
 }
 
-// Minimal markdown renderer — replace with react-markdown in a real app
 function markdownToHtml(md: string): string {
   return md
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")

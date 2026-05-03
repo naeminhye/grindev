@@ -1,7 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// npx prisma generate
+// npx prisma db push
 
 generator client {
   provider = "prisma-client-js"
@@ -12,12 +10,14 @@ datasource db {
 }
 
 model User {
-  id            String    @id // Clerk user ID
-  currentStreak Int       @default(0)
-  longestStreak Int       @default(0)
-  stars         Int       @default(10) // start with 10 free stars
+  id            String        @id
+  currentStreak Int           @default(0)
+  longestStreak Int           @default(0)
+  stars         Int           @default(10)
   lastSolvedAt  DateTime?
-  createdAt     DateTime  @default(now())
+  challengeMode ChallengeMode @default(NORMAL)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
 
   solves        Solve[]
   hintPurchases HintPurchase[]
@@ -27,12 +27,12 @@ model Problem {
   id          String     @id @default(cuid())
   title       String
   slug        String     @unique
-  description String // markdown
+  description String
   difficulty  Difficulty
   topic       Topic
-  starterCode String // default code shown in editor
-  testCases   Json // [{ input, expected }] — never sent to client
-  hints       Json // [{ tier, cost, content }]
+  starterCode String
+  testCases   Json
+  hints       Json
   createdAt   DateTime   @default(now())
 
   dailySlots DailyProblem[]
@@ -41,32 +41,40 @@ model Problem {
 
 model DailyProblem {
   id        String  @id @default(cuid())
-  date      String  @unique // "YYYY-MM-DD"
-  problem   Problem @relation(fields: [problemId], references: [id])
+  date      String  @unique
   problemId String
+  problem   Problem @relation(fields: [problemId], references: [id])
 }
 
 model Solve {
-  id         String   @id @default(cuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  problem    Problem  @relation(fields: [problemId], references: [id])
-  problemId  String
-  code       String
-  passed     Boolean
-  usedHints  Boolean  @default(false)
-  cleanSolve Boolean  @default(false) // passed + no hints
-  solvedAt   DateTime @default(now())
+  id            String        @id @default(cuid())
+  userId        String
+  problemId     String
+  code          String
+  language      String        @default("javascript")
+  passed        Boolean
+  usedHints     Boolean       @default(false)
+  cleanSolve    Boolean       @default(false)
+  challengeMode ChallengeMode @default(NORMAL)
+  timeExpired   Boolean       @default(false)
+  attempts      Int           @default(1)
+  solvedAt      DateTime      @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([userId, problemId])
 }
 
 model HintPurchase {
   id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
   problemId String
-  tier      Int // 1–4
+  tier      Int
   cost      Int
   boughtAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 enum Difficulty {
@@ -88,11 +96,7 @@ enum Topic {
   HASH_MAP
 }
 
-// generator client {
-//   provider = "prisma-client"
-//   output   = "../src/generated/prisma"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-// }
+enum ChallengeMode {
+  NORMAL
+  HARD
+}

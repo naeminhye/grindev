@@ -27,12 +27,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <i className="ri-history-line mr-1.5" />
               History
             </Link>
+            <Link href="/profile">
+              <i className="ri-bar-chart-box-line mr-1.5" />
+              Profile
+            </Link>
             <Link
-              href="/profile"
+              href="/settings"
               className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-zinc-800 rounded-md transition-colors font-mono"
             >
-              <i className="ri-bar-chart-box-line mr-1.5" />
-              Stats
+              <i className="ri-settings-3-line mr-1.5" />
+              Settings
             </Link>
           </div>
         </div>

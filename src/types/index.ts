@@ -1,69 +1,76 @@
-import { Difficulty, Topic } from '@prisma/client'
-
-// ─── Problem ─────────────────────────────────────────────────────────────────
+import { Difficulty, Topic } from "@prisma/client";
 
 export type HintData = {
-  tier: 1 | 2 | 3 | 4
-  cost: number
-  content: string
-}
+  tier: 1 | 2 | 3 | 4;
+  cost: number;
+  content: string;
+};
 
 export type TestCase = {
-  input: string
-  expected: string
-}
+  input: string;
+  expected: string;
+};
 
-/** Safe problem shape sent to the client — no test cases, no hint answers */
 export type PublicProblem = {
-  id: string
-  title: string
-  slug: string
-  description: string
-  difficulty: Difficulty
-  topic: Topic
-  starterCode: string
-}
-
-// ─── Solve ───────────────────────────────────────────────────────────────────
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  difficulty: Difficulty;
+  topic: Topic;
+  starterCode: string;
+};
 
 export type TestResult = {
-  index: number
-  passed: boolean
-  stderr: string
-}
+  index: number;
+  passed: boolean;
+  stderr: string;
+  actual?: string;
+  expected?: string;
+};
 
 export type SolveResponse = {
-  passed: boolean
-  results: TestResult[]
+  passed: boolean;
+  results: TestResult[];
+  starDelta?: number;
   streak?: {
-    currentStreak: number
-    longestStreak: number
-    isNewRecord: boolean
-  }
-}
-
-// ─── Hints ───────────────────────────────────────────────────────────────────
+    currentStreak: number;
+    longestStreak: number;
+    isNewRecord: boolean;
+  };
+};
 
 export type HintResponse = {
-  content: string
-  tier: number
-  starsRemaining: number
-}
-
-// ─── User ────────────────────────────────────────────────────────────────────
+  content: string;
+  tier: number;
+  starsRemaining: number;
+};
 
 export type UserStats = {
-  currentStreak: number
-  longestStreak: number
-  stars: number
-  lastSolvedAt: string | null
-}
-
-// ─── Daily ───────────────────────────────────────────────────────────────────
+  currentStreak: number;
+  longestStreak: number;
+  stars: number;
+  lastSolvedAt: string | null;
+};
 
 export type DailyResponse = {
-  problem: PublicProblem
-  alreadySolved: boolean
-  hintsUnlocked: number[]   // tiers already purchased today
-  userStats: UserStats
-}
+  problem: PublicProblem;
+  alreadySolved: boolean;
+  hintsUnlocked: number[];
+  unlockedHintContents: Record<number, string>;
+  userStats: UserStats;
+};
+
+export type ProfileStats = {
+  totalSolves: number;
+  cleanSolves: number;
+  hardModeSolves: number;
+  totalAttempts: number;
+  currentStreak: number;
+  longestStreak: number;
+  stars: number;
+  challengeMode: "NORMAL" | "HARD";
+  topicBreakdown: { topic: string; count: number }[];
+  difficultyBreakdown: { difficulty: string; count: number }[];
+  recentActivity: { date: string; solved: boolean }[];
+};
