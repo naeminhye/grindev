@@ -12,6 +12,7 @@ type SolveRecord = {
   usedHints: boolean;
   challengeMode: "NORMAL" | "HARD";
   timeExpired: boolean;
+  attempts: number;
   solvedAt: string;
   code: string;
   problem: {
@@ -32,12 +33,19 @@ export default function HistoryPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     fetch("/api/history")
       .then((r) => r.json())
       .then((data) => {
         setSolves(data.solves ?? []);
         setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return; // ignore cancellation
       });
+
+    return () => controller.abort();
   }, []);
 
   const filtered = solves.filter((s) => {
@@ -63,10 +71,9 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10 space-y-8 w-full">
-      {/* Header */}
+    <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-6 md:space-y-8 w-full">
       <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">
+        <h1 className="font-heading text-xl md:text-2xl font-bold tracking-tight">
           History
         </h1>
         <p className="text-sm text-zinc-500 font-mono mt-1">
@@ -74,8 +81,8 @@ export default function HistoryPage() {
         </p>
       </div>
 
-      {/* Stats row */}
-      <div className="grid grid-cols-4 gap-2">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {[
           {
             label: "Total",
@@ -104,27 +111,32 @@ export default function HistoryPage() {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-zinc-900 border border-border rounded-md p-4 space-y-1"
+            className="bg-zinc-900 border border-border rounded-md p-3 md:p-4 space-y-1"
           >
             <div className="flex items-center gap-1.5">
               <i className={cn(s.icon, s.color, "text-sm")} />
               <span className="text-xs font-mono text-zinc-500">{s.label}</span>
             </div>
-            <div className={cn("font-heading font-bold text-2xl", s.color)}>
+            <div
+              className={cn(
+                "font-heading font-bold text-xl md:text-2xl",
+                s.color,
+              )}
+            >
               {s.value}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-2">
+      {/* Filters — scrollable on mobile */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 md:mx-0 md:px-0">
         {(["ALL", "CLEAN", "HARD", "HINTS"] as Filter[]).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "px-3 py-1.5 rounded text-xs font-mono uppercase tracking-wider transition-colors",
+              "px-3 py-1.5 rounded text-xs font-mono uppercase tracking-wider transition-colors shrink-0",
               filter === f
                 ? "bg-lime-400 text-zinc-950 font-bold"
                 : "bg-zinc-900 border border-border text-zinc-400 hover:text-foreground",
@@ -156,14 +168,14 @@ export default function HistoryPage() {
             )}
           </button>
         ))}
-        <span className="ml-auto text-xs font-mono text-zinc-600">
+        <span className="ml-auto text-xs font-mono text-zinc-600 shrink-0">
           {filtered.length} solve{filtered.length !== 1 ? "s" : ""}
         </span>
       </div>
 
-      {/* Solve list */}
+      {/* List */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 space-y-3 text-center">
+        <div className="flex flex-col items-center justify-center py-16 space-y-3 text-center">
           <i className="ri-inbox-line text-4xl text-zinc-700" />
           <p className="font-mono text-sm text-zinc-500">No solves found.</p>
           {filter !== "ALL" && (
@@ -179,69 +191,44 @@ export default function HistoryPage() {
         <div className="space-y-2">
           {filtered.map((solve) => {
             const isExpanded = expanded === solve.id;
-
             return (
               <div
                 key={solve.id}
                 className="border border-border rounded-md overflow-hidden bg-zinc-900"
               >
-                {/* Row */}
                 <button
                   onClick={() => setExpanded(isExpanded ? null : solve.id)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800/50 transition-colors text-left"
+                  className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 hover:bg-zinc-800/50 transition-colors text-left"
                 >
-                  {/* Pass/fail indicator */}
                   <div
                     className={cn(
                       "w-1.5 h-1.5 rounded-full shrink-0",
                       solve.passed ? "bg-lime-400" : "bg-red-400",
                     )}
                   />
-
-                  {/* Problem title */}
                   <span className="font-mono text-sm font-medium flex-1 truncate">
                     {solve.problem.title}
                   </span>
 
-                  {/* Badges */}
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="hidden sm:flex items-center gap-2 shrink-0">
                     <DifficultyBadge difficulty={solve.problem.difficulty} />
-
                     {solve.cleanSolve && (
                       <span className="text-xs font-mono px-2 py-0.5 rounded bg-lime-500/10 text-lime-400 border border-lime-500/20">
                         <i className="ri-shield-star-line mr-1" />
                         clean
                       </span>
                     )}
-
                     {solve.challengeMode === "HARD" && (
                       <span className="text-xs font-mono px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">
                         <i className="ri-sword-line mr-1" />
                         hard
                       </span>
                     )}
-
-                    {solve.timeExpired && (
-                      <span className="text-xs font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
-                        <i className="ri-alarm-warning-line mr-1" />
-                        expired
-                      </span>
-                    )}
-
-                    {solve.usedHints && !solve.cleanSolve && (
-                      <span className="text-xs font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-                        <i className="ri-lightbulb-line mr-1" />
-                        hints
-                      </span>
-                    )}
                   </div>
 
-                  {/* Date */}
-                  <span className="text-xs font-mono text-zinc-600 shrink-0 w-24 text-right">
+                  <span className="text-xs font-mono text-zinc-600 shrink-0">
                     {formatDate(solve.solvedAt)}
                   </span>
-
-                  {/* Expand chevron */}
                   <i
                     className={cn(
                       "ri-arrow-down-s-line text-zinc-600 transition-transform shrink-0",
@@ -250,18 +237,35 @@ export default function HistoryPage() {
                   />
                 </button>
 
-                {/* Expanded code view */}
                 {isExpanded && (
                   <div className="border-t border-border">
-                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950">
+                    {/* Mobile badges */}
+                    <div className="flex sm:hidden items-center gap-2 px-3 py-2 bg-zinc-950 flex-wrap">
+                      <DifficultyBadge difficulty={solve.problem.difficulty} />
+                      {solve.cleanSolve && (
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-lime-500/10 text-lime-400 border border-lime-500/20">
+                          clean
+                        </span>
+                      )}
+                      {solve.challengeMode === "HARD" && (
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                          hard
+                        </span>
+                      )}
+                      <span className="text-xs font-mono text-zinc-600 ml-auto">
+                        {solve.attempts} attempt
+                        {solve.attempts !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-zinc-950">
                       <span className="text-xs font-mono text-zinc-500">
                         {solve.problem.topic.replace(/_/g, " ")} · JavaScript
                       </span>
-                      <span className="text-xs font-mono text-zinc-600">
+                      <span className="hidden sm:block text-xs font-mono text-zinc-600">
                         {new Date(solve.solvedAt).toLocaleString()}
                       </span>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-zinc-300 overflow-x-auto leading-relaxed bg-zinc-950 max-h-80">
+                    <pre className="p-3 md:p-4 text-xs font-mono text-zinc-300 overflow-x-auto leading-relaxed bg-zinc-950 max-h-64">
                       <code>{solve.code}</code>
                     </pre>
                   </div>
@@ -277,11 +281,9 @@ export default function HistoryPage() {
 
 function formatDate(iso: string): string {
   const date = new Date(iso);
-  const now = new Date();
   const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+    (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
-
   if (diffDays === 0) return "Today";
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays}d ago`;

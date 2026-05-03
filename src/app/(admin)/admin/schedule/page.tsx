@@ -19,27 +19,34 @@ export default function SchedulePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     Promise.all([
       fetch("/api/admin/problems").then((r) => r.json()),
       fetch("/api/admin/schedule").then((r) => r.json()),
-    ]).then(([p, s]) => {
-      setProblems(p.problems ?? []);
-      const days = s.scheduled ?? [];
-      setScheduled(days);
+    ])
+      .then(([p, s]) => {
+        setProblems(p.problems ?? []);
+        const days = s.scheduled ?? [];
+        setScheduled(days);
 
-      // Auto-select closest unscheduled future date
-      const scheduledDates = new Set(days.map((d: ScheduledDay) => d.date));
-      let autoDate = format(new Date(), "yyyy-MM-dd");
-      for (let i = 0; i < 90; i++) {
-        const d = format(addDays(new Date(), i), "yyyy-MM-dd");
-        if (!scheduledDates.has(d)) {
-          autoDate = d;
-          break;
+        // Auto-select closest unscheduled future date
+        const scheduledDates = new Set(days.map((d: ScheduledDay) => d.date));
+        let autoDate = format(new Date(), "yyyy-MM-dd");
+        for (let i = 0; i < 90; i++) {
+          const d = format(addDays(new Date(), i), "yyyy-MM-dd");
+          if (!scheduledDates.has(d)) {
+            autoDate = d;
+            break;
+          }
         }
-      }
-      setSelectedDate(autoDate);
-      setLoading(false);
-    });
+        setSelectedDate(autoDate);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+      });
+
+    return () => controller.abort();
   }, []);
 
   const scheduledDates = new Set(scheduled.map((s) => s.date));

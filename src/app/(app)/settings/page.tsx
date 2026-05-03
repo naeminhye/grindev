@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import type { ChallengeMode } from "@/lib/challenge";
 
-type Settings = {
-  challengeMode: ChallengeMode;
-};
+type Settings = { challengeMode: ChallengeMode };
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -13,9 +12,16 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     fetch("/api/settings")
       .then((r) => r.json())
-      .then(setSettings);
+      .then(setSettings)
+      .catch((err) => {
+        if (err.name === "AbortError") return; // ignore cancellation
+      });
+
+    return () => controller.abort();
   }, []);
 
   async function handleSave(mode: ChallengeMode) {
@@ -41,9 +47,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-6 py-12 space-y-10">
+    <div className="max-w-xl mx-auto px-4 md:px-6 py-8 md:py-12 space-y-8 md:space-y-10">
       <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">
+        <h1 className="font-heading text-xl md:text-2xl font-bold tracking-tight">
           Settings
         </h1>
         <p className="text-sm text-zinc-500 font-mono mt-1">
@@ -51,7 +57,6 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* Challenge Mode */}
       <div className="space-y-4">
         <div>
           <h2 className="font-heading font-bold text-base">Challenge Mode</h2>
@@ -60,15 +65,17 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        {/* Mode cards — stack on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Normal */}
           <button
             onClick={() => handleSave("NORMAL")}
-            className={`p-5 rounded-md border text-left transition-all space-y-3 ${
+            className={cn(
+              "p-4 md:p-5 rounded-md border text-left transition-all space-y-3",
               settings.challengeMode === "NORMAL"
                 ? "border-lime-500/50 bg-lime-500/5"
-                : "border-border bg-zinc-900 hover:border-zinc-600"
-            }`}
+                : "border-border bg-zinc-900 hover:border-zinc-600",
+            )}
           >
             <div className="flex items-center justify-between">
               <span className="font-heading font-bold text-sm">Normal</span>
@@ -97,11 +104,12 @@ export default function SettingsPage() {
           {/* Hard */}
           <button
             onClick={() => handleSave("HARD")}
-            className={`p-5 rounded-md border text-left transition-all space-y-3 ${
+            className={cn(
+              "p-4 md:p-5 rounded-md border text-left transition-all space-y-3",
               settings.challengeMode === "HARD"
                 ? "border-lime-500/50 bg-lime-500/5"
-                : "border-border bg-zinc-900 hover:border-zinc-600"
-            }`}
+                : "border-border bg-zinc-900 hover:border-zinc-600",
+            )}
           >
             <div className="flex items-center justify-between">
               <span className="font-heading font-bold text-sm">Hard</span>
@@ -132,19 +140,24 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        {/* Time limits reference */}
-        <div className="rounded-md border border-border bg-zinc-900/50 p-4 space-y-2">
+        {/* Time limits */}
+        <div className="rounded-md border border-border bg-zinc-900/50 p-4 space-y-3">
           <p className="font-mono text-xs text-zinc-500 uppercase tracking-widest">
             Hard mode time limits
           </p>
-          <div className="grid grid-cols-3 gap-3 mt-2">
+          <div className="grid grid-cols-3 gap-3">
             {[
               { label: "Easy", time: "15:00", color: "text-green-400" },
               { label: "Medium", time: "30:00", color: "text-yellow-400" },
               { label: "Hard", time: "45:00", color: "text-red-400" },
             ].map((d) => (
               <div key={d.label} className="text-center">
-                <div className={`font-heading font-bold text-lg ${d.color}`}>
+                <div
+                  className={cn(
+                    "font-heading font-bold text-lg md:text-xl",
+                    d.color,
+                  )}
+                >
                   {d.time}
                 </div>
                 <div className="font-mono text-xs text-zinc-500">{d.label}</div>
