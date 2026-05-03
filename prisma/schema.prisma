@@ -17,7 +17,7 @@ model User {
   longestStreak  Int           @default(0)
   stars          Int           @default(10)
   lastSolvedAt   DateTime?
-  lastMakeupDate String? // "YYYY-MM-DD" — tracks if makeup reward already given today
+  lastMakeupDate String?
   challengeMode  ChallengeMode @default(NORMAL)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @default(now()) @updatedAt
@@ -33,10 +33,13 @@ model Problem {
   description String
   difficulty  Difficulty
   topic       Topic
-  starterCode Json // Record<Language, string> — per-language starter code
-  testCases   Json // Array<{ input, expected }>
-  hints       Json // Array<{ tier, cost, content }>
+  starterCode Json
+  testCases   Json
+  hints       Json
+  deletedAt   DateTime? // soft delete — history still works
   createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+  functionName  String   @default("solution")
 
   dailySlots DailyProblem[]
   solves     Solve[]
@@ -62,7 +65,7 @@ model Solve {
   timeExpired   Boolean       @default(false)
   attempts      Int           @default(1)
   isMakeup      Boolean       @default(false)
-  makeupDate    String? // "YYYY-MM-DD" of the original missed day
+  makeupDate    String?
   solvedAt      DateTime      @default(now())
 
   user    User    @relation(fields: [userId], references: [id])

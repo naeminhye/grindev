@@ -29,6 +29,7 @@ export async function POST(req: Request) {
   const { problemId, code, language, challengeMode, timeExpired } = parsed.data;
 
   const problem = await prisma.problem.findUnique({ where: { id: problemId } });
+
   if (!problem)
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
 
@@ -44,7 +45,12 @@ export async function POST(req: Request) {
 
   for (let i = 0; i < testCases.length; i++) {
     const tc = testCases[i];
-    const runner = wrapWithRunner(code, language as Language, tc.input);
+    const runner = wrapWithRunner(
+      code,
+      language as Language,
+      tc.input,
+      problem.functionName,
+    );
 
     let result;
     try {
@@ -137,10 +143,11 @@ export async function POST(req: Request) {
   } satisfies SolveResponse);
 }
 
-export function wrapWithRunner(
+function wrapWithRunner(
   code: string,
   language: Language,
   input: string,
+  functionName: string,
 ): string {
   if (language === "JAVASCRIPT" || language === "TYPESCRIPT") {
     const escapedInput = input.replace(/\\/g, "\\\\").replace(/`/g, "\\`");
@@ -150,12 +157,12 @@ ${code}
 const __input = \`${escapedInput}\`.trim().split('\\n');
 const __args = __input.map(l => { try { return JSON.parse(l) } catch { return l } });
 
-let __result;
-if (typeof isValid !== 'undefined') __result = isValid(...__args);
-else if (typeof twoSum !== 'undefined') __result = twoSum(...__args);
-else if (typeof maxSubArray !== 'undefined') __result = maxSubArray(...__args);
-
-console.log(JSON.stringify(__result));
+if (typeof ${functionName} !== 'undefined') {
+  const __result = ${functionName}(...__args);
+  console.log(JSON.stringify(__result));
+} else {
+  console.log('ERROR: function ${functionName} not found');
+}
 `;
   }
   return code;
