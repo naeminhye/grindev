@@ -33,6 +33,12 @@ const TOPICS = [
   "MONOTONIC_QUEUE",
 ] as const;
 
+const problemExampleSchema = z.object({
+  input: z.string().min(1, "Input is required"),
+  output: z.string().min(1, "Output is required"),
+  explanation: z.string().optional(),
+});
+
 const schema = z.object({
   title: z.string().min(1),
   slug: z
@@ -41,6 +47,8 @@ const schema = z.object({
     .regex(/^[a-z0-9-]+$/),
   functionName: z.string().min(1).optional(),
   description: z.string().min(1),
+  examples: z.array(problemExampleSchema).min(1).max(5),
+  constraints: z.string().min(1),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
   topics: z.array(z.enum(TOPICS)).min(1),
   starterCode: z.record(z.string(), z.string()),

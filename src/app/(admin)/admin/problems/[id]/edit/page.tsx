@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ProblemForm from "@/components/admin/ProblemForm";
 import type { ProblemFormData } from "@/components/admin/ProblemForm";
+import { parseProblemExamples } from "@/types";
 
 export default async function EditProblemPage({
   params,
@@ -19,6 +20,8 @@ export default async function EditProblemPage({
     slug: problem.slug,
     functionName: problem.functionName,
     description: problem.description,
+    examples: parseProblemExamples(problem.examples),
+    constraints: problem.constraints ?? "",
     difficulty: problem.difficulty as any,
     topics: problem.topics as any,
     starterCode: problem.starterCode as any,

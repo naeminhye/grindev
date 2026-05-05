@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getTodayUTC } from "@/lib/streak";
-import type { MakeupProblemResponse, HintData } from "@/types";
+import {
+  type MakeupProblemResponse,
+  type HintData,
+  parseProblemExamples,
+} from "@/types";
 
 export async function GET(
   _req: Request,
@@ -70,6 +74,8 @@ export async function GET(
       title: problem.title,
       slug: problem.slug,
       description: problem.description,
+      examples: parseProblemExamples(problem.examples),
+      constraints: problem.constraints ?? "",
       difficulty: problem.difficulty,
       topics: problem.topics,
       starterCode: problem.starterCode as any,

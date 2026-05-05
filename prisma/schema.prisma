@@ -27,10 +27,19 @@ model User {
 }
 
 model Problem {
-  id           String     @id @default(cuid())
-  title        String
-  slug         String     @unique
-  description  String
+  id    String @id @default(cuid())
+  title String
+  slug  String @unique
+
+  // Main problem statement, Markdown
+  description String
+
+  // 1 - 5 examples, each example has input/output/explanation
+  examples     Json       @default("[]")
+
+  // Constraints section, Markdown
+  constraints  String     @default("")
+
   difficulty   Difficulty
   topics       Topic[]
   functionName String     @default("solution")

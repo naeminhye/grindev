@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
 import { getMakeupDates, getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getAuthUserId } from "@/lib/auth-helper";
-import type { DailyResponse, HintData, StarterCode } from "@/types";
+import {
+  parseProblemExamples,
+  type DailyResponse,
+  type HintData,
+  type StarterCode,
+} from "@/types";
 
 export async function GET() {
   const { userId, error } = await getAuthUserId();
@@ -90,6 +95,8 @@ export async function GET() {
       title: problem.title,
       slug: problem.slug,
       description: problem.description,
+      examples: parseProblemExamples(problem.examples),
+      constraints: problem.constraints ?? "",
       difficulty: problem.difficulty,
       topics: problem.topics,
       starterCode: problem.starterCode as StarterCode,

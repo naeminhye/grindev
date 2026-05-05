@@ -1,4 +1,4 @@
-import type { Difficulty, Topic } from "@prisma/client";
+import type { Difficulty, Prisma, Topic } from "@prisma/client";
 import type { Language } from "@/lib/languages";
 import type { MakeupDay } from "@/lib/makeup";
 
@@ -13,13 +13,34 @@ export type TestCase = {
   expected: string;
 };
 
+// export type ProblemTestCase = {
+//   input: unknown;
+//   expected: unknown;
+//   hidden?: boolean;
+// };
+
 export type StarterCode = Record<Language, string>;
+// export type ProblemStarterCode = Partial<
+//   Record<"JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "CPP" | "JAVA", string>
+// >;
+
+export type ProblemExample = {
+  input: string;
+  output: string;
+  explanation?: string;
+};
 
 export type PublicProblem = {
   id: string;
   title: string;
   slug: string;
   description: string;
+  examples: {
+    input: string;
+    output: string;
+    explanation?: string;
+  }[];
+  constraints: string;
   difficulty: Difficulty;
   topics: Topic[];
   starterCode: StarterCode;
@@ -94,3 +115,22 @@ export type ProfileStats = {
   difficultyBreakdown: { difficulty: string; count: number }[];
   recentActivity: { date: string; solved: boolean; isMakeup: boolean }[];
 };
+
+// TODO: move to utils
+export function parseProblemExamples(
+  value: Prisma.JsonValue,
+): ProblemExample[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((item): item is Prisma.JsonObject => {
+      return typeof item === "object" && item !== null && !Array.isArray(item);
+    })
+    .map((item) => ({
+      input: typeof item.input === "string" ? item.input : "",
+      output: typeof item.output === "string" ? item.output : "",
+      explanation:
+        typeof item.explanation === "string" ? item.explanation : undefined,
+    }))
+    .filter((example) => example.input && example.output);
+}
