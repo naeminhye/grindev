@@ -40,7 +40,7 @@ export default function TodayPage() {
   const hasStartedTyping = useRef(false);
 
   const timer = useTimer({
-    initialSeconds: daily ? getTimeLimit(daily.problem.difficulty) : 15 * 60,
+    initialSeconds: daily ? getTimeLimit(daily?.problem?.difficulty) : 15 * 60,
     onExpire: () => {},
   });
 
@@ -192,6 +192,7 @@ export default function TodayPage() {
           <i className="ri-error-warning-line text-4xl text-red-400" />
           <p className="font-mono text-sm text-zinc-400">
             No problem scheduled for today.
+            {/* TODO: On days when no scheduled problems occur, write an apology on the screen today and give the user 15 stars for that day. */}
           </p>
         </div>
       </div>
