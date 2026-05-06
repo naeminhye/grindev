@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/components/auth/SignOutButton";
-import { HelpButton } from "@/components/ui/HelpButton";
-import { appMenus } from "@/lib/menus";
+import { useI18n } from "@/lib/i18n";
 
 interface AppNavProps {
   userName: string;
@@ -14,21 +12,19 @@ interface AppNavProps {
 
 export function AppNav({ userName, userImage }: AppNavProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
 
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (
-        e.key === "?" &&
-        !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement).tagName)
-      ) {
-        // Toggle help — needs a shared state or ref
-        // Simplest: dispatch a custom event
-        window.dispatchEvent(new CustomEvent("grindev:help"));
-      }
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+  const menus = [
+    { href: "/today", icon: "ri-code-s-slash-line", label: t("nav.today") },
+    { href: "/history", icon: "ri-history-line", label: t("nav.history") },
+    {
+      href: "/profile",
+      icon: "ri-bar-chart-box-line",
+      label: t("nav.profile"),
+    },
+    { href: "/shop", icon: "ri-settings-3-line", label: t("nav.shop") },
+    { href: "/settings", icon: "ri-settings-3-line", label: t("nav.settings") },
+  ];
 
   return (
     <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
@@ -39,17 +35,15 @@ export function AppNav({ userName, userImage }: AppNavProps) {
         >
           Grin<span className="text-lime-400">Dev</span>
         </Link>
-
-        {/* Desktop nav links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1">
-          {appMenus.map((menu) => (
+          {menus.map((menu) => (
             <Link
               key={menu.href}
               href={menu.href}
               className={
                 pathname === menu.href
-                  ? "px-3 py-1.5 text-sm text-foreground bg-zinc-800 rounded-md font-mono"
-                  : "px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-zinc-800 rounded-md transition-colors font-mono"
+                  ? "px-3 py-1.5 text-sm text-foreground bg-[hsl(var(--surface))] rounded-md font-mono border border-border"
+                  : "px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface))] rounded-md transition-colors font-mono"
               }
             >
               <i className={`${menu.icon} mr-1.5`} />
@@ -60,12 +54,11 @@ export function AppNav({ userName, userImage }: AppNavProps) {
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
-        <HelpButton />
         {userImage && (
           <img
             src={userImage}
             alt="avatar"
-            className="w-7 h-7 rounded-full border border-zinc-700"
+            className="w-7 h-7 rounded-full border border-border"
           />
         )}
         <span className="hidden sm:block text-xs font-mono text-zinc-400 max-w-[120px] truncate">

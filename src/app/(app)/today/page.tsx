@@ -36,11 +36,14 @@ import type {
 import type { ChallengeMode } from "@/lib/challenge";
 import type { MakeupDay } from "@/lib/makeup";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
 
 export default function TodayPage() {
+  const { t } = useI18n();
+
   const router = useRouter();
   const [daily, setDaily] = useState<DailyResponse | null>(null);
   const [code, setCode] = useState("");
@@ -222,7 +225,7 @@ export default function TodayPage() {
       <div className="flex-1 flex items-center justify-center">
         <div className="flex items-center gap-3 text-zinc-500 font-mono text-sm">
           <i className="ri-loader-4-line animate-spin text-lime-400" />
-          Loading today's problem...
+          {t("today.loading")}
         </div>
       </div>
     );
@@ -295,10 +298,10 @@ export default function TodayPage() {
             <>
               <div>
                 <h2 className="font-heading text-xl font-bold tracking-tight">
-                  Make-Up Tasks
+                  {t("makeup.title")}
                 </h2>
                 <p className="text-sm font-mono text-zinc-400 mt-1">
-                  Catch up on missed problems.
+                  {t("makeup.desc")}
                 </p>
               </div>
 
@@ -306,7 +309,7 @@ export default function TodayPage() {
                 className={cn(
                   "flex items-start gap-3 p-4 rounded-md border text-xs font-mono",
                   daily.makeupRewardGivenToday
-                    ? "bg-zinc-900 border-zinc-700 text-zinc-500"
+                    ? "bg-[hsl(var(--surface))] border-zinc-700 text-zinc-500"
                     : "bg-yellow-500/5 border-yellow-500/20 text-yellow-400",
                 )}
               >
@@ -320,8 +323,8 @@ export default function TodayPage() {
                 />
                 <div>
                   {daily.makeupRewardGivenToday
-                    ? "You've already received your makeup star reward today. Additional make-ups cost stars with no reward."
-                    : "First make-up solve today earns stars (minus the attempt cost). After that, additional make-ups only cost stars."}
+                    ? t("makeup.rewardGiven")
+                    : t("makeup.firstReward")}
                 </div>
               </div>
 
@@ -383,7 +386,7 @@ export default function TodayPage() {
               "flex items-center gap-1 px-2 py-1 rounded border text-xs font-mono",
               isHard
                 ? "bg-orange-500/10 border-orange-500/30 text-orange-400"
-                : "bg-zinc-800 border-zinc-700 text-zinc-400",
+                : "bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-400",
             )}
           >
             <i className={isHard ? "ri-sword-line" : "ri-shield-line"} />
@@ -478,9 +481,9 @@ export default function TodayPage() {
             {examples.map((example, index) => (
               <div
                 key={index}
-                className="rounded-md border border-border bg-zinc-900/50 overflow-hidden"
+                className="rounded-md border border-border bg-[hsl(var(--surface))]/50 overflow-hidden"
               >
-                <div className="px-4 py-2 border-b border-border bg-zinc-900">
+                <div className="px-4 py-2 border-b border-border bg-[hsl(var(--surface))]">
                   <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
                     Example {index + 1}
                   </span>
@@ -563,7 +566,7 @@ export default function TodayPage() {
                 "rounded-md border transition-colors",
                 isUnlocked
                   ? "border-lime-500/20 bg-lime-500/5"
-                  : "border-border bg-zinc-900/50",
+                  : "border-border bg-[hsl(var(--surface))]/50",
               )}
             >
               <div className="flex items-center justify-between p-3">
@@ -591,8 +594,8 @@ export default function TodayPage() {
                     className={cn(
                       "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors",
                       stars >= tier.cost
-                        ? "bg-zinc-800 hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
-                        : "bg-zinc-900 text-zinc-600 border border-zinc-800 cursor-not-allowed",
+                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
+                        : "bg-[hsl(var(--surface))] text-zinc-600 border border-zinc-800 cursor-not-allowed",
                     )}
                   >
                     {isLoading ? (
@@ -629,25 +632,25 @@ export default function TodayPage() {
       )}
     >
       {/* Code toolbar */}
-      <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-zinc-900 border-b border-border shrink-0">
+      <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-[hsl(var(--surface))] border-b border-border shrink-0">
         {isHard ? (
           <>
             <i className="ri-forbid-2-line text-red-400 text-sm" />
             <span className="text-xs font-mono text-zinc-500 hidden sm:inline">
-              Hard mode — paste disabled
+              {t("today.hardMode")}
             </span>
           </>
         ) : (
           <>
             <i className="ri-information-line text-zinc-600 text-sm" />
             <span className="text-xs font-mono text-zinc-600 hidden sm:inline">
-              Normal mode — fewer stars
+              {t("today.normalMode")}
             </span>
           </>
         )}
         <div className="ml-auto">
           {/* TODO: add more language */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-zinc-800 text-xs font-mono text-zinc-400">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-[hsl(var(--surface-raised))] text-xs font-mono text-zinc-400">
             <i className="ri-code-s-slash-line text-lime-400" />
             JavaScript
             <span className="text-zinc-600 text-[10px]">only</span>
@@ -778,8 +781,10 @@ export default function TodayPage() {
             <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5 shrink-0">
               <i className="ri-refresh-line" />
               {attempts === 0
-                ? "No attempts"
-                : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
+                ? t("today.noAttempts")
+                : attempts !== 1
+                  ? t("today.attempts_plural", { count: attempts })
+                  : t("today.attempts", { count: attempts })}
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -803,7 +808,7 @@ export default function TodayPage() {
                 className={cn(
                   "flex items-center gap-2 px-4 md:px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
                   isSolved
-                    ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                    ? "bg-[hsl(var(--surface-raised))] text-zinc-500 cursor-not-allowed"
                     : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
                 )}
               >
@@ -887,14 +892,16 @@ function MakeupCard({
   completed?: boolean;
   onStart?: () => void;
 }) {
+  const { t } = useI18n();
+
   const canAfford = userStars >= day.starCost;
   return (
     <div
       className={cn(
         "flex items-center gap-3 p-3 md:p-4 rounded-md border transition-colors",
         completed
-          ? "border-border bg-zinc-900/30 opacity-60"
-          : "border-border bg-zinc-900 hover:border-zinc-600",
+          ? "border-border bg-[hsl(var(--surface))]/30 opacity-60"
+          : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
       )}
     >
       <div className="flex-1 min-w-0">
@@ -915,7 +922,7 @@ function MakeupCard({
       </div>
       {completed ? (
         <span className="flex items-center gap-1.5 text-xs font-mono text-lime-400 shrink-0">
-          <i className="ri-check-line" /> Done
+          <i className="ri-check-line" /> {t("makeup.done")}
         </span>
       ) : (
         <div className="flex items-center gap-2 shrink-0">
@@ -934,10 +941,10 @@ function MakeupCard({
               "px-3 py-1.5 rounded text-xs font-mono font-bold transition-all",
               canAfford
                 ? "bg-lime-400 text-zinc-950 hover:bg-lime-300"
-                : "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700",
+                : "bg-[hsl(var(--surface-raised))] text-zinc-600 cursor-not-allowed border border-zinc-700",
             )}
           >
-            {canAfford ? "Start" : "Need ⭐"}
+            {canAfford ? t("makeup.start") : t("makeup.needStars")}
           </button>
         </div>
       )}
@@ -958,11 +965,11 @@ function ProblemMarkdownSection({
         "prose prose-invert prose-sm max-w-none font-mono",
         "prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-zinc-100",
         "prose-p:text-zinc-300 prose-li:text-zinc-300 prose-strong:text-zinc-100",
-        "prose-code:bg-zinc-800 prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+        "prose-code:bg-[hsl(var(--surface-raised))] prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
         "prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-border prose-pre:text-zinc-200",
         "prose-a:text-lime-400",
         "prose-table:border prose-table:border-border",
-        "prose-th:border prose-th:border-border prose-th:bg-zinc-900 prose-th:px-3 prose-th:py-2",
+        "prose-th:border prose-th:border-border prose-th:bg-[hsl(var(--surface))] prose-th:px-3 prose-th:py-2",
         "prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2",
         compact && "prose-p:my-1 prose-pre:my-2 prose-ul:my-2 prose-ol:my-2",
       )}

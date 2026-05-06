@@ -220,7 +220,7 @@ export default function ShopPage() {
         {shopItems.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-4 p-5 bg-zinc-900 border border-border rounded-md hover:border-zinc-600 transition-colors"
+            className="flex items-center gap-4 p-5 bg-[hsl(var(--surface))] border border-border rounded-md hover:border-zinc-600 transition-colors"
           >
             <div
               className={cn(
@@ -256,7 +256,7 @@ export default function ShopPage() {
                   "px-4 py-1.5 rounded text-xs font-mono font-bold transition-all",
                   item.canBuy
                     ? "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95"
-                    : "bg-zinc-800 text-zinc-600 border border-zinc-700 cursor-not-allowed",
+                    : "bg-[hsl(var(--surface-raised))] text-zinc-600 border border-zinc-700 cursor-not-allowed",
                 )}
               >
                 {!item.canBuy ? "Need more ⭐" : "Buy"}
@@ -271,7 +271,7 @@ export default function ShopPage() {
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
           Coming soon
         </h2>
-        <div className="p-5 bg-zinc-900/50 border border-dashed border-zinc-800 rounded-md text-center space-y-2">
+        <div className="p-5 bg-[hsl(var(--surface))]/50 border border-dashed border-zinc-800 rounded-md text-center space-y-2">
           <i className="ri-store-2-line text-2xl text-zinc-700" />
           <p className="font-mono text-xs text-zinc-600">
             More ways to earn and spend stars are coming — including star packs,
@@ -295,7 +295,7 @@ export default function ShopPage() {
               return (
                 <div
                   key={tx.id}
-                  className="flex items-center gap-3 px-4 py-3 bg-zinc-900 border border-border rounded-md"
+                  className="flex items-center gap-3 px-4 py-3 bg-[hsl(var(--surface))] border border-border rounded-md"
                 >
                   <i
                     className={cn(

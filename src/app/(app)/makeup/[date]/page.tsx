@@ -23,11 +23,14 @@ import type {
   ProblemExample,
 } from "@/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
 
 export default function MakeupPage() {
+  const { t } = useI18n();
+
   const { date } = useParams<{ date: string }>();
   const router = useRouter();
 
@@ -194,7 +197,7 @@ export default function MakeupPage() {
             onClick={() => router.push("/today")}
             className="text-xs font-mono text-lime-400 hover:underline"
           >
-            ← Back to today
+            {t("makeup.back")}
           </button>
         </div>
       </div>
@@ -238,7 +241,7 @@ export default function MakeupPage() {
 
         {/* No reward notice */}
         {data.makeupRewardGivenToday && (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-zinc-800 border-zinc-700 text-zinc-500 text-xs font-mono">
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-500 text-xs font-mono">
             <i className="ri-information-line" /> No reward today
           </div>
         )}
@@ -297,14 +300,14 @@ export default function MakeupPage() {
         {examples.length > 0 && (
           <section className="space-y-4">
             <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
-              Examples
+              {t("problem.examples")}
             </h2>
             {examples.map((example, index) => (
               <div
                 key={index}
-                className="rounded-md border border-border bg-zinc-900/50 overflow-hidden"
+                className="rounded-md border border-border bg-[hsl(var(--surface))]/50 overflow-hidden"
               >
-                <div className="px-4 py-2 border-b border-border bg-zinc-900">
+                <div className="px-4 py-2 border-b border-border bg-[hsl(var(--surface))]">
                   <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
                     Example {index + 1}
                   </span>
@@ -312,7 +315,7 @@ export default function MakeupPage() {
                 <div className="p-4 space-y-4">
                   <div className="space-y-2">
                     <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                      Input
+                      {t("problem.input")}
                     </p>
                     <ProblemMarkdownSection compact>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -322,7 +325,7 @@ export default function MakeupPage() {
                   </div>
                   <div className="space-y-2">
                     <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                      Output
+                      {t("problem.output")}
                     </p>
                     <ProblemMarkdownSection compact>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -333,7 +336,7 @@ export default function MakeupPage() {
                   {example.explanation && (
                     <div className="space-y-2">
                       <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                        Explanation
+                        {t("problem.explanation")}
                       </p>
                       <ProblemMarkdownSection compact>
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -351,7 +354,7 @@ export default function MakeupPage() {
         {problem.constraints && (
           <section className="space-y-3">
             <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
-              Constraints
+              {t("problem.constraints")}
             </h2>
             <ProblemMarkdownSection>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -367,9 +370,11 @@ export default function MakeupPage() {
         <div className="flex items-center gap-2 mb-4">
           <i className="ri-lightbulb-line text-yellow-400" />
           <span className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-            Hints
+            {t("problem.hints")}
           </span>
-          <span className="text-xs text-zinc-600 ml-auto">costs stars</span>
+          <span className="text-xs text-zinc-600 ml-auto">
+            {t("problem.costsStars")}
+          </span>
         </div>
 
         {HINT_TIERS.map((tier) => {
@@ -383,7 +388,7 @@ export default function MakeupPage() {
                 "rounded-md border transition-colors",
                 isUnlocked
                   ? "border-lime-500/20 bg-lime-500/5"
-                  : "border-border bg-zinc-900/50",
+                  : "border-border bg-[hsl(var(--surface))]/50",
               )}
             >
               <div className="flex items-center justify-between p-3">
@@ -410,8 +415,8 @@ export default function MakeupPage() {
                     className={cn(
                       "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors",
                       stars >= tier.cost
-                        ? "bg-zinc-800 hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
-                        : "bg-zinc-900 text-zinc-600 border border-zinc-800 cursor-not-allowed",
+                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
+                        : "bg-[hsl(var(--surface))] text-zinc-600 border border-zinc-800 cursor-not-allowed",
                     )}
                   >
                     {isLoading ? (
@@ -447,14 +452,14 @@ export default function MakeupPage() {
       )}
     >
       {/* Toolbar */}
-      <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-zinc-900 border-b border-border shrink-0">
+      <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-[hsl(var(--surface))] border-b border-border shrink-0">
         <i className="ri-information-line text-zinc-600 text-sm" />
         <span className="text-xs font-mono text-zinc-600 hidden sm:inline">
-          Make-up mode — Normal rules apply
+          {t("today.makeupMode")}
         </span>
         <div className="ml-auto">
           {/* TODO: add more language */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-zinc-800 text-xs font-mono text-zinc-400">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-[hsl(var(--surface-raised))] text-xs font-mono text-zinc-400">
             <i className="ri-code-s-slash-line text-lime-400" />
             JavaScript
             <span className="text-zinc-600 text-[10px]">only</span>
@@ -499,7 +504,7 @@ export default function MakeupPage() {
                 onClick={() => router.push("/today")}
                 className="ml-auto text-xs font-mono text-zinc-400 hover:text-foreground transition-colors"
               >
-                ← Back to today
+                {t("makeup.back")}
               </button>
             </div>
           </div>
@@ -584,8 +589,10 @@ export default function MakeupPage() {
             <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5 shrink-0">
               <i className="ri-refresh-line" />
               {attempts === 0
-                ? "No attempts"
-                : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
+                ? t("today.noAttempts")
+                : attempts !== 1
+                  ? t("today.attempts_plural", { count: attempts })
+                  : t("today.attempts", { count: attempts })}
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -609,7 +616,7 @@ export default function MakeupPage() {
                 className={cn(
                   "flex items-center gap-2 px-4 md:px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
                   isSolved
-                    ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                    ? "bg-[hsl(var(--surface-raised))] text-zinc-500 cursor-not-allowed"
                     : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
                 )}
               >
@@ -666,11 +673,11 @@ function ProblemMarkdownSection({
         "prose prose-invert prose-sm max-w-none font-mono",
         "prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-zinc-100",
         "prose-p:text-zinc-300 prose-li:text-zinc-300 prose-strong:text-zinc-100",
-        "prose-code:bg-zinc-800 prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+        "prose-code:bg-[hsl(var(--surface-raised))] prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
         "prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-border prose-pre:text-zinc-200",
         "prose-a:text-lime-400",
         "prose-table:border prose-table:border-border",
-        "prose-th:border prose-th:border-border prose-th:bg-zinc-900 prose-th:px-3 prose-th:py-2",
+        "prose-th:border prose-th:border-border prose-th:bg-[hsl(var(--surface))] prose-th:px-3 prose-th:py-2",
         "prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2",
         compact && "prose-p:my-1 prose-pre:my-2 prose-ul:my-2 prose-ol:my-2",
       )}

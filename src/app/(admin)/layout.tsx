@@ -26,21 +26,21 @@ export default async function AdminLayout({
           <div className="flex items-center gap-1">
             <Link
               href="/admin"
-              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-zinc-800 rounded-md transition-colors font-mono"
+              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface-raised))] rounded-md transition-colors font-mono"
             >
               <i className="ri-dashboard-line mr-1.5" />
               Dashboard
             </Link>
             <Link
               href="/admin/problems/new"
-              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-zinc-800 rounded-md transition-colors font-mono"
+              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface-raised))] rounded-md transition-colors font-mono"
             >
               <i className="ri-add-line mr-1.5" />
               New Problem
             </Link>
             <Link
               href="/admin/schedule"
-              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-zinc-800 rounded-md transition-colors font-mono"
+              className="px-3 py-1.5 text-sm text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface-raised))] rounded-md transition-colors font-mono"
             >
               <i className="ri-calendar-line mr-1.5" />
               Schedule

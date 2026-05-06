@@ -175,7 +175,7 @@ export function HelpButton() {
         onClick={() => setOpen(true)}
         className={cn(
           "flex items-center justify-center w-8 h-8 rounded-full border transition-colors",
-          "border-zinc-700 bg-zinc-800 text-zinc-500 cursor-pointer",
+          "border-zinc-700 bg-[hsl(var(--surface-raised))] text-zinc-500 cursor-pointer",
           "hover:border-lime-500/50 hover:text-lime-400 hover:bg-zinc-700",
         )}
         title="Help & Instructions"
@@ -193,7 +193,7 @@ export function HelpButton() {
           />
 
           {/* Dialog */}
-          <div className="relative bg-zinc-900 border border-border rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+          <div className="relative bg-[hsl(var(--surface))] border border-border rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
             {/* Top accent */}
             <div className="h-0.5 bg-lime-400 w-full shrink-0" />
 
@@ -214,7 +214,7 @@ export function HelpButton() {
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+                className="p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-[hsl(var(--surface-raised))] rounded transition-colors"
               >
                 <i className="ri-close-line text-base" />
               </button>
@@ -231,8 +231,8 @@ export function HelpButton() {
                     className={cn(
                       "w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-colors text-xs font-mono",
                       activeSection === i
-                        ? "bg-zinc-800 text-foreground"
-                        : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50",
+                        ? "bg-[hsl(var(--surface-raised))] text-foreground"
+                        : "text-zinc-500 hover:text-zinc-300 hover:bg-[hsl(var(--surface-raised))]/50",
                     )}
                   >
                     <i
@@ -266,7 +266,7 @@ export function HelpButton() {
                         {section.items.map((item, i) => (
                           <div
                             key={i}
-                            className="p-4 bg-zinc-800/60 border border-border rounded-md space-y-1.5"
+                            className="p-4 bg-[hsl(var(--surface-raised))]/60 border border-border rounded-md space-y-1.5"
                           >
                             <div className="flex items-center gap-2">
                               <div
@@ -322,7 +322,7 @@ export function HelpButton() {
             <div className="px-6 py-3 border-t border-border shrink-0 flex items-center justify-between">
               <p className="text-xs font-mono text-zinc-600">
                 Tip: keyboard shortcut{" "}
-                <kbd className="px-1.5 py-0.5 bg-zinc-800 border border-zinc-700 rounded text-zinc-400">
+                <kbd className="px-1.5 py-0.5 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded text-zinc-400">
                   ?
                 </kbd>{" "}
                 opens this

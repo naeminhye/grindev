@@ -19,7 +19,7 @@ export function StreakBadge({ streak, className }: StreakBadgeProps) {
           ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
           : isHot
           ? 'bg-lime-500/10 border-lime-500/30 text-lime-400'
-          : 'bg-zinc-800 border-zinc-700 text-zinc-400',
+          : 'bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-400',
         className
       )}
     >

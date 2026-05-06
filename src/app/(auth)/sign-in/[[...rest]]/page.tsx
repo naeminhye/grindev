@@ -19,7 +19,7 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-6 md:p-8 space-y-3">
+        <div className="bg-[hsl(var(--surface))] border border-zinc-800 rounded-md p-6 md:p-8 space-y-3">
           <p className="font-mono text-sm text-zinc-400 mb-5">
             Sign in to continue
           </p>
@@ -29,7 +29,7 @@ export default function SignInPage() {
             className={cn(
               "w-full flex items-center justify-center gap-3",
               "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
+              "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 active:scale-95 transition-all",
               "font-mono text-sm text-zinc-200",
             )}
           >
@@ -64,7 +64,7 @@ export default function SignInPage() {
             className={cn(
               "w-full flex items-center justify-center gap-3",
               "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
+              "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 active:scale-95 transition-all",
               "font-mono text-sm text-zinc-200",
             )}
           >

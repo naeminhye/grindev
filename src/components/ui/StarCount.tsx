@@ -11,7 +11,7 @@ export function StarCount({ stars, className }: StarCountProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-1.5 px-3 py-1.5 rounded-md border bg-zinc-800 border-zinc-700 font-mono text-sm',
+        'flex items-center gap-1.5 px-3 py-1.5 rounded-md border bg-[hsl(var(--surface-raised))] border-zinc-700 font-mono text-sm',
         className
       )}
     >

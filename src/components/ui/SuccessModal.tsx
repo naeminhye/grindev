@@ -27,7 +27,7 @@ export function SuccessModal({
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
       {/* Modal */}
-      <div className="relative bg-zinc-900 border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
+      <div className="relative bg-[hsl(var(--surface))] border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
         {/* Green accent top bar */}
         <div className="h-1 bg-lime-400 w-full" />
 
@@ -52,7 +52,7 @@ export function SuccessModal({
           {/* Stats */}
           <div className="space-y-2">
             {/* Streak */}
-            <div className="flex items-center justify-between px-4 py-3 bg-zinc-800 rounded-md">
+            <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--surface-raised))] rounded-md">
               <div className="flex items-center gap-2 font-mono text-sm text-zinc-300">
                 <i className="ri-fire-line text-lime-400" />
                 Streak
@@ -64,7 +64,7 @@ export function SuccessModal({
 
             {/* Stars */}
             {starDelta !== null && starDelta !== 0 && (
-              <div className="flex items-center justify-between px-4 py-3 bg-zinc-800 rounded-md">
+              <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--surface-raised))] rounded-md">
                 <div className="flex items-center gap-2 font-mono text-sm text-zinc-300">
                   <i className="ri-star-fill text-yellow-400" />
                   Stars earned

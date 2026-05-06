@@ -31,7 +31,7 @@ export function TimerDisplay({
             ? "bg-red-500/10 border-red-500/30 text-red-400 animate-pulse"
             : isWarning
               ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
-              : "bg-zinc-800 border-zinc-700 text-zinc-300",
+              : "bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-300",
         className,
       )}
     >

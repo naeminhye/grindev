@@ -344,7 +344,7 @@ export default function SchedulePage() {
 
       {/* ── Auto Schedule Panel ─────────────────────────────────────────── */}
       {showAutoPanel && (
-        <div className="bg-zinc-900 border border-lime-500/20 rounded-md overflow-hidden">
+        <div className="bg-[hsl(var(--surface))] border border-lime-500/20 rounded-md overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center gap-2">
             <i className="ri-magic-line text-lime-400" />
             <span className="font-mono text-sm font-bold text-lime-400">
@@ -374,7 +374,7 @@ export default function SchedulePage() {
                       days: Math.max(1, Math.min(60, Number(e.target.value))),
                     }))
                   }
-                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
+                  className="w-full px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
                 />
               </div>
 
@@ -446,7 +446,7 @@ export default function SchedulePage() {
             </div>
 
             {/* Unscheduled summary */}
-            <div className="flex items-center gap-4 p-3 bg-zinc-800 rounded-md text-xs font-mono flex-wrap">
+            <div className="flex items-center gap-4 p-3 bg-[hsl(var(--surface-raised))] rounded-md text-xs font-mono flex-wrap">
               <span className="text-zinc-500">Unscheduled problems:</span>
               {DIFFICULTIES.map((diff) => (
                 <span
@@ -494,7 +494,7 @@ export default function SchedulePage() {
                       return (
                         <div
                           key={date}
-                          className="flex items-center gap-3 p-2.5 bg-zinc-800 rounded text-xs font-mono"
+                          className="flex items-center gap-3 p-2.5 bg-[hsl(var(--surface-raised))] rounded text-xs font-mono"
                         >
                           <span className="text-zinc-500 w-24 shrink-0">
                             {date}
@@ -566,7 +566,7 @@ export default function SchedulePage() {
       )}
 
       {/* ── Manual date picker ──────────────────────────────────────────── */}
-      <div className="bg-zinc-900 border border-border rounded-md p-5 space-y-5">
+      <div className="bg-[hsl(var(--surface))] border border-border rounded-md p-5 space-y-5">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="space-y-1.5 flex-1">
             <label className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
@@ -576,7 +576,7 @@ export default function SchedulePage() {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
+              className="w-full px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
             />
             {selectedDate < today && (
               <p className="text-xs font-mono text-yellow-400 flex items-center gap-1.5">
@@ -608,7 +608,7 @@ export default function SchedulePage() {
             return (
               <div
                 key={diff}
-                className="p-4 border border-border rounded-md bg-zinc-800/50 space-y-3"
+                className="p-4 border border-border rounded-md bg-[hsl(var(--surface-raised))]/50 space-y-3"
               >
                 <div className="flex items-center gap-2">
                   <span
@@ -664,7 +664,7 @@ export default function SchedulePage() {
                         if (e.target.value) handleAssign(diff, e.target.value);
                       }}
                       disabled={isSaving || available.length === 0}
-                      className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 disabled:opacity-50"
+                      className="flex-1 px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 disabled:opacity-50"
                     >
                       <option value="">
                         {available.length === 0
@@ -706,7 +706,7 @@ export default function SchedulePage() {
               "w-full flex items-center gap-4 p-3 rounded-md border transition-colors text-left",
               selectedDate === day.date
                 ? "border-lime-500/30 bg-lime-500/5"
-                : "border-border bg-zinc-900 hover:border-zinc-600",
+                : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
             )}
           >
             <span className="font-mono text-xs text-zinc-500 w-24 shrink-0">
@@ -753,7 +753,7 @@ export default function SchedulePage() {
                   "w-full flex items-center gap-4 p-3 rounded-md border transition-colors text-left opacity-60 hover:opacity-100",
                   selectedDate === day.date
                     ? "border-lime-500/30 bg-lime-500/5 opacity-100"
-                    : "border-border bg-zinc-900 hover:border-zinc-600",
+                    : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
                 )}
               >
                 <span className="font-mono text-xs text-zinc-500 w-24 shrink-0">

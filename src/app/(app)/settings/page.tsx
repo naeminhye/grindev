@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { getDifficultyNote } from "@/lib/daily-logic";
+import { useTheme, type Theme } from "@/lib/theme";
+import { useI18n, type Locale } from "@/lib/i18n";
 import type { ChallengeMode } from "@/lib/challenge";
 
 type PreferredDifficulty = "ANY" | "EASY" | "MEDIUM" | "HARD";
@@ -10,10 +12,11 @@ type PreferredDifficulty = "ANY" | "EASY" | "MEDIUM" | "HARD";
 type Settings = {
   challengeMode: ChallengeMode;
   preferredDifficulty: PreferredDifficulty;
-  noProblemBonusStars: number;
 };
 
 export default function SettingsPage() {
+  const { theme, setTheme } = useTheme();
+  const { locale, setLocale, t } = useI18n();
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -59,25 +62,108 @@ export default function SettingsPage() {
     <div className="max-w-xl mx-auto px-4 md:px-6 py-8 md:py-12 space-y-10 w-full">
       <div>
         <h1 className="font-heading text-xl md:text-2xl font-bold tracking-tight">
-          Settings
+          {t("settings.title")}
         </h1>
         <p className="text-sm text-zinc-500 font-mono mt-1">
-          Configure your experience.
+          {t("settings.desc")}
         </p>
+      </div>
+
+      {/* Appearance */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="font-heading font-bold text-base">
+            {t("settings.appearance")}
+          </h2>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            {t("settings.appearanceDesc")}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {(["dark", "light"] as Theme[]).map((t_) => (
+            <button
+              key={t_}
+              onClick={() => setTheme(t_)}
+              className={cn(
+                "p-4 rounded-md border text-left transition-all space-y-2",
+                theme === t_
+                  ? "border-lime-500/50 bg-lime-500/5"
+                  : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <i
+                    className={
+                      t_ === "dark"
+                        ? "ri-moon-line text-zinc-400"
+                        : "ri-sun-line text-yellow-400"
+                    }
+                  />
+                  <span className="font-heading font-bold text-sm">
+                    {t_ === "dark"
+                      ? t("settings.darkTheme")
+                      : t("settings.lightTheme")}
+                  </span>
+                </div>
+                {theme === t_ && <i className="ri-check-line text-lime-400" />}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Language */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="font-heading font-bold text-base">
+            {t("settings.language")}
+          </h2>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            {t("settings.languageDesc")}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {(
+            [
+              { id: "en", label: "English", flag: "🇺🇸" },
+              { id: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+            ] as { id: Locale; label: string; flag: string }[]
+          ).map((lang) => (
+            <button
+              key={lang.id}
+              onClick={() => setLocale(lang.id)}
+              className={cn(
+                "p-4 rounded-md border text-left transition-all",
+                locale === lang.id
+                  ? "border-lime-500/50 bg-lime-500/5"
+                  : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{lang.flag}</span>
+                  <span className="font-mono text-sm">{lang.label}</span>
+                </div>
+                {locale === lang.id && (
+                  <i className="ri-check-line text-lime-400" />
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Preferred Difficulty */}
       <div className="space-y-4">
         <div>
           <h2 className="font-heading font-bold text-base">
-            Preferred Difficulty
+            {t("settings.preferredDifficulty")}
           </h2>
           <p className="text-xs text-zinc-500 font-mono mt-1">
-            We'll assign you the closest available problem if your preferred
-            level isn't scheduled.
+            {t("settings.preferredDifficultyDesc")}
           </p>
         </div>
-
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {(["ANY", "EASY", "MEDIUM", "HARD"] as PreferredDifficulty[]).map(
             (d) => (
@@ -88,7 +174,7 @@ export default function SettingsPage() {
                   "p-3 rounded-md border text-center transition-all",
                   settings.preferredDifficulty === d
                     ? "border-lime-500/50 bg-lime-500/5"
-                    : "border-border bg-zinc-900 hover:border-zinc-600",
+                    : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
                 )}
               >
                 <div
@@ -103,7 +189,13 @@ export default function SettingsPage() {
                           : "text-lime-400",
                   )}
                 >
-                  {d === "ANY" ? "Any" : d.charAt(0) + d.slice(1).toLowerCase()}
+                  {d === "ANY"
+                    ? t("settings.any")
+                    : d === "EASY"
+                      ? t("settings.easy")
+                      : d === "MEDIUM"
+                        ? t("settings.medium")
+                        : t("settings.hard")}
                 </div>
                 {settings.preferredDifficulty === d && (
                   <i className="ri-check-line text-lime-400 text-xs" />
@@ -112,10 +204,8 @@ export default function SettingsPage() {
             ),
           )}
         </div>
-
-        {/* Note */}
         {diffNote && (
-          <div className="flex items-start gap-2 p-3 rounded-md bg-zinc-900 border border-zinc-700 text-xs font-mono text-zinc-400">
+          <div className="flex items-start gap-2 p-3 rounded-md bg-[hsl(var(--surface))] border border-zinc-700 text-xs font-mono text-zinc-400">
             <i className="ri-information-line text-lime-400 mt-0.5 shrink-0" />
             {diffNote}
           </div>
@@ -125,12 +215,13 @@ export default function SettingsPage() {
       {/* Challenge Mode */}
       <div className="space-y-4">
         <div>
-          <h2 className="font-heading font-bold text-base">Challenge Mode</h2>
+          <h2 className="font-heading font-bold text-base">
+            {t("settings.challengeMode")}
+          </h2>
           <p className="text-xs text-zinc-500 font-mono mt-1">
-            Mode is locked once you start a problem. Resets each day.
+            {t("settings.challengeModeDesc")}
           </p>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             onClick={() => save({ challengeMode: "NORMAL" })}
@@ -138,29 +229,33 @@ export default function SettingsPage() {
               "p-4 md:p-5 rounded-md border text-left transition-all space-y-3",
               settings.challengeMode === "NORMAL"
                 ? "border-lime-500/50 bg-lime-500/5"
-                : "border-border bg-zinc-900 hover:border-zinc-600",
+                : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
             )}
           >
             <div className="flex items-center justify-between">
-              <span className="font-heading font-bold text-sm">Normal</span>
+              <span className="font-heading font-bold text-sm">
+                {t("settings.normal")}
+              </span>
               {settings.challengeMode === "NORMAL" && (
                 <i className="ri-check-line text-lime-400" />
               )}
             </div>
             <ul className="space-y-1.5 font-mono text-xs text-zinc-400">
               <li className="flex items-center gap-2">
-                <i className="ri-check-line text-green-400" /> Paste allowed
+                <i className="ri-check-line text-green-400" />
+                {t("settings.pasteAllowed")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-close-line text-zinc-600" /> No timer
+                <i className="ri-close-line text-zinc-600" />
+                {t("settings.noTimer")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-star-line text-yellow-400" /> +3 stars clean
-                solve
+                <i className="ri-star-line text-yellow-400" />
+                {t("settings.cleanSolveStars")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-star-line text-yellow-400" /> +1 star hint
-                solve
+                <i className="ri-star-line text-yellow-400" />
+                {t("settings.hintSolveStars")}
               </li>
             </ul>
           </button>
@@ -171,48 +266,63 @@ export default function SettingsPage() {
               "p-4 md:p-5 rounded-md border text-left transition-all space-y-3",
               settings.challengeMode === "HARD"
                 ? "border-lime-500/50 bg-lime-500/5"
-                : "border-border bg-zinc-900 hover:border-zinc-600",
+                : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
             )}
           >
             <div className="flex items-center justify-between">
-              <span className="font-heading font-bold text-sm">Hard</span>
+              <span className="font-heading font-bold text-sm">
+                {t("settings.hard")}
+              </span>
               {settings.challengeMode === "HARD" && (
                 <i className="ri-check-line text-lime-400" />
               )}
             </div>
             <ul className="space-y-1.5 font-mono text-xs text-zinc-400">
               <li className="flex items-center gap-2">
-                <i className="ri-close-line text-red-400" /> No paste
+                <i className="ri-close-line text-red-400" />
+                {t("settings.noPaste")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-time-line text-yellow-400" /> Timer active
+                <i className="ri-time-line text-yellow-400" />
+                {t("settings.timerActive")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-star-fill text-yellow-400" /> +8 stars clean
-                solve
+                <i className="ri-star-fill text-yellow-400" />
+                {t("settings.hardCleanStars")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-star-fill text-yellow-400" /> +3 stars hint
-                solve
+                <i className="ri-star-fill text-yellow-400" />
+                {t("settings.hardHintStars")}
               </li>
               <li className="flex items-center gap-2">
-                <i className="ri-arrow-down-line text-red-400" /> −2 stars if
-                time expires
+                <i className="ri-arrow-down-line text-red-400" />
+                {t("settings.timeExpiredPenalty")}
               </li>
             </ul>
           </button>
         </div>
 
-        {/* Time limits */}
-        <div className="rounded-md border border-border bg-zinc-900/50 p-4 space-y-3">
+        <div className="rounded-md border border-border bg-[hsl(var(--surface))]/50 p-4 space-y-3">
           <p className="font-mono text-xs text-zinc-500 uppercase tracking-widest">
-            Hard mode time limits
+            {t("settings.timeLimits")}
           </p>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Easy", time: "15:00", color: "text-green-400" },
-              { label: "Medium", time: "30:00", color: "text-yellow-400" },
-              { label: "Hard", time: "45:00", color: "text-red-400" },
+              {
+                label: t("settings.easy"),
+                time: "15:00",
+                color: "text-green-400",
+              },
+              {
+                label: t("settings.medium"),
+                time: "30:00",
+                color: "text-yellow-400",
+              },
+              {
+                label: t("settings.hard"),
+                time: "45:00",
+                color: "text-red-400",
+              },
             ].map((d) => (
               <div key={d.label} className="text-center">
                 <div
@@ -232,8 +342,8 @@ export default function SettingsPage() {
 
       {saved && (
         <p className="text-xs font-mono text-lime-400 flex items-center gap-1.5">
-          <i className="ri-check-line" /> Saved
-          {saving && <i className="ri-loader-4-line animate-spin ml-1" />}
+          <i className="ri-check-line" />
+          {t("settings.saved")}
         </p>
       )}
     </div>

@@ -19,7 +19,7 @@ export function NoProblemScreen({
     <div className="flex-1 flex items-center justify-center p-6">
       <div className="max-w-sm w-full text-center space-y-8">
         {/* Icon */}
-        <div className="w-20 h-20 rounded-full bg-zinc-800 border border-border flex items-center justify-center mx-auto">
+        <div className="w-20 h-20 rounded-full bg-[hsl(var(--surface-raised))] border border-border flex items-center justify-center mx-auto">
           <i className="ri-calendar-close-line text-3xl text-zinc-500" />
         </div>
 
