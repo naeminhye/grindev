@@ -43,8 +43,12 @@ export default function SchedulePage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/admin/problems").then((r) => r.json()),
-      fetch("/api/admin/schedule").then((r) => r.json()),
+      fetch("/api/admin/problems")
+        .then((r) => r.text())
+        .then((t) => (t ? JSON.parse(t) : { problems: [] })),
+      fetch("/api/admin/schedule")
+        .then((r) => r.text())
+        .then((t) => (t ? JSON.parse(t) : { scheduled: [] })),
     ]).then(([p, s]) => {
       const probs: Problem[] = p.problems ?? [];
       setProblems(probs);
