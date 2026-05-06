@@ -101,7 +101,11 @@ export async function POST(req: Request) {
   }
 
   const problem = await prisma.problem.create({
-    data: { ...parsed.data, topics: parsed.data.topics as Topic[] },
+    data: {
+      ...parsed.data,
+      topics: parsed.data.topics as Topic[],
+      examples: parsed.data.examples as any,
+    },
   });
 
   return NextResponse.json({ problem }, { status: 201 });

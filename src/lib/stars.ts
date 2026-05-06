@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import type { StarTransactionReason } from "@prisma/client";
+import type { Prisma, StarTransactionReason } from "@prisma/client";
 
 const STREAK_MILESTONES: Record<number, number> = {
   7: 10,
@@ -25,7 +25,8 @@ export async function adjustStars(
   userId: string,
   amount: number,
   reason: StarTransactionReason,
-  meta?: Record<string, unknown>,
+  // meta?: Record<string, unknown>,
+  meta?: Prisma.InputJsonValue,
 ): Promise<number> {
   const [user] = await prisma.$transaction([
     prisma.user.update({

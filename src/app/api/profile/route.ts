@@ -109,6 +109,7 @@ export async function GET() {
     difficultyBreakdown,
     recentActivity,
     makeupSolves: solves.filter((s) => s.isMakeup).length,
+    streakFreezeCount: 0,
   };
 
   return NextResponse.json(stats);

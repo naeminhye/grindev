@@ -47,7 +47,7 @@ export type SolveResponse = {
   passed: boolean;
   results: TestResult[];
   starDelta?: number;
-  milestonBonus?: number; // extra stars from streak milestone
+  milestoneBonus?: number; // extra stars from streak milestone
   firstSolveBonus?: number; // extra stars for first ever solve
   streak?: {
     currentStreak: number;

@@ -3,11 +3,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getTodayUTC } from "@/lib/streak";
-import {
-  type MakeupProblemResponse,
-  type HintData,
-  parseProblemExamples,
-} from "@/types";
+import { type MakeupProblemResponse, type HintData } from "@/types";
+import { parseProblemExamples } from "@/lib/problem-utils";
 
 export async function GET(
   _req: Request,
@@ -93,6 +90,7 @@ export async function GET(
       longestStreak: user?.longestStreak ?? 0,
       stars: user?.stars ?? 10,
       lastSolvedAt: user?.lastSolvedAt?.toISOString() ?? null,
+      streakFreezeCount: 0,
     },
   };
 
