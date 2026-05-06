@@ -37,13 +37,21 @@ export async function POST(
   const body = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
   }
 
   const { problemId, code, language, challengeMode, timeExpired } = parsed.data;
 
-  // Verify problem belongs to this date
-  const daily = await prisma.dailyProblem.findUnique({ where: { date } });
+  // find the best slot for this date
+  const slots = await prisma.dailyProblem.findMany({
+    where: { date },
+    include: { problem: true },
+  });
+  const daily = slots[0]; // or pick by difficulty if needed
+
   if (!daily || daily.problemId !== problemId) {
     return NextResponse.json({ error: "Problem mismatch" }, { status: 400 });
   }

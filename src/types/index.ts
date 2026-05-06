@@ -1,6 +1,12 @@
-import type { Difficulty, Topic } from "@prisma/client";
+import type { Difficulty, Prisma, Topic } from "@prisma/client";
 import type { Language } from "@/lib/languages";
 import type { MakeupDay } from "@/lib/makeup";
+
+export type ProblemExample = {
+  input: string;
+  output: string;
+  explanation?: string;
+};
 
 export type HintData = {
   tier: 1 | 2 | 3 | 4;
@@ -20,8 +26,11 @@ export type PublicProblem = {
   title: string;
   slug: string;
   description: string;
+  examples: ProblemExample[];
+  constraints: string;
   difficulty: Difficulty;
   topics: Topic[];
+  functionName: string;
   starterCode: StarterCode;
 };
 
@@ -60,12 +69,20 @@ export type UserStats = {
 
 export type DailyResponse = {
   problem: PublicProblem;
+  difficultyNote: string | null; // shown when closest difficulty used
   alreadySolved: boolean;
   hintsUnlocked: number[];
   unlockedHintContents: Record<number, string>;
+  makeupDays: MakeupDay[];
+  makeupRewardGivenToday: boolean;
   userStats: UserStats;
-  makeupDays: MakeupDay[]; // available makeup tasks
-  makeupRewardGivenToday: boolean; // whether star reward already given today
+};
+
+export type NoProblemResponse = {
+  noProblemToday: true;
+  bonusStars: number;
+  bonusAlreadyGiven: boolean;
+  userStats: UserStats;
 };
 
 export type MakeupProblemResponse = {
@@ -94,3 +111,22 @@ export type ProfileStats = {
   difficultyBreakdown: { difficulty: string; count: number }[];
   recentActivity: { date: string; solved: boolean; isMakeup: boolean }[];
 };
+
+// TODO: move to utils
+export function parseProblemExamples(
+  value: Prisma.JsonValue,
+): ProblemExample[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((item): item is Prisma.JsonObject => {
+      return typeof item === "object" && item !== null && !Array.isArray(item);
+    })
+    .map((item) => ({
+      input: typeof item.input === "string" ? item.input : "",
+      output: typeof item.output === "string" ? item.output : "",
+      explanation:
+        typeof item.explanation === "string" ? item.explanation : undefined,
+    }))
+    .filter((example) => example.input && example.output);
+}

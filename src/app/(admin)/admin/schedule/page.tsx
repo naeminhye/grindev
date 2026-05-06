@@ -2,101 +2,158 @@
 
 import { useEffect, useState } from "react";
 import { format, addDays } from "date-fns";
+import { cn } from "@/lib/utils";
 
-type Problem = { id: string; title: string; difficulty: string };
-type ScheduledDay = {
+type Problem = {
+  id: string;
+  title: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+};
+type DaySchedule = {
   date: string;
-  problem: { id: string; title: string; difficulty: string };
+  slots: { difficulty: "EASY" | "MEDIUM" | "HARD"; problem: Problem }[];
+};
+
+const DIFFICULTIES = ["EASY", "MEDIUM", "HARD"] as const;
+const DIFF_CONFIG = {
+  EASY: {
+    label: "Easy",
+    color: "text-green-400",
+    bg: "bg-green-500/10 border-green-500/20",
+  },
+  MEDIUM: {
+    label: "Medium",
+    color: "text-yellow-400",
+    bg: "bg-yellow-500/10 border-yellow-500/20",
+  },
+  HARD: {
+    label: "Hard",
+    color: "text-red-400",
+    bg: "bg-red-500/10 border-red-500/20",
+  },
 };
 
 export default function SchedulePage() {
   const [problems, setProblems] = useState<Problem[]>([]);
-  const [scheduled, setScheduled] = useState<ScheduledDay[]>([]);
-  const [selectedProblemId, setSelectedProblemId] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [schedule, setSchedule] = useState<DaySchedule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState<string | null>(null); // which difficulty is saving
 
   useEffect(() => {
-    const controller = new AbortController();
     Promise.all([
       fetch("/api/admin/problems").then((r) => r.json()),
       fetch("/api/admin/schedule").then((r) => r.json()),
-    ])
-      .then(([p, s]) => {
-        setProblems(p.problems ?? []);
-        const days = s.scheduled ?? [];
-        setScheduled(days);
+    ]).then(([p, s]) => {
+      const probs: Problem[] = p.problems ?? [];
+      setProblems(probs);
 
-        // Auto-select closest unscheduled future date
-        const scheduledDates = new Set(days.map((d: ScheduledDay) => d.date));
-        let autoDate = format(new Date(), "yyyy-MM-dd");
-        for (let i = 0; i < 90; i++) {
-          const d = format(addDays(new Date(), i), "yyyy-MM-dd");
-          if (!scheduledDates.has(d)) {
-            autoDate = d;
-            break;
-          }
-        }
-        setSelectedDate(autoDate);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err.name === "AbortError") return;
-      });
+      const days: DaySchedule[] = s.scheduled ?? [];
+      setSchedule(days);
 
-    return () => controller.abort();
-  }, []);
-
-  const scheduledDates = new Set(scheduled.map((s) => s.date));
-
-  async function handleSchedule() {
-    if (!selectedProblemId || !selectedDate) return;
-    setSaving(true);
-    setMessage("");
-    const res = await fetch("/api/admin/schedule", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        problemId: selectedProblemId,
-        date: selectedDate,
-      }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      const problem = problems.find((p) => p.id === selectedProblemId)!;
-      setScheduled((prev) =>
-        [...prev, { date: selectedDate, problem }].sort((a, b) =>
-          a.date.localeCompare(b.date),
-        ),
-      );
-      setMessage(`✓ Scheduled "${problem.title}" for ${selectedDate}`);
-
-      // Auto-advance to next unscheduled date
-      const newScheduled = new Set([...scheduledDates, selectedDate]);
-      for (let i = 1; i < 90; i++) {
-        const d = format(addDays(new Date(selectedDate), i), "yyyy-MM-dd");
-        if (!newScheduled.has(d)) {
-          setSelectedDate(d);
+      // Auto-select closest date that has at least one slot missing
+      const today = format(new Date(), "yyyy-MM-dd");
+      const scheduledDates = new Set(days.map((d) => d.date));
+      let autoDate = today;
+      for (let i = 0; i < 90; i++) {
+        const d = format(addDays(new Date(), i), "yyyy-MM-dd");
+        const daySlots = days.find((s) => s.date === d);
+        if (!daySlots || daySlots.slots.length < 3) {
+          autoDate = d;
           break;
         }
       }
+      setSelectedDate(autoDate);
+      setLoading(false);
+    });
+  }, []);
+
+  const selectedDay = schedule.find((d) => d.date === selectedDate);
+  const slotsForDate = selectedDay?.slots ?? [];
+
+  function getSlot(diff: (typeof DIFFICULTIES)[number]) {
+    return slotsForDate.find((s) => s.difficulty === diff);
+  }
+
+  function problemsByDifficulty(diff: (typeof DIFFICULTIES)[number]) {
+    return problems.filter((p) => p.difficulty === diff);
+  }
+
+  async function handleAssign(
+    difficulty: (typeof DIFFICULTIES)[number],
+    problemId: string,
+  ) {
+    if (!selectedDate || !problemId) return;
+    setSaving(difficulty);
+    setMessage("");
+
+    const res = await fetch("/api/admin/schedule", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: selectedDate, difficulty, problemId }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      const problem = problems.find((p) => p.id === problemId)!;
+      setSchedule((prev) => {
+        const existing = prev.find((d) => d.date === selectedDate);
+        if (existing) {
+          return prev.map((d) =>
+            d.date === selectedDate
+              ? {
+                  ...d,
+                  slots: [
+                    ...d.slots.filter((s) => s.difficulty !== difficulty),
+                    { difficulty, problem },
+                  ],
+                }
+              : d,
+          );
+        }
+        return [
+          ...prev,
+          { date: selectedDate, slots: [{ difficulty, problem }] },
+        ];
+      });
+      setMessage(`✓ ${difficulty} assigned for ${selectedDate}`);
     } else {
       setMessage(`✗ ${data.error}`);
     }
-    setSaving(false);
+    setSaving(null);
   }
 
-  async function handleUnschedule(date: string) {
-    if (!confirm(`Remove problem from ${date}?`)) return;
-    const res = await fetch(`/api/admin/schedule/${date}`, {
-      method: "DELETE",
-    });
+  async function handleRemove(difficulty: (typeof DIFFICULTIES)[number]) {
+    if (!confirm(`Remove ${difficulty} problem from ${selectedDate}?`)) return;
+    setSaving(difficulty);
+
+    const res = await fetch(
+      `/api/admin/schedule/${selectedDate}/${difficulty}`,
+      { method: "DELETE" },
+    );
     if (res.ok) {
-      setScheduled((prev) => prev.filter((s) => s.date !== date));
+      setSchedule((prev) =>
+        prev
+          .map((d) =>
+            d.date === selectedDate
+              ? {
+                  ...d,
+                  slots: d.slots.filter((s) => s.difficulty !== difficulty),
+                }
+              : d,
+          )
+          .filter((d) => d.slots.length > 0),
+      );
+      setMessage(`✓ ${difficulty} removed from ${selectedDate}`);
     }
+    setSaving(null);
   }
+
+  const upcoming = schedule
+    .filter((d) => d.date >= format(new Date(), "yyyy-MM-dd"))
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 14);
 
   if (loading) {
     return (
@@ -106,52 +163,21 @@ export default function SchedulePage() {
     );
   }
 
-  const upcoming = scheduled.filter(
-    (s) => s.date >= format(new Date(), "yyyy-MM-dd"),
-  );
-  const past = scheduled.filter(
-    (s) => s.date < format(new Date(), "yyyy-MM-dd"),
-  );
-
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10 w-full space-y-8">
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10 w-full space-y-8">
       <div>
         <h1 className="font-heading text-2xl font-bold tracking-tight">
           Schedule
         </h1>
         <p className="text-sm text-zinc-500 font-mono mt-1">
-          Assign problems to dates.
+          Assign up to 3 problems per day — one per difficulty.
         </p>
       </div>
 
-      {/* Scheduler form */}
-      <div className="bg-zinc-900 border border-border rounded-md p-6 space-y-4">
-        <h2 className="font-mono text-sm font-bold text-zinc-300">
-          Assign a problem
-        </h2>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
-              Problem
-            </label>
-            <select
-              value={selectedProblemId}
-              onChange={(e) => setSelectedProblemId(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
-            >
-              <option value="">Select a problem...</option>
-              {problems.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.title} (
-                  {p.difficulty.charAt(0) + p.difficulty.slice(1).toLowerCase()}
-                  )
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
+      {/* Date picker */}
+      <div className="bg-zinc-900 border border-border rounded-md p-5 space-y-5">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="space-y-1.5 flex-1">
             <label className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
               Date
             </label>
@@ -162,108 +188,162 @@ export default function SchedulePage() {
               min={format(new Date(), "yyyy-MM-dd")}
               className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
             />
-            {scheduledDates.has(selectedDate) && (
-              <p className="text-xs font-mono text-yellow-400 flex items-center gap-1">
-                <i className="ri-error-warning-line" /> This date already has a
-                problem
-              </p>
-            )}
           </div>
-        </div>
 
-        <div className="flex items-center justify-between">
           {message && (
             <p
-              className={`text-xs font-mono ${message.startsWith("✓") ? "text-lime-400" : "text-red-400"}`}
+              className={cn(
+                "text-xs font-mono mt-5",
+                message.startsWith("✓") ? "text-lime-400" : "text-red-400",
+              )}
             >
               {message}
             </p>
           )}
-          <button
-            onClick={handleSchedule}
-            disabled={
-              saving || !selectedProblemId || scheduledDates.has(selectedDate)
-            }
-            className="ml-auto flex items-center gap-2 px-4 py-2 bg-lime-400 text-zinc-950 font-mono text-sm font-bold rounded hover:bg-lime-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {saving ? (
-              <i className="ri-loader-4-line animate-spin" />
-            ) : (
-              <i className="ri-calendar-check-line" />
-            )}
-            Schedule
-          </button>
+        </div>
+
+        {/* Three difficulty slots */}
+        <div className="space-y-3">
+          {DIFFICULTIES.map((diff) => {
+            const slot = getSlot(diff);
+            const available = problemsByDifficulty(diff);
+            const isSaving = saving === diff;
+            const cfg = DIFF_CONFIG[diff];
+
+            return (
+              <div
+                key={diff}
+                className="p-4 border border-border rounded-md bg-zinc-800/50 space-y-3"
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "text-xs font-mono font-bold uppercase tracking-widest",
+                      cfg.color,
+                    )}
+                  >
+                    {cfg.label}
+                  </span>
+                  {slot ? (
+                    <span
+                      className={cn(
+                        "text-xs font-mono px-2 py-0.5 rounded border ml-auto",
+                        cfg.bg,
+                        cfg.color,
+                      )}
+                    >
+                      <i className="ri-check-line mr-1" />
+                      assigned
+                    </span>
+                  ) : (
+                    <span className="text-xs font-mono text-zinc-600 ml-auto">
+                      not assigned
+                    </span>
+                  )}
+                </div>
+
+                {slot ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-mono text-sm text-zinc-200 truncate flex-1">
+                      {slot.problem.title}
+                    </span>
+                    <button
+                      onClick={() => handleRemove(diff)}
+                      disabled={isSaving}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-red-400 border border-red-500/20 hover:bg-red-500/10 rounded transition-colors shrink-0"
+                    >
+                      {isSaving ? (
+                        <i className="ri-loader-4-line animate-spin" />
+                      ) : (
+                        <i className="ri-delete-bin-line" />
+                      )}
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <select
+                      defaultValue=""
+                      onChange={(e) => {
+                        if (e.target.value) handleAssign(diff, e.target.value);
+                      }}
+                      disabled={isSaving || available.length === 0}
+                      className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 disabled:opacity-50"
+                    >
+                      <option value="">
+                        {available.length === 0
+                          ? `No ${cfg.label} problems available`
+                          : `Select ${cfg.label} problem...`}
+                      </option>
+                      {available.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.title}
+                        </option>
+                      ))}
+                    </select>
+                    {isSaving && (
+                      <i className="ri-loader-4-line animate-spin text-lime-400 shrink-0" />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Upcoming */}
+      {/* Upcoming 14 days */}
       <div className="space-y-3">
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-          Upcoming ({upcoming.length})
+          Next 14 days
         </h2>
         {upcoming.length === 0 && (
-          <p className="text-sm font-mono text-zinc-600 py-3">
-            Nothing scheduled yet.
+          <p className="text-sm font-mono text-zinc-600 py-4">
+            Nothing scheduled.
           </p>
         )}
-        {upcoming.map((s) => (
-          <ScheduleRow key={s.date} s={s} onDelete={handleUnschedule} />
+        {upcoming.map((day) => (
+          <button
+            key={day.date}
+            onClick={() => setSelectedDate(day.date)}
+            className={cn(
+              "w-full flex items-center gap-4 p-3 rounded-md border transition-colors text-left",
+              selectedDate === day.date
+                ? "border-lime-500/30 bg-lime-500/5"
+                : "border-border bg-zinc-900 hover:border-zinc-600",
+            )}
+          >
+            <span className="font-mono text-xs text-zinc-500 w-24 shrink-0">
+              {day.date}
+            </span>
+            <div className="flex items-center gap-2 flex-1 flex-wrap">
+              {DIFFICULTIES.map((diff) => {
+                const slot = day.slots.find((s) => s.difficulty === diff);
+                const cfg = DIFF_CONFIG[diff];
+                return slot ? (
+                  <span
+                    key={diff}
+                    className={cn(
+                      "text-xs font-mono px-2 py-0.5 rounded border",
+                      cfg.bg,
+                      cfg.color,
+                    )}
+                  >
+                    {cfg.label}: {slot.problem.title}
+                  </span>
+                ) : (
+                  <span
+                    key={diff}
+                    className="text-xs font-mono text-zinc-700 px-2 py-0.5 border border-zinc-800 rounded"
+                  >
+                    {cfg.label}: —
+                  </span>
+                );
+              })}
+            </div>
+          </button>
         ))}
       </div>
-
-      {/* Past */}
-      {past.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-            Past ({past.length})
-          </h2>
-          {past.slice(0, 10).map((s) => (
-            <ScheduleRow key={s.date} s={s} past />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ScheduleRow({
-  s,
-  onDelete,
-  past,
-}: {
-  s: ScheduledDay;
-  onDelete?: (date: string) => void;
-  past?: boolean;
-}) {
-  const diffConfig: Record<string, string> = {
-    EASY: "text-green-400",
-    MEDIUM: "text-yellow-400",
-    HARD: "text-red-400",
-  };
-  return (
-    <div
-      className={`flex items-center gap-4 p-3 rounded-md border ${past ? "border-border bg-zinc-900/30 opacity-60" : "border-border bg-zinc-900"}`}
-    >
-      <span className="font-mono text-xs text-zinc-500 w-28 shrink-0">
-        {s.date}
-      </span>
-      <span className="font-mono text-sm flex-1 truncate">
-        {s.problem.title}
-      </span>
-      <span
-        className={`text-xs font-mono ${diffConfig[s.problem.difficulty] ?? ""}`}
-      >
-        {s.problem.difficulty.charAt(0) +
-          s.problem.difficulty.slice(1).toLowerCase()}
-      </span>
-      {!past && onDelete && (
-        <button
-          onClick={() => onDelete(s.date)}
-          className="p-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
-        >
-          <i className="ri-delete-bin-line text-sm" />
-        </button>
-      )}
     </div>
   );
 }
