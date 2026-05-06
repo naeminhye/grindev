@@ -2,6 +2,12 @@ import type { Difficulty, Prisma, Topic } from "@prisma/client";
 import type { Language } from "@/lib/languages";
 import type { MakeupDay } from "@/lib/makeup";
 
+export type ProblemExample = {
+  input: string;
+  output: string;
+  explanation?: string;
+};
+
 export type HintData = {
   tier: 1 | 2 | 3 | 4;
   cost: number;
@@ -13,36 +19,18 @@ export type TestCase = {
   expected: string;
 };
 
-// export type ProblemTestCase = {
-//   input: unknown;
-//   expected: unknown;
-//   hidden?: boolean;
-// };
-
 export type StarterCode = Record<Language, string>;
-// export type ProblemStarterCode = Partial<
-//   Record<"JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "CPP" | "JAVA", string>
-// >;
-
-export type ProblemExample = {
-  input: string;
-  output: string;
-  explanation?: string;
-};
 
 export type PublicProblem = {
   id: string;
   title: string;
   slug: string;
   description: string;
-  examples: {
-    input: string;
-    output: string;
-    explanation?: string;
-  }[];
+  examples: ProblemExample[];
   constraints: string;
   difficulty: Difficulty;
   topics: Topic[];
+  functionName: string;
   starterCode: StarterCode;
 };
 
@@ -81,12 +69,20 @@ export type UserStats = {
 
 export type DailyResponse = {
   problem: PublicProblem;
+  difficultyNote: string | null; // shown when closest difficulty used
   alreadySolved: boolean;
   hintsUnlocked: number[];
   unlockedHintContents: Record<number, string>;
+  makeupDays: MakeupDay[];
+  makeupRewardGivenToday: boolean;
   userStats: UserStats;
-  makeupDays: MakeupDay[]; // available makeup tasks
-  makeupRewardGivenToday: boolean; // whether star reward already given today
+};
+
+export type NoProblemResponse = {
+  noProblemToday: true;
+  bonusStars: number;
+  bonusAlreadyGiven: boolean;
+  userStats: UserStats;
 };
 
 export type MakeupProblemResponse = {

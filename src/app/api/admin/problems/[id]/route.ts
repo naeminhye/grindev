@@ -4,35 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { getAdminUserId } from "@/lib/admin-auth";
 import { Topic } from "@prisma/client";
 
-const TOPICS = [
-  "ARRAYS",
-  "STRINGS",
-  "LINKED_LISTS",
-  "TREES",
-  "GRAPHS",
-  "DYNAMIC_PROGRAMMING",
-  "SORTING",
-  "BINARY_SEARCH",
-  "STACK_QUEUE",
-  "HASH_MAP",
-  "HEAPS",
-  "TWO_POINTERS",
-  "SLIDING_WINDOW",
-  "DFS_BFS",
-  "BACKTRACKING",
-  "GREEDY",
-  "RECURSION",
-  "DIVIDE_AND_CONQUER",
-  "BIT_MANIPULATION",
-  "MATH",
-  "TRIE",
-  "UNION_FIND",
-  "SEGMENT_TREE",
-  "FENWICK_TREE",
-  "MONOTONIC_STACK",
-  "MONOTONIC_QUEUE",
-] as const;
-
 const problemExampleSchema = z.object({
   input: z.string().min(1, "Input is required"),
   output: z.string().min(1, "Output is required"),
@@ -51,7 +22,7 @@ const schema = z.object({
   examples: z.array(problemExampleSchema).min(1).max(5),
   constraints: z.string().min(1),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
-  topics: z.array(z.enum(TOPICS)).min(1),
+  topics: z.array(z.string()).min(1, "At least one topic is required"),
   starterCode: z.record(z.string(), z.string()),
   testCases: z
     .array(z.object({ input: z.string(), expected: z.string() }))
@@ -74,7 +45,10 @@ export async function PATCH(
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+    return NextResponse.json(
+      { error: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
   }
 
   const problem = await prisma.problem.findUnique({

@@ -12,34 +12,29 @@ datasource db {
 }
 
 model User {
-  id             String        @id
-  currentStreak  Int           @default(0)
-  longestStreak  Int           @default(0)
-  stars          Int           @default(10)
-  lastSolvedAt   DateTime?
-  lastMakeupDate String?
-  challengeMode  ChallengeMode @default(NORMAL)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @default(now()) @updatedAt
+  id                  String              @id
+  currentStreak       Int                 @default(0)
+  longestStreak       Int                 @default(0)
+  stars               Int                 @default(10)
+  lastSolvedAt        DateTime?
+  lastMakeupDate      String?
+  lastNoProblemBonus  String? // "YYYY-MM-DD" — prevent double bonus
+  challengeMode       ChallengeMode       @default(NORMAL)
+  preferredDifficulty PreferredDifficulty @default(ANY)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
 
   solves        Solve[]
   hintPurchases HintPurchase[]
 }
 
 model Problem {
-  id    String @id @default(cuid())
-  title String
-  slug  String @unique
-
-  // Main problem statement, Markdown
-  description String
-
-  // 1 - 5 examples, each example has input/output/explanation
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  description  String
   examples     Json       @default("[]")
-
-  // Constraints section, Markdown
   constraints  String     @default("")
-
   difficulty   Difficulty
   topics       Topic[]
   functionName String     @default("solution")
@@ -54,11 +49,20 @@ model Problem {
   solves     Solve[]
 }
 
+// One slot per date+difficulty — up to 3 problems per day
 model DailyProblem {
-  id        String  @id @default(cuid())
-  date      String  @unique
-  problemId String
-  problem   Problem @relation(fields: [problemId], references: [id])
+  id         String     @id @default(cuid())
+  date       String
+  difficulty Difficulty
+  problemId  String
+  problem    Problem    @relation(fields: [problemId], references: [id])
+
+  @@unique([date, difficulty])
+}
+
+model AppConfig {
+  key   String @id // e.g. "NO_PROBLEM_BONUS_STARS"
+  value String
 }
 
 model Solve {
@@ -95,6 +99,13 @@ model HintPurchase {
 }
 
 enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum PreferredDifficulty {
+  ANY
   EASY
   MEDIUM
   HARD

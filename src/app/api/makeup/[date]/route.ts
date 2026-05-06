@@ -32,7 +32,7 @@ export async function GET(
     );
   }
 
-  const daily = await prisma.dailyProblem.findUnique({
+  const daily = await prisma.dailyProblem.findFirst({
     where: { date },
     include: { problem: true },
   });
@@ -73,6 +73,7 @@ export async function GET(
       id: problem.id,
       title: problem.title,
       slug: problem.slug,
+      functionName: problem.functionName,
       description: problem.description,
       examples: parseProblemExamples(problem.examples),
       constraints: problem.constraints ?? "",

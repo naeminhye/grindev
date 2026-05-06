@@ -198,6 +198,12 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
       setActiveTab("basic");
       return;
     }
+    
+    if (form.topics.length === 0) {
+      setError("Please select at least one topic.");
+      setActiveTab("basic");
+      return;
+    }
 
     if (
       form.examples.length < 1 ||

@@ -4,53 +4,26 @@ import { prisma } from "@/lib/prisma";
 import { getAdminUserId } from "@/lib/admin-auth";
 import { Topic } from "@prisma/client";
 
-const TOPICS = [
-  "ARRAYS",
-  "STRINGS",
-  "LINKED_LISTS",
-  "TREES",
-  "GRAPHS",
-  "DYNAMIC_PROGRAMMING",
-  "SORTING",
-  "BINARY_SEARCH",
-  "STACK_QUEUE",
-  "HASH_MAP",
-  "HEAPS",
-  "TWO_POINTERS",
-  "SLIDING_WINDOW",
-  "DFS_BFS",
-  "BACKTRACKING",
-  "GREEDY",
-  "RECURSION",
-  "DIVIDE_AND_CONQUER",
-  "BIT_MANIPULATION",
-  "MATH",
-  "TRIE",
-  "UNION_FIND",
-  "SEGMENT_TREE",
-  "FENWICK_TREE",
-  "MONOTONIC_STACK",
-  "MONOTONIC_QUEUE",
-] as const;
-
-const problemExampleSchema = z.object({
-  input: z.string().min(1, "Input is required"),
-  output: z.string().min(1, "Output is required"),
-  explanation: z.string().optional(),
-});
-
 const schema = z.object({
   title: z.string().min(1),
   slug: z
     .string()
     .min(1)
     .regex(/^[a-z0-9-]+$/),
-  functionName: z.string().min(1).optional(),
   description: z.string().min(1),
-  examples: z.array(problemExampleSchema).min(1).max(5),
-  constraints: z.string().min(1),
+  examples: z
+    .array(
+      z.object({
+        input: z.string(),
+        output: z.string(),
+        explanation: z.string().optional(),
+      }),
+    )
+    .default([]),
+  constraints: z.string().default(""),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
-  topics: z.array(z.enum(TOPICS)).min(1),
+  topics: z.array(z.string()).min(1, "At least one topic is required"),
+  functionName: z.string().min(1).default("solution"),
   starterCode: z.record(z.string(), z.string()),
   testCases: z
     .array(z.object({ input: z.string(), expected: z.string() }))
@@ -60,24 +33,44 @@ const schema = z.object({
   ),
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   const { error } = await getAdminUserId();
   if (error) return error;
 
+  const { searchParams } = new URL(req.url);
+  const search = searchParams.get("search") ?? "";
+  const difficulty = searchParams.get("difficulty") ?? "";
+  const topics = searchParams.getAll("topic");
+  const scheduled = searchParams.get("scheduled") ?? "all";
+
+  // Get all scheduled problem IDs for filter
+  let scheduledProblemIds: Set<string> | null = null;
+  if (scheduled !== "all") {
+    const slots = await prisma.dailyProblem.findMany({
+      select: { problemId: true },
+    });
+    scheduledProblemIds = new Set(slots.map((s) => s.problemId));
+  }
+
   const problems = await prisma.problem.findMany({
-    where: { deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      difficulty: true,
-      topics: true,
-      createdAt: true,
+    where: {
+      deletedAt: null,
+      ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
+      ...(difficulty ? { difficulty: difficulty as any } : {}),
+      ...(topics.length > 0 ? { topics: { hasSome: topics as Topic[] } } : {}),
     },
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { solves: true, dailySlots: true } } },
   });
 
-  return NextResponse.json({ problems });
+  const filtered = problems.filter((p) => {
+    if (!scheduledProblemIds) return true;
+    if (scheduled === "scheduled") return scheduledProblemIds.has(p.id);
+    if (scheduled === "unscheduled") return !scheduledProblemIds.has(p.id);
+    return true;
+  });
+
+  return NextResponse.json({ problems: filtered });
 }
 
 export async function POST(req: Request) {
@@ -88,12 +81,11 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid data", details: parsed.error.flatten() },
+      { error: parsed.error.flatten().fieldErrors },
       { status: 400 },
     );
   }
 
-  // Check slug uniqueness
   const existing = await prisma.problem.findUnique({
     where: { slug: parsed.data.slug },
   });
@@ -102,10 +94,8 @@ export async function POST(req: Request) {
   }
 
   const problem = await prisma.problem.create({
-    data: {
-      ...parsed.data,
-      topics: parsed.data.topics.map((t) => t as Topic),
-    },
+    data: { ...parsed.data, topics: parsed.data.topics as Topic[] },
   });
+
   return NextResponse.json({ problem }, { status: 201 });
 }
