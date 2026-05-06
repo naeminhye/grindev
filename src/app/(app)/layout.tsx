@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { AppNav } from "@/components/layout/AppNav";
+import { ToastContainer } from "@/components/ui/Toast";
+import { appMenus } from "@/lib/menus";
 
 export default async function AppLayout({
   children,
@@ -19,6 +21,7 @@ export default async function AppLayout({
       <main className="flex-1 flex flex-col pb-16 md:pb-0">{children}</main>
       {/* Mobile bottom nav */}
       <MobileBottomNav />
+      <ToastContainer />
     </div>
   );
 }
@@ -27,12 +30,7 @@ function MobileBottomNav() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
       <div className="flex items-center justify-around px-2 py-2">
-        {[
-          { href: "/today", icon: "ri-code-s-slash-line", label: "Today" },
-          { href: "/history", icon: "ri-history-line", label: "History" },
-          { href: "/profile", icon: "ri-bar-chart-box-line", label: "Profile" },
-          { href: "/settings", icon: "ri-settings-3-line", label: "Settings" },
-        ].map((item) => (
+        {appMenus.map((item) => (
           <a
             key={item.href}
             href={item.href}

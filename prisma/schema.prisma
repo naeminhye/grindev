@@ -18,14 +18,28 @@ model User {
   stars               Int                 @default(10)
   lastSolvedAt        DateTime?
   lastMakeupDate      String?
-  lastNoProblemBonus  String? // "YYYY-MM-DD" — prevent double bonus
+  lastNoProblemBonus  String?
+  lastLoginBonus      String?
+  streakFreezeCount   Int                 @default(0)
   challengeMode       ChallengeMode       @default(NORMAL)
   preferredDifficulty PreferredDifficulty @default(ANY)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @default(now()) @updatedAt
 
-  solves        Solve[]
-  hintPurchases HintPurchase[]
+  solves           Solve[]
+  hintPurchases    HintPurchase[]
+  starTransactions StarTransaction[]
+}
+
+model StarTransaction {
+  id        String                @id @default(cuid())
+  userId    String
+  amount    Int
+  reason    StarTransactionReason
+  meta      Json?
+  createdAt DateTime              @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Problem {
@@ -49,7 +63,6 @@ model Problem {
   solves     Solve[]
 }
 
-// One slot per date+difficulty — up to 3 problems per day
 model DailyProblem {
   id         String     @id @default(cuid())
   date       String
@@ -61,7 +74,7 @@ model DailyProblem {
 }
 
 model AppConfig {
-  key   String @id // e.g. "NO_PROBLEM_BONUS_STARS"
+  key   String @id
   value String
 }
 
@@ -111,6 +124,19 @@ enum PreferredDifficulty {
   HARD
 }
 
+enum ChallengeMode {
+  NORMAL
+  HARD
+}
+
+enum Language {
+  JAVASCRIPT
+  TYPESCRIPT
+  PYTHON
+  CPP
+  JAVA
+}
+
 enum Topic {
   ARRAYS
   STRINGS
@@ -140,15 +166,19 @@ enum Topic {
   MONOTONIC_QUEUE
 }
 
-enum ChallengeMode {
-  NORMAL
-  HARD
-}
-
-enum Language {
-  JAVASCRIPT
-  TYPESCRIPT
-  PYTHON
-  CPP
-  JAVA
+enum StarTransactionReason {
+  SOLVE_CLEAN_NORMAL
+  SOLVE_CLEAN_HARD
+  SOLVE_HINTS_NORMAL
+  SOLVE_HINTS_HARD
+  HINT_PURCHASE
+  MAKEUP_COST
+  MAKEUP_REWARD
+  STREAK_FREEZE_PURCHASE
+  PROBLEM_SKIP
+  DAILY_LOGIN_BONUS
+  NO_PROBLEM_BONUS
+  STREAK_MILESTONE
+  FIRST_SOLVE_BONUS
+  ADMIN_ADJUSTMENT
 }

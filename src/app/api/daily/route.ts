@@ -4,13 +4,10 @@ import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
 import { getMakeupDates, getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getAuthUserId } from "@/lib/auth-helper";
 import { pickBestDifficulty } from "@/lib/daily-logic";
-import {
-  parseProblemExamples,
-  type DailyResponse,
-  type HintData,
-  type StarterCode,
-} from "@/types";
+import { checkDailyLoginBonus } from "@/lib/stars";
+import type { DailyResponse, HintData, StarterCode } from "@/types";
 import type { Difficulty } from "@prisma/client";
+import { parseProblemExamples } from "@/lib/problem-utils";
 
 const NO_PROBLEM_BONUS_KEY = "NO_PROBLEM_BONUS_STARS";
 const DEFAULT_BONUS = 5;
@@ -28,20 +25,26 @@ export async function GET() {
   await checkAndResetStreak(userId);
 
   const today = getTodayUTC();
+
+  // Daily login bonus
+  const loginBonus = await checkDailyLoginBonus(userId, today);
+
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  // ── Get all problems scheduled for today ──────────────────────────────
+  // Get today's scheduled problems
   const todaySlots = await prisma.dailyProblem.findMany({
     where: { date: today },
     include: { problem: true },
   });
 
-  const availableSlots = todaySlots.filter((s) => s.problem);
+  const availableSlots = todaySlots.filter(
+    (s) => s.problem && !s.problem.deletedAt,
+  );
   const availableDifficulties = availableSlots.map(
     (s) => s.difficulty,
   ) as Difficulty[];
 
-  // ── No problem today ──────────────────────────────────────────────────
+  // No problem today
   if (availableSlots.length === 0) {
     const bonusAlreadyGiven = user?.lastNoProblemBonus === today;
     let bonusStars = 0;
@@ -53,27 +56,27 @@ export async function GET() {
       bonusStars = config ? parseInt(config.value) : DEFAULT_BONUS;
       await prisma.user.update({
         where: { id: userId },
-        data: {
-          stars: { increment: bonusStars },
-          lastNoProblemBonus: today,
-        },
+        data: { stars: { increment: bonusStars }, lastNoProblemBonus: today },
       });
     }
 
+    const freshUser = await prisma.user.findUnique({ where: { id: userId } });
     return NextResponse.json({
       noProblemToday: true,
       bonusStars: bonusAlreadyGiven ? 0 : bonusStars,
       bonusAlreadyGiven,
+      loginBonus,
       userStats: {
-        currentStreak: user?.currentStreak ?? 0,
-        longestStreak: user?.longestStreak ?? 0,
-        stars: (user?.stars ?? 0) + bonusStars,
-        lastSolvedAt: user?.lastSolvedAt?.toISOString() ?? null,
+        currentStreak: freshUser?.currentStreak ?? 0,
+        longestStreak: freshUser?.longestStreak ?? 0,
+        stars: freshUser?.stars ?? 10,
+        lastSolvedAt: freshUser?.lastSolvedAt?.toISOString() ?? null,
+        streakFreezeCount: freshUser?.streakFreezeCount ?? 0,
       },
     });
   }
 
-  // ── Pick best problem for user's preferred difficulty ─────────────────
+  // Pick best problem for user's preferred difficulty
   const bestDifficulty = pickBestDifficulty(
     user?.preferredDifficulty ?? "ANY",
     availableDifficulties,
@@ -89,21 +92,12 @@ export async function GET() {
     ? `No ${user?.preferredDifficulty?.toLowerCase()} problem today — showing ${bestDifficulty.toLowerCase()} instead.`
     : null;
 
-  // ── checks all of today's problems ───────────────
+  // Check solved status across all today's problems
   const todayProblemIds = availableSlots.map((s) => s.problem.id);
   const anySolvedToday = await prisma.solve.findFirst({
-    where: {
-      userId,
-      problemId: { in: todayProblemIds },
-      passed: true,
-    },
+    where: { userId, problemId: { in: todayProblemIds }, passed: true },
   });
 
-  const existingSolve = await prisma.solve.findUnique({
-    where: { userId_problemId: { userId, problemId: problem.id } },
-  });
-
-  // ── Hints already purchased ───────────────────────────────────────────
   const purchases = await prisma.hintPurchase.findMany({
     where: { userId, problemId: problem.id },
     select: { tier: true },
@@ -117,10 +111,8 @@ export async function GET() {
     if (hint) unlockedHintContents[tier] = hint.content;
   }
 
-  // ── Makeup days ───────────────────────────────────────────────────────
+  // Makeup days
   const pastDates = getMakeupDates(30);
-
-  // Get ALL past slots (not just deduped)
   const allPastSlots = await prisma.dailyProblem.findMany({
     where: { date: { in: pastDates } },
     include: {
@@ -130,23 +122,19 @@ export async function GET() {
     },
   });
 
-  // Get all problem IDs across all past slots
-  const allPastProblemIds = allPastSlots.map((s) => s.problemId);
-
-  const existingSolves = await prisma.solve.findMany({
-    where: { userId, problemId: { in: allPastProblemIds }, passed: true },
-    select: { problemId: true },
-  });
-  const solvedProblemIds = new Set(existingSolves.map((s) => s.problemId));
-
-  // Group slots by date first
   const slotsByDate = new Map<string, typeof allPastSlots>();
   for (const slot of allPastSlots) {
     if (!slotsByDate.has(slot.date)) slotsByDate.set(slot.date, []);
     slotsByDate.get(slot.date)!.push(slot);
   }
 
-  // Pick best slot per date using same logic as daily
+  const allPastProblemIds = allPastSlots.map((s) => s.problemId);
+  const existingSolves = await prisma.solve.findMany({
+    where: { userId, problemId: { in: allPastProblemIds }, passed: true },
+    select: { problemId: true },
+  });
+  const solvedProblemIds = new Set(existingSolves.map((s) => s.problemId));
+
   const makeupByDate = new Map<string, (typeof allPastSlots)[0]>();
   for (const [date, slots] of slotsByDate) {
     const availableDiffs = slots.map((s) => s.difficulty);
@@ -158,15 +146,12 @@ export async function GET() {
     if (bestSlot) makeupByDate.set(date, bestSlot);
   }
 
-  // A day is "already solved" if ANY problem scheduled for that date was solved
   const makeupDays = [...makeupByDate.values()]
     .map((s) => {
       const dateSlotIds = allPastSlots
         .filter((slot) => slot.date === s.date)
         .map((slot) => slot.problemId);
-
       const alreadySolved = dateSlotIds.some((id) => solvedProblemIds.has(id));
-
       return {
         date: s.date,
         daysAgo: getDaysAgo(s.date),
@@ -201,11 +186,13 @@ export async function GET() {
     unlockedHintContents,
     makeupDays,
     makeupRewardGivenToday: freshUser?.lastMakeupDate === today,
+    loginBonus,
     userStats: {
       currentStreak: freshUser?.currentStreak ?? 0,
       longestStreak: freshUser?.longestStreak ?? 0,
       stars: freshUser?.stars ?? 10,
       lastSolvedAt: freshUser?.lastSolvedAt?.toISOString() ?? null,
+      streakFreezeCount: freshUser?.streakFreezeCount ?? 0,
     },
   };
 

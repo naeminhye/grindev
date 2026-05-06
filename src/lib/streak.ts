@@ -1,40 +1,31 @@
-import { format, isYesterday, isToday, parseISO } from 'date-fns'
-import { prisma } from './prisma'
+import { format, isYesterday, isToday } from "date-fns";
+import { prisma } from "./prisma";
+import { adjustStars } from "./stars";
 
-/**
- * Call this after a successful solve.
- * Handles streak increment, reset, and longest streak tracking.
- */
 export async function updateStreak(userId: string): Promise<{
-  currentStreak: number
-  longestStreak: number
-  isNewRecord: boolean
+  currentStreak: number;
+  longestStreak: number;
+  isNewRecord: boolean;
 }> {
-  const user = await prisma.user.findUnique({ where: { id: userId } })
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error("User not found");
 
-  if (!user) throw new Error('User not found')
+  const now = new Date();
+  const lastSolved = user.lastSolvedAt;
 
-  const now = new Date()
-  const lastSolved = user.lastSolvedAt
-
-  // Already solved today — don't double count
   if (lastSolved && isToday(lastSolved)) {
     return {
       currentStreak: user.currentStreak,
       longestStreak: user.longestStreak,
       isNewRecord: false,
-    }
+    };
   }
 
-  // Solved yesterday → extend streak
-  // Solved longer ago → reset to 1
   const newStreak =
-    lastSolved && isYesterday(lastSolved)
-      ? user.currentStreak + 1
-      : 1
+    lastSolved && isYesterday(lastSolved) ? user.currentStreak + 1 : 1;
 
-  const newLongest = Math.max(newStreak, user.longestStreak)
-  const isNewRecord = newStreak > user.longestStreak
+  const newLongest = Math.max(newStreak, user.longestStreak);
+  const isNewRecord = newStreak > user.longestStreak;
 
   await prisma.user.update({
     where: { id: userId },
@@ -43,33 +34,46 @@ export async function updateStreak(userId: string): Promise<{
       longestStreak: newLongest,
       lastSolvedAt: now,
     },
-  })
+  });
 
-  return { currentStreak: newStreak, longestStreak: newLongest, isNewRecord }
+  return { currentStreak: newStreak, longestStreak: newLongest, isNewRecord };
 }
 
-/**
- * On app load / login, check if the streak should be reset
- * because the user missed yesterday.
- */
 export async function checkAndResetStreak(userId: string): Promise<void> {
-  const user = await prisma.user.findUnique({ where: { id: userId } })
-  if (!user || !user.lastSolvedAt) return
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.lastSolvedAt) return;
 
-  const lastSolved = user.lastSolvedAt
-  const missedYesterday = !isToday(lastSolved) && !isYesterday(lastSolved)
+  const lastSolved = user.lastSolvedAt;
+  const missedYesterday = !isToday(lastSolved) && !isYesterday(lastSolved);
 
   if (missedYesterday && user.currentStreak > 0) {
+    // Use a freeze if available
+    if (user.streakFreezeCount > 0) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { streakFreezeCount: { decrement: 1 } },
+      });
+      // Log freeze usage (no star change — freeze was already paid for)
+      await prisma.starTransaction.create({
+        data: {
+          userId,
+          amount: 0,
+          reason: "STREAK_MILESTONE",
+          meta: { type: "freeze_used" },
+        },
+      });
+      // Don't reset streak
+      return;
+    }
+
+    // No freeze — reset streak
     await prisma.user.update({
       where: { id: userId },
       data: { currentStreak: 0 },
-    })
+    });
   }
 }
 
-/**
- * Get today's date string in UTC — used for DailyProblem lookup.
- */
 export function getTodayUTC(): string {
-  return format(new Date(), 'yyyy-MM-dd')
+  return format(new Date(), "yyyy-MM-dd");
 }
