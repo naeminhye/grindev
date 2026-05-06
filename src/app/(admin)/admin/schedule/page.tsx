@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { format, addDays } from "date-fns";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/lib/utils";
 
 type Problem = {
@@ -46,8 +47,6 @@ export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState<string | null>(null);
-
-  // Auto schedule state
   const [showAutoPanel, setShowAutoPanel] = useState(false);
   const [autoConfig, setAutoConfig] = useState<AutoScheduleConfig>({
     days: 7,
@@ -59,6 +58,9 @@ export default function SchedulePage() {
   >([]);
   const [autoRunning, setAutoRunning] = useState(false);
   const [autoMessage, setAutoMessage] = useState("");
+  const [removeTarget, setRemoveTarget] = useState<
+    (typeof DIFFICULTIES)[number] | null
+  >(null);
 
   const today = format(new Date(), "yyyy-MM-dd");
 
@@ -237,11 +239,14 @@ export default function SchedulePage() {
   }
 
   async function handleRemove(difficulty: (typeof DIFFICULTIES)[number]) {
-    if (!confirm(`Remove ${difficulty} problem from ${selectedDate}?`)) return;
-    setSaving(difficulty);
+    setRemoveTarget(difficulty);
+  }
 
+  async function confirmRemove() {
+    if (!removeTarget) return;
+    setSaving(removeTarget);
     const res = await fetch(
-      `/api/admin/schedule/${selectedDate}/${difficulty}`,
+      `/api/admin/schedule/${selectedDate}/${removeTarget}`,
       { method: "DELETE" },
     );
     if (res.ok) {
@@ -251,15 +256,16 @@ export default function SchedulePage() {
             d.date === selectedDate
               ? {
                   ...d,
-                  slots: d.slots.filter((s) => s.difficulty !== difficulty),
+                  slots: d.slots.filter((s) => s.difficulty !== removeTarget),
                 }
               : d,
           )
           .filter((d) => d.slots.length > 0),
       );
-      setMessage(`✓ ${difficulty} removed from ${selectedDate}`);
+      setMessage(`✓ ${removeTarget} removed from ${selectedDate}`);
     }
     setSaving(null);
+    setRemoveTarget(null);
   }
 
   const upcoming = schedule
@@ -298,6 +304,17 @@ export default function SchedulePage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10 w-full space-y-8">
+      {removeTarget && (
+        <ConfirmDialog
+          title="Remove Scheduled Problem"
+          message={`Remove the ${removeTarget.toLowerCase()} problem from ${selectedDate}?`}
+          confirmLabel="Remove"
+          variant="warning"
+          onConfirm={confirmRemove}
+          onCancel={() => setRemoveTarget(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
