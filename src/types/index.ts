@@ -1,4 +1,4 @@
-import type { Difficulty, Prisma, Topic } from "@prisma/client";
+import type { Difficulty, Topic } from "@prisma/client";
 import type { Language } from "@/lib/languages";
 import type { MakeupDay } from "@/lib/makeup";
 
@@ -47,6 +47,8 @@ export type SolveResponse = {
   passed: boolean;
   results: TestResult[];
   starDelta?: number;
+  milestoneBonus?: number; // extra stars from streak milestone
+  firstSolveBonus?: number; // extra stars for first ever solve
   streak?: {
     currentStreak: number;
     longestStreak: number;
@@ -65,16 +67,18 @@ export type UserStats = {
   longestStreak: number;
   stars: number;
   lastSolvedAt: string | null;
+  streakFreezeCount: number;
 };
 
 export type DailyResponse = {
   problem: PublicProblem;
-  difficultyNote: string | null; // shown when closest difficulty used
+  difficultyNote: string | null;
   alreadySolved: boolean;
   hintsUnlocked: number[];
   unlockedHintContents: Record<number, string>;
   makeupDays: MakeupDay[];
   makeupRewardGivenToday: boolean;
+  loginBonus: number; // 0 if already received today
   userStats: UserStats;
 };
 
@@ -82,6 +86,7 @@ export type NoProblemResponse = {
   noProblemToday: true;
   bonusStars: number;
   bonusAlreadyGiven: boolean;
+  loginBonus: number;
   userStats: UserStats;
 };
 
@@ -106,27 +111,9 @@ export type ProfileStats = {
   currentStreak: number;
   longestStreak: number;
   stars: number;
+  streakFreezeCount: number;
   challengeMode: "NORMAL" | "HARD";
   topicBreakdown: { topic: string; count: number }[];
   difficultyBreakdown: { difficulty: string; count: number }[];
   recentActivity: { date: string; solved: boolean; isMakeup: boolean }[];
 };
-
-// TODO: move to utils
-export function parseProblemExamples(
-  value: Prisma.JsonValue,
-): ProblemExample[] {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .filter((item): item is Prisma.JsonObject => {
-      return typeof item === "object" && item !== null && !Array.isArray(item);
-    })
-    .map((item) => ({
-      input: typeof item.input === "string" ? item.input : "",
-      output: typeof item.output === "string" ? item.output : "",
-      explanation:
-        typeof item.explanation === "string" ? item.explanation : undefined,
-    }))
-    .filter((example) => example.input && example.output);
-}

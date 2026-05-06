@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
@@ -18,6 +19,9 @@ import { TimerDisplay } from "@/components/ui/TimerDisplay";
 import { SuccessModal } from "@/components/ui/SuccessModal";
 import { NoProblemScreen } from "@/components/ui/NoProblemScreen";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { toast } from "@/components/ui/Toast";
+import { MilestoneModal } from "@/components/ui/MilestoneModal";
+
 import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
 import { getTimeLimit } from "@/lib/challenge";
@@ -57,6 +61,10 @@ export default function TodayPage() {
   );
   const [diffNoteVisible, setDiffNoteVisible] = useState(true);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [milestone, setMilestone] = useState<{
+    streak: number;
+    bonus: number;
+  } | null>(null);
 
   const hasStartedTyping = useRef(false);
 
@@ -92,6 +100,14 @@ export default function TodayPage() {
           setPageState(dailyData.alreadySolved ? "solved" : "ready");
           if (dailyData.alreadySolved) setModeLocked(true);
           setDiffNoteVisible(true);
+          if (dailyData.loginBonus > 0) {
+            toast({
+              message: `+${dailyData.loginBonus}⭐ daily login bonus!`,
+              variant: "warning",
+              icon: "ri-star-fill",
+              duration: 4000,
+            });
+          }
         },
       )
       .catch((err) => {
@@ -159,6 +175,13 @@ export default function TodayPage() {
           setStars((s) => Math.max(0, s + result.starDelta!));
         }
         setShowSuccessModal(true);
+
+        if (result.milestoneBonus) {
+          setMilestone({
+            streak: result.streak?.currentStreak ?? 0,
+            bonus: result.milestoneBonus,
+          });
+        }
       } else {
         setPageState("ready");
         // Switch to problem tab on mobile to show results
@@ -803,6 +826,13 @@ export default function TodayPage() {
 
   return (
     <>
+      {milestone && (
+        <MilestoneModal
+          streak={milestone.streak}
+          bonusStars={milestone.bonus}
+          onConfirm={() => setMilestone(null)}
+        />
+      )}
       {showResetConfirm && (
         <ConfirmDialog
           title="Reset Code"

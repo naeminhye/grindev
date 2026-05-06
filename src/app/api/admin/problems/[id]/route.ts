@@ -74,6 +74,7 @@ export async function PATCH(
     data: {
       ...parsed.data,
       topics: parsed.data.topics?.map((t) => t as Topic),
+      examples: parsed.data.examples as any,
     },
   });
 

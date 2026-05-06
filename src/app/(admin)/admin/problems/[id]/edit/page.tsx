@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ProblemForm from "@/components/admin/ProblemForm";
 import type { ProblemFormData } from "@/components/admin/ProblemForm";
-import { parseProblemExamples } from "@/types";
+import { parseProblemExamples } from "@/lib/problem-utils";
 
 export default async function EditProblemPage({
   params,

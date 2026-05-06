@@ -5,13 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { HelpButton } from "@/components/ui/HelpButton";
-
-const menus = [
-  { href: "/today", label: "Today", icon: "ri-code-s-slash-line" },
-  { href: "/history", label: "History", icon: "ri-history-line" },
-  { href: "/profile", label: "Profile", icon: "ri-bar-chart-box-line" },
-  { href: "/settings", label: "Settings", icon: "ri-settings-3-line" },
-];
+import { appMenus } from "@/lib/menus";
 
 interface AppNavProps {
   userName: string;
@@ -48,7 +42,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
 
         {/* Desktop nav links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1">
-          {menus.map((menu) => (
+          {appMenus.map((menu) => (
             <Link
               key={menu.href}
               href={menu.href}
