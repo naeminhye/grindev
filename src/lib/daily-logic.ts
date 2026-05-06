@@ -7,9 +7,9 @@ const DIFFICULTY_ORDER: Difficulty[] = ["EASY", "MEDIUM", "HARD"];
  * returns the best matching difficulty.
  *
  * Rules:
- * - ANY → pick highest available
+ * - ANY → random pick from available
  * - Exact match → use it
- * - No exact match → pick closest (prefer harder if tied)
+ * - No exact match → pick closest (prefer easier if tied)
  */
 export function pickBestDifficulty(
   preferred: PreferredDifficulty,
@@ -18,18 +18,13 @@ export function pickBestDifficulty(
   if (available.length === 0) return null;
 
   if (preferred === "ANY") {
-    // Give the hardest available
-    return [...available].sort(
-      (a, b) => DIFFICULTY_ORDER.indexOf(b) - DIFFICULTY_ORDER.indexOf(a),
-    )[0];
+    return available[Math.floor(Math.random() * available.length)];
   }
 
   const target = preferred as Difficulty;
 
-  // Exact match
   if (available.includes(target)) return target;
 
-  // Closest — sort by distance, prefer harder on tie
   const sorted = [...available].sort((a, b) => {
     const da = Math.abs(
       DIFFICULTY_ORDER.indexOf(a) - DIFFICULTY_ORDER.indexOf(target),
@@ -38,8 +33,8 @@ export function pickBestDifficulty(
       DIFFICULTY_ORDER.indexOf(b) - DIFFICULTY_ORDER.indexOf(target),
     );
     if (da !== db) return da - db;
-    // tie → prefer the harder one
-    return DIFFICULTY_ORDER.indexOf(b) - DIFFICULTY_ORDER.indexOf(a);
+    // Tie → prefer easier
+    return DIFFICULTY_ORDER.indexOf(a) - DIFFICULTY_ORDER.indexOf(b);
   });
 
   return sorted[0];
@@ -50,7 +45,7 @@ export function pickBestDifficulty(
  */
 export function getDifficultyNote(preferred: PreferredDifficulty): string {
   if (preferred === "ANY") {
-    return "You'll get the hardest problem available each day.";
+    return "You'll get a random problem each day.";
   }
   return `You'll get ${preferred.charAt(0) + preferred.slice(1).toLowerCase()} problems when available. If none are scheduled, you'll get the closest difficulty instead.`;
 }

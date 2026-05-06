@@ -25,9 +25,19 @@ export async function GET() {
     orderBy: { solvedAt: "desc" },
   });
 
+  // Get ALL solves (passed) with their dates
   const allSolves = await prisma.solve.findMany({
-    where: { userId },
-    select: { attempts: true, solvedAt: true, passed: true },
+    where: { userId, passed: true },
+    select: {
+      cleanSolve: true,
+      challengeMode: true,
+      isMakeup: true,
+      makeupDate: true,
+      solvedAt: true,
+      attempts: true,
+      problem: { select: { topics: true, difficulty: true } },
+    },
+    orderBy: { solvedAt: "desc" },
   });
 
   // Topic breakdown
@@ -54,36 +64,33 @@ export async function GET() {
   const today = new Date();
   const recentActivity = [];
 
-  // Use makeupDate for makeup solves, solvedAt for regular ones
-  const solvedDates = new Set(
-    solves.map((s) =>
-      s.isMakeup && s.makeupDate
-        ? s.makeupDate
-        : format(new Date(s.solvedAt), "yyyy-MM-dd"),
-    ),
-  );
-
-  // Regular solves (not makeup)
+  // Regular solves — use solvedAt date
   const regularSolvedDates = new Set(
-    solves
+    allSolves
       .filter((s) => !s.isMakeup)
       .map((s) => format(new Date(s.solvedAt), "yyyy-MM-dd")),
   );
 
-  // Makeup solves — use the original missed date
+  console.log("regular dates:", [...regularSolvedDates]);
+  console.log("today UTC:", format(new Date(), "yyyy-MM-dd"));
+
+  // Makeup solves — use makeupDate (the original missed day)
   const makeupDates = new Set(
-    solves.filter((s) => s.isMakeup && s.makeupDate).map((s) => s.makeupDate!),
+    allSolves
+      .filter((s) => s.isMakeup && s.makeupDate)
+      .map((s) => s.makeupDate!),
   );
 
-  // Combined for "solved" check
-  const allSolvedDates = new Set([...regularSolvedDates, ...makeupDates]);
-
+  // Build heatmap — a day is "solved" if regular solve on that day
+  // OR if user did a makeup for that day
   for (let i = 29; i >= 0; i--) {
     const date = format(subDays(today, i), "yyyy-MM-dd");
+    const isSolvedRegular = regularSolvedDates.has(date);
+    const isMakeup = makeupDates.has(date) && !isSolvedRegular;
     recentActivity.push({
       date,
-      solved: regularSolvedDates.has(date), // green = regular solve
-      isMakeup: makeupDates.has(date), // blue = makeup (even if also regular)
+      solved: isSolvedRegular,
+      isMakeup,
     });
   }
 

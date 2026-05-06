@@ -1,0 +1,3285 @@
+[
+  {
+    "title": "Snack Bag Balance",
+    "slug": "snack-bag-balance",
+    "functionName": "snackBagBalance",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "You and your friends are packing snacks for a movie night.\n\nEach number in `snacks` represents how many snack packs one person brings. Return the **total number of snack packs** everyone brings together.\n\nIf nobody brings anything, return `0`.",
+    "examples": [
+      {
+        "input": "`snacks = [2, 3, 5]`",
+        "output": "`10`",
+        "explanation": "The total is `2 + 3 + 5 = 10`."
+      },
+      {
+        "input": "`snacks = []`",
+        "output": "`0`",
+        "explanation": "There are no snack packs to count."
+      }
+    ],
+    "constraints": "- `0 <= snacks.length <= 10^4`\n- `0 <= snacks[i] <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function snackBagBalance(snacks) {\n  // Return the total number of snack packs.\n}",
+      "TYPESCRIPT": "function snackBagBalance(snacks: number[]): number {\n  // Return the total number of snack packs.\n}",
+      "PYTHON": "from typing import List\n\ndef snack_bag_balance(snacks: List[int]) -> int:\n    # Return the total number of snack packs.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint snackBagBalance(vector<int>& snacks) {\n    // Return the total number of snack packs.\n}",
+      "JAVA": "class Solution {\n    public int snackBagBalance(int[] snacks) {\n        // Return the total number of snack packs.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,3,5]",
+        "expected": "10"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[7]",
+        "expected": "7"
+      },
+      {
+        "input": "[1,1,1,1,1]",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You only need to add all numbers in the array."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use array traversal with a running sum."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set total = 0.\nLoop through every value in snacks.\nAdd each value to total.\nReturn total."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction snackBagBalance(snacks) {\n  let total = 0;\n\n  for (const count of snacks) {\n    total += count;\n  }\n\n  return total;\n}\n\nTime complexity: O(n), where n is snacks.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Find The Quiet Seat",
+    "slug": "find-the-quiet-seat",
+    "functionName": "findTheQuietSeat",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "You are choosing a seat in a cafe.\n\nEach number in `noiseLevels` represents how noisy one seat is. Return the **index** of the quietest seat, which is the seat with the smallest noise level.\n\nIf multiple seats have the same lowest noise level, return the first one. If the cafe has no seats, return `-1`.",
+    "examples": [
+      {
+        "input": "`noiseLevels = [8, 3, 5, 3]`",
+        "output": "`1`",
+        "explanation": "The quietest noise level is `3`. It appears first at index `1`."
+      },
+      {
+        "input": "`noiseLevels = []`",
+        "output": "`-1`",
+        "explanation": "There are no seats to choose from."
+      }
+    ],
+    "constraints": "- `0 <= noiseLevels.length <= 10^4`\n- `0 <= noiseLevels[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function findTheQuietSeat(noiseLevels) {\n  // Return the index of the quietest seat, or -1 if there are no seats.\n}",
+      "TYPESCRIPT": "function findTheQuietSeat(noiseLevels: number[]): number {\n  // Return the index of the quietest seat, or -1 if there are no seats.\n}",
+      "PYTHON": "from typing import List\n\ndef find_the_quiet_seat(noise_levels: List[int]) -> int:\n    # Return the index of the quietest seat, or -1 if there are no seats.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint findTheQuietSeat(vector<int>& noiseLevels) {\n    // Return the index of the quietest seat, or -1 if there are no seats.\n}",
+      "JAVA": "class Solution {\n    public int findTheQuietSeat(int[] noiseLevels) {\n        // Return the index of the quietest seat, or -1 if there are no seats.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[8,3,5,3]",
+        "expected": "1"
+      },
+      {
+        "input": "[]",
+        "expected": "-1"
+      },
+      {
+        "input": "[10]",
+        "expected": "0"
+      },
+      {
+        "input": "[4,4,4]",
+        "expected": "0"
+      },
+      {
+        "input": "[9,7,5,2]",
+        "expected": "3"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Track both the smallest value and its index."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a single pass. Only update when you find a strictly smaller value."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If noiseLevels is empty, return -1.\nSet quietIndex = 0.\nLoop from index 1 to the end.\nIf noiseLevels[i] < noiseLevels[quietIndex], update quietIndex.\nReturn quietIndex."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction findTheQuietSeat(noiseLevels) {\n  if (noiseLevels.length === 0) return -1;\n\n  let quietIndex = 0;\n\n  for (let i = 1; i < noiseLevels.length; i++) {\n    if (noiseLevels[i] < noiseLevels[quietIndex]) {\n      quietIndex = i;\n    }\n  }\n\n  return quietIndex;\n}\n\nTime complexity: O(n), where n is noiseLevels.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Playlist Skip Cleanup",
+    "slug": "playlist-skip-cleanup",
+    "functionName": "playlistSkipCleanup",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "TWO_POINTERS"],
+    "description": "You are cleaning up a playlist before a road trip.\n\nEach number in `songs` represents a song ID. A song ID of `0` means the song is unavailable and should be skipped.\n\nReturn a new array with all unavailable songs moved to the **end**, while keeping the order of available songs the same.",
+    "examples": [
+      {
+        "input": "`songs = [0, 12, 0, 5, 8]`",
+        "output": "`[12, 5, 8, 0, 0]`",
+        "explanation": "Available songs `12`, `5`, and `8` keep their order."
+      },
+      {
+        "input": "`songs = [0, 0, 7]`",
+        "output": "`[7, 0, 0]`"
+      }
+    ],
+    "constraints": "- `0 <= songs.length <= 10^4`\n- `0 <= songs[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function playlistSkipCleanup(songs) {\n  // Return a new array with all unavailable songs moved to the end.\n}",
+      "TYPESCRIPT": "function playlistSkipCleanup(songs: number[]): number[] {\n  // Return a new array with all unavailable songs moved to the end.\n}",
+      "PYTHON": "from typing import List\n\ndef playlist_skip_cleanup(songs: List[int]) -> List[int]:\n    # Return a new array with all unavailable songs moved to the end.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nvector<int> playlistSkipCleanup(vector<int>& songs) {\n    // Return a new array with all unavailable songs moved to the end.\n}",
+      "JAVA": "class Solution {\n    public int[] playlistSkipCleanup(int[] songs) {\n        // Return a new array with all unavailable songs moved to the end.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[0,12,0,5,8]",
+        "expected": "[12,5,8,0,0]"
+      },
+      {
+        "input": "[]",
+        "expected": "[]"
+      },
+      {
+        "input": "[0]",
+        "expected": "[0]"
+      },
+      {
+        "input": "[4,5,6]",
+        "expected": "[4,5,6]"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "[0,0,0]"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "First collect the non-zero song IDs."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Count how many zeroes appear, then append them at the end."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create result = [].\nCreate skipped = 0.\nFor each song, if song is 0, increase skipped. Otherwise, push song into result.\nAfter the loop, push 0 into result skipped times.\nReturn result."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction playlistSkipCleanup(songs) {\n  const result = [];\n  let skipped = 0;\n\n  for (const song of songs) {\n    if (song === 0) {\n      skipped++;\n    } else {\n      result.push(song);\n    }\n  }\n\n  for (let i = 0; i < skipped; i++) {\n    result.push(0);\n  }\n\n  return result;\n}\n\nTime complexity: O(n), where n is songs.length.\nSpace complexity: O(n), because we return a new array."
+      }
+    ]
+  },
+  {
+    "title": "Cafe Rush Window",
+    "slug": "cafe-rush-window",
+    "functionName": "cafeRushWindow",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "TWO_POINTERS"],
+    "description": "A cafe records how many customers enter every minute.\n\nGiven an array `customers` and an integer `windowSize`, return the **maximum number of customers** that entered during any continuous block of `windowSize` minutes.\n\nIf `windowSize` is larger than the array length, return the total number of customers.",
+    "examples": [
+      {
+        "input": "`customers = [3, 1, 5, 2, 6]`, `windowSize = 3`",
+        "output": "`13`",
+        "explanation": "The busiest 3-minute block is `[5, 2, 6]`, with total `13`."
+      },
+      {
+        "input": "`customers = [4, 2]`, `windowSize = 5`",
+        "output": "`6`",
+        "explanation": "The window is larger than the data, so return the total."
+      }
+    ],
+    "constraints": "- `0 <= customers.length <= 10^5`\n- `0 <= customers[i] <= 10^5`\n- `1 <= windowSize <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function cafeRushWindow(customers, windowSize) {\n  // Return the maximum customer total in any continuous window.\n}",
+      "TYPESCRIPT": "function cafeRushWindow(customers: number[], windowSize: number): number {\n  // Return the maximum customer total in any continuous window.\n}",
+      "PYTHON": "from typing import List\n\ndef cafe_rush_window(customers: List[int], window_size: int) -> int:\n    # Return the maximum customer total in any continuous window.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint cafeRushWindow(vector<int>& customers, int windowSize) {\n    // Return the maximum customer total in any continuous window.\n}",
+      "JAVA": "class Solution {\n    public int cafeRushWindow(int[] customers, int windowSize) {\n        // Return the maximum customer total in any continuous window.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[3,1,5,2,6]\n3",
+        "expected": "13"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[7]\n1",
+        "expected": "7"
+      },
+      {
+        "input": "[4,2]\n5",
+        "expected": "6"
+      },
+      {
+        "input": "[1,1,1,1]\n2",
+        "expected": "2"
+      },
+      {
+        "input": "[10,0,0,10]\n2",
+        "expected": "10"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Avoid recalculating every window from scratch."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use the fixed-size sliding window pattern."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If customers is empty, return 0.\nIf windowSize >= customers.length, return the total sum.\nBuild the first window sum.\nSlide the window by adding the new right value and removing the old left value.\nTrack the maximum sum."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction cafeRushWindow(customers, windowSize) {\n  if (customers.length === 0) return 0;\n\n  if (windowSize >= customers.length) {\n    return customers.reduce((sum, value) => sum + value, 0);\n  }\n\n  let current = 0;\n\n  for (let i = 0; i < windowSize; i++) {\n    current += customers[i];\n  }\n\n  let best = current;\n\n  for (let right = windowSize; right < customers.length; right++) {\n    current += customers[right];\n    current -= customers[right - windowSize];\n    best = Math.max(best, current);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is customers.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Split The Dinner Bill",
+    "slug": "split-the-dinner-bill",
+    "functionName": "splitTheDinnerBill",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "A group of friends pays for dinner together.\n\nEach number in `payments` represents how much one friend already paid. Return an array showing how much each friend should **receive** or **pay back** so everyone ends up paying the same amount.\n\nUse positive numbers for friends who should receive money, negative numbers for friends who should pay back, and `0` for friends who are already balanced.\n\nYou may assume the total bill can be evenly split.",
+    "examples": [
+      {
+        "input": "`payments = [30, 10, 20]`",
+        "output": "`[10, -10, 0]`",
+        "explanation": "The average is `20`. The first friend paid `10` extra, the second paid `10` less, and the third is balanced."
+      },
+      {
+        "input": "`payments = [15, 15, 15]`",
+        "output": "`[0, 0, 0]`"
+      }
+    ],
+    "constraints": "- `0 <= payments.length <= 10^4`\n- `0 <= payments[i] <= 10^6`\n- The total sum of `payments` is divisible by `payments.length` when `payments.length > 0`.",
+    "starterCode": {
+      "JAVASCRIPT": "function splitTheDinnerBill(payments) {\n  // Return each person's balance compared to the equal share.\n}",
+      "TYPESCRIPT": "function splitTheDinnerBill(payments: number[]): number[] {\n  // Return each person's balance compared to the equal share.\n}",
+      "PYTHON": "from typing import List\n\ndef split_the_dinner_bill(payments: List[int]) -> List[int]:\n    # Return each person's balance compared to the equal share.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nvector<int> splitTheDinnerBill(vector<int>& payments) {\n    // Return each person's balance compared to the equal share.\n}",
+      "JAVA": "class Solution {\n    public int[] splitTheDinnerBill(int[] payments) {\n        // Return each person's balance compared to the equal share.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[30,10,20]",
+        "expected": "[10,-10,0]"
+      },
+      {
+        "input": "[]",
+        "expected": "[]"
+      },
+      {
+        "input": "[15]",
+        "expected": "[0]"
+      },
+      {
+        "input": "[15,15,15]",
+        "expected": "[0,0,0]"
+      },
+      {
+        "input": "[0,30,60]",
+        "expected": "[-30,0,30]"
+      },
+      {
+        "input": "[100,0]",
+        "expected": "[50,-50]"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "First find the total and the equal share."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Each person's balance is payment - average."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If payments is empty, return an empty array.\nCalculate total.\nCalculate average = total / payments.length.\nFor each payment, push payment - average into the answer.\nReturn the answer."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction splitTheDinnerBill(payments) {\n  if (payments.length === 0) return [];\n\n  let total = 0;\n\n  for (const payment of payments) {\n    total += payment;\n  }\n\n  const average = total / payments.length;\n  const result = [];\n\n  for (const payment of payments) {\n    result.push(payment - average);\n  }\n\n  return result;\n}\n\nTime complexity: O(n), where n is payments.length.\nSpace complexity: O(n), because we return a new array."
+      }
+    ]
+  },
+  {
+    "title": "Concert Ticket Chaos",
+    "slug": "concert-ticket-chaos",
+    "functionName": "concertTicketChaos",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "GREEDY", "SORTING"],
+    "description": "You are helping friends buy concert tickets.\n\nEach number in `budgets` is how much one friend can spend. Each number in `tickets` is the price of one available ticket.\n\nReturn the maximum number of friends who can get a ticket. Each friend can buy at most one ticket, and each ticket can be sold at most once. A friend can buy a ticket if the ticket price is less than or equal to their budget.",
+    "examples": [
+      {
+        "input": "`budgets = [30, 50, 70]`, `tickets = [45, 60, 80]`",
+        "output": "`2`",
+        "explanation": "The friends with budgets `50` and `70` can buy tickets priced `45` and `60`."
+      },
+      {
+        "input": "`budgets = [20, 20]`, `tickets = [30, 40]`",
+        "output": "`0`",
+        "explanation": "No ticket is affordable."
+      }
+    ],
+    "constraints": "- `0 <= budgets.length <= 10^5`\n- `0 <= tickets.length <= 10^5`\n- `0 <= budgets[i] <= 10^9`\n- `0 <= tickets[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function concertTicketChaos(budgets, tickets) {\n  // Return the maximum number of friends who can buy tickets.\n}",
+      "TYPESCRIPT": "function concertTicketChaos(budgets: number[], tickets: number[]): number {\n  // Return the maximum number of friends who can buy tickets.\n}",
+      "PYTHON": "from typing import List\n\ndef concert_ticket_chaos(budgets: List[int], tickets: List[int]) -> int:\n    # Return the maximum number of friends who can buy tickets.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint concertTicketChaos(vector<int>& budgets, vector<int>& tickets) {\n    // Return the maximum number of friends who can buy tickets.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int concertTicketChaos(int[] budgets, int[] tickets) {\n        // Return the maximum number of friends who can buy tickets.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[30,50,70]\n[45,60,80]",
+        "expected": "2"
+      },
+      {
+        "input": "[]\n[10,20]",
+        "expected": "0"
+      },
+      {
+        "input": "[20,20]\n[30,40]",
+        "expected": "0"
+      },
+      {
+        "input": "[100]\n[50]",
+        "expected": "1"
+      },
+      {
+        "input": "[50,50,50]\n[50,50,50,50]",
+        "expected": "3"
+      },
+      {
+        "input": "[10,100,60]\n[20,60,90]",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Try matching cheaper tickets first."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort both arrays and use two pointers."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort budgets ascending.\nSort tickets ascending.\nUse i for budgets and j for tickets.\nIf budgets[i] can afford tickets[j], count one match and move both pointers.\nOtherwise, the current friend cannot afford this ticket, so move to the next friend.\nReturn count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction concertTicketChaos(budgets, tickets) {\n  budgets.sort((a, b) => a - b);\n  tickets.sort((a, b) => a - b);\n\n  let i = 0;\n  let j = 0;\n  let count = 0;\n\n  while (i < budgets.length && j < tickets.length) {\n    if (budgets[i] >= tickets[j]) {\n      count++;\n      i++;\n      j++;\n    } else {\n      i++;\n    }\n  }\n\n  return count;\n}\n\nTime complexity: O(n log n + m log m), where n is budgets.length and m is tickets.length.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "Bubble Tea Sugar Check",
+    "slug": "bubble-tea-sugar-check",
+    "functionName": "bubbleTeaSugarCheck",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "A bubble tea shop records the sugar level of each drink order as a percentage.\n\nGiven an array `sugarLevels`, return how many drinks are considered **low sugar**.\n\nA drink is low sugar if its sugar level is less than or equal to `30`.",
+    "examples": [
+      {
+        "input": "`sugarLevels = [100, 50, 30, 0, 25]`",
+        "output": "`3`",
+        "explanation": "The low sugar drinks are `30`, `0`, and `25`."
+      },
+      {
+        "input": "`sugarLevels = [70, 80]`",
+        "output": "`0`",
+        "explanation": "No drink has sugar level less than or equal to `30`."
+      }
+    ],
+    "constraints": "- `0 <= sugarLevels.length <= 10^4`\n- `0 <= sugarLevels[i] <= 100`",
+    "starterCode": {
+      "JAVASCRIPT": "function bubbleTeaSugarCheck(sugarLevels) {\n  // Return how many drinks are low sugar.\n}",
+      "TYPESCRIPT": "function bubbleTeaSugarCheck(sugarLevels: number[]): number {\n  // Return how many drinks are low sugar.\n}",
+      "PYTHON": "from typing import List\n\ndef bubble_tea_sugar_check(sugar_levels: List[int]) -> int:\n    # Return how many drinks are low sugar.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint bubbleTeaSugarCheck(vector<int>& sugarLevels) {\n    // Return how many drinks are low sugar.\n}",
+      "JAVA": "class Solution {\n    public int bubbleTeaSugarCheck(int[] sugarLevels) {\n        // Return how many drinks are low sugar.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[100,50,30,0,25]",
+        "expected": "3"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[70,80]",
+        "expected": "0"
+      },
+      {
+        "input": "[30]",
+        "expected": "1"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "3"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Check each sugar level against `30`."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a counter while traversing the array."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set count = 0.\nLoop through sugarLevels.\nIf level <= 30, increase count.\nReturn count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction bubbleTeaSugarCheck(sugarLevels) {\n  let count = 0;\n\n  for (const level of sugarLevels) {\n    if (level <= 30) {\n      count++;\n    }\n  }\n\n  return count;\n}\n\nTime complexity: O(n), where n is sugarLevels.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Unread Message Streak",
+    "slug": "unread-message-streak",
+    "functionName": "unreadMessageStreak",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "Your chat app records whether each message is unread.\n\nGiven an array `messages`, where `1` means unread and `0` means read, return the length of the longest **continuous unread streak**.",
+    "examples": [
+      {
+        "input": "`messages = [1, 1, 0, 1, 1, 1]`",
+        "output": "`3`",
+        "explanation": "The longest unread streak is `[1, 1, 1]`."
+      },
+      {
+        "input": "`messages = [0, 0, 0]`",
+        "output": "`0`",
+        "explanation": "There are no unread messages."
+      }
+    ],
+    "constraints": "- `0 <= messages.length <= 10^5`\n- `messages[i]` is either `0` or `1`.",
+    "starterCode": {
+      "JAVASCRIPT": "function unreadMessageStreak(messages) {\n  // Return the longest continuous streak of unread messages.\n}",
+      "TYPESCRIPT": "function unreadMessageStreak(messages: number[]): number {\n  // Return the longest continuous streak of unread messages.\n}",
+      "PYTHON": "from typing import List\n\ndef unread_message_streak(messages: List[int]) -> int:\n    # Return the longest continuous streak of unread messages.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint unreadMessageStreak(vector<int>& messages) {\n    // Return the longest continuous streak of unread messages.\n}",
+      "JAVA": "class Solution {\n    public int unreadMessageStreak(int[] messages) {\n        // Return the longest continuous streak of unread messages.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,1,0,1,1,1]",
+        "expected": "3"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[1]",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1,1]",
+        "expected": "4"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Keep a current streak and a best streak."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "When you see `1`, grow the streak. When you see `0`, reset it."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set current = 0 and best = 0.\nFor each message, if it is 1, increase current.\nOtherwise reset current to 0.\nUpdate best after each step.\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction unreadMessageStreak(messages) {\n  let current = 0;\n  let best = 0;\n\n  for (const message of messages) {\n    if (message === 1) {\n      current++;\n      best = Math.max(best, current);\n    } else {\n      current = 0;\n    }\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is messages.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Fridge Expiry Alert",
+    "slug": "fridge-expiry-alert",
+    "functionName": "fridgeExpiryAlert",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "Your fridge app tracks how many days are left before each food item expires.\n\nGiven an array `daysLeft`, return a new array containing only the items that will expire within `limit` days.\n\nKeep the original order of the expiring items.",
+    "examples": [
+      {
+        "input": "`daysLeft = [5, 1, 3, 10, 2]`, `limit = 3`",
+        "output": "`[1, 3, 2]`",
+        "explanation": "Items with `3` or fewer days left are kept."
+      },
+      {
+        "input": "`daysLeft = [7, 8]`, `limit = 3`",
+        "output": "`[]`"
+      }
+    ],
+    "constraints": "- `0 <= daysLeft.length <= 10^4`\n- `0 <= daysLeft[i] <= 10^5`\n- `0 <= limit <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function fridgeExpiryAlert(daysLeft, limit) {\n  // Return items that expire within limit days.\n}",
+      "TYPESCRIPT": "function fridgeExpiryAlert(daysLeft: number[], limit: number): number[] {\n  // Return items that expire within limit days.\n}",
+      "PYTHON": "from typing import List\n\ndef fridge_expiry_alert(days_left: List[int], limit: int) -> List[int]:\n    # Return items that expire within limit days.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nvector<int> fridgeExpiryAlert(vector<int>& daysLeft, int limit) {\n    // Return items that expire within limit days.\n}",
+      "JAVA": "class Solution {\n    public int[] fridgeExpiryAlert(int[] daysLeft, int limit) {\n        // Return items that expire within limit days.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[5,1,3,10,2]\n3",
+        "expected": "[1,3,2]"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "[]"
+      },
+      {
+        "input": "[7,8]\n3",
+        "expected": "[]"
+      },
+      {
+        "input": "[0,1,2]\n0",
+        "expected": "[0]"
+      },
+      {
+        "input": "[4,4,4]\n4",
+        "expected": "[4,4,4]"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You need to filter values based on whether they are less than or equal to `limit`."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Create a result array and push matching values into it."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create result = [].\nLoop through daysLeft.\nIf days <= limit, push days into result.\nReturn result."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction fridgeExpiryAlert(daysLeft, limit) {\n  const result = [];\n\n  for (const days of daysLeft) {\n    if (days <= limit) {\n      result.push(days);\n    }\n  }\n\n  return result;\n}\n\nTime complexity: O(n), where n is daysLeft.length.\nSpace complexity: O(n), because we return a new array."
+      }
+    ]
+  },
+  {
+    "title": "Mood Tracker Average",
+    "slug": "mood-tracker-average",
+    "functionName": "moodTrackerAverage",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "A self-care app records your daily mood score.\n\nGiven an array `moods`, return `true` if the average mood score is at least `targetAverage`. Otherwise, return `false`.\n\nIf there are no mood entries, return `false`.",
+    "examples": [
+      {
+        "input": "`moods = [7, 8, 6]`, `targetAverage = 7`",
+        "output": "`true`",
+        "explanation": "The average is `(7 + 8 + 6) / 3 = 7`."
+      },
+      {
+        "input": "`moods = []`, `targetAverage = 5`",
+        "output": "`false`",
+        "explanation": "There are no entries to calculate an average."
+      }
+    ],
+    "constraints": "- `0 <= moods.length <= 10^4`\n- `0 <= moods[i] <= 10`\n- `0 <= targetAverage <= 10`",
+    "starterCode": {
+      "JAVASCRIPT": "function moodTrackerAverage(moods, targetAverage) {\n  // Return true if the average mood is at least targetAverage.\n}",
+      "TYPESCRIPT": "function moodTrackerAverage(moods: number[], targetAverage: number): boolean {\n  // Return true if the average mood is at least targetAverage.\n}",
+      "PYTHON": "from typing import List\n\ndef mood_tracker_average(moods: List[int], target_average: int) -> bool:\n    # Return true if the average mood is at least target_average.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nbool moodTrackerAverage(vector<int>& moods, int targetAverage) {\n    // Return true if the average mood is at least targetAverage.\n}",
+      "JAVA": "class Solution {\n    public boolean moodTrackerAverage(int[] moods, int targetAverage) {\n        // Return true if the average mood is at least targetAverage.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[7,8,6]\n7",
+        "expected": "true"
+      },
+      {
+        "input": "[]\n5",
+        "expected": "false"
+      },
+      {
+        "input": "[10]\n10",
+        "expected": "true"
+      },
+      {
+        "input": "[1,2,3]\n3",
+        "expected": "false"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Find the total score first."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Average equals total divided by the number of mood entries."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If moods is empty, return false.\nCalculate total.\nCalculate average = total / moods.length.\nReturn average >= targetAverage."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction moodTrackerAverage(moods, targetAverage) {\n  if (moods.length === 0) return false;\n\n  let total = 0;\n\n  for (const mood of moods) {\n    total += mood;\n  }\n\n  return total / moods.length >= targetAverage;\n}\n\nTime complexity: O(n), where n is moods.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Laundry Sock Match",
+    "slug": "laundry-sock-match",
+    "functionName": "laundrySockMatch",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You just finished laundry, and now comes the ancient boss fight: matching socks.\n\nEach number in `socks` represents a sock color ID. Return how many complete pairs you can make.",
+    "examples": [
+      {
+        "input": "`socks = [1, 2, 1, 2, 1, 3]`",
+        "output": "`2`",
+        "explanation": "You can make one pair of color `1` and one pair of color `2`."
+      },
+      {
+        "input": "`socks = [5, 5, 5, 5]`",
+        "output": "`2`",
+        "explanation": "Four socks of the same color make two pairs."
+      }
+    ],
+    "constraints": "- `0 <= socks.length <= 10^5`\n- `0 <= socks[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function laundrySockMatch(socks) {\n  // Return the number of complete sock pairs.\n}",
+      "TYPESCRIPT": "function laundrySockMatch(socks: number[]): number {\n  // Return the number of complete sock pairs.\n}",
+      "PYTHON": "from typing import List\n\ndef laundry_sock_match(socks: List[int]) -> int:\n    # Return the number of complete sock pairs.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nint laundrySockMatch(vector<int>& socks) {\n    // Return the number of complete sock pairs.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int laundrySockMatch(int[] socks) {\n        // Return the number of complete sock pairs.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,1,2,1,3]",
+        "expected": "2"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[7]",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5,5,5]",
+        "expected": "2"
+      },
+      {
+        "input": "[1,1,2,2,3,3,3]",
+        "expected": "3"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Count how many socks you have for each color."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a hash map where the key is the color ID and the value is its count."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Build a frequency map.\nFor each color count, add Math.floor(count / 2) to the answer.\nReturn the answer."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction laundrySockMatch(socks) {\n  const counts = new Map();\n\n  for (const sock of socks) {\n    counts.set(sock, (counts.get(sock) || 0) + 1);\n  }\n\n  let pairs = 0;\n\n  for (const count of counts.values()) {\n    pairs += Math.floor(count / 2);\n  }\n\n  return pairs;\n}\n\nTime complexity: O(n), where n is socks.length.\nSpace complexity: O(k), where k is the number of unique sock colors."
+      }
+    ]
+  },
+  {
+    "title": "Group Photo Height Line",
+    "slug": "group-photo-height-line",
+    "functionName": "groupPhotoHeightLine",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SORTING"],
+    "description": "Your friends are lining up for a group photo.\n\nGiven an array `heights`, return the minimum number of people who are standing in the wrong position compared to a line sorted by height in ascending order.",
+    "examples": [
+      {
+        "input": "`heights = [1, 1, 4, 2, 1, 3]`",
+        "output": "`3`",
+        "explanation": "The sorted line is `[1, 1, 1, 2, 3, 4]`. Positions `2`, `4`, and `5` are different."
+      },
+      {
+        "input": "`heights = [1, 2, 3]`",
+        "output": "`0`",
+        "explanation": "Everyone is already in the correct position."
+      }
+    ],
+    "constraints": "- `0 <= heights.length <= 10^4`\n- `1 <= heights[i] <= 300`",
+    "starterCode": {
+      "JAVASCRIPT": "function groupPhotoHeightLine(heights) {\n  // Return how many people are not in the sorted height position.\n}",
+      "TYPESCRIPT": "function groupPhotoHeightLine(heights: number[]): number {\n  // Return how many people are not in the sorted height position.\n}",
+      "PYTHON": "from typing import List\n\ndef group_photo_height_line(heights: List[int]) -> int:\n    # Return how many people are not in the sorted height position.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint groupPhotoHeightLine(vector<int>& heights) {\n    // Return how many people are not in the sorted height position.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int groupPhotoHeightLine(int[] heights) {\n        // Return how many people are not in the sorted height position.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,1,4,2,1,3]",
+        "expected": "3"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[1]",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2,3]",
+        "expected": "0"
+      },
+      {
+        "input": "[3,2,1]",
+        "expected": "2"
+      },
+      {
+        "input": "[2,2,2]",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Compare the original line with a sorted version of the line."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort a copy of the array, then count positions that differ."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create sorted = copy of heights sorted ascending.\nSet count = 0.\nLoop through each index.\nIf heights[i] !== sorted[i], increase count.\nReturn count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction groupPhotoHeightLine(heights) {\n  const sorted = [...heights].sort((a, b) => a - b);\n  let count = 0;\n\n  for (let i = 0; i < heights.length; i++) {\n    if (heights[i] !== sorted[i]) {\n      count++;\n    }\n  }\n\n  return count;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(n), because we create a sorted copy."
+      }
+    ]
+  },
+  {
+    "title": "Daily Step Goal Streak",
+    "slug": "daily-step-goal-streak",
+    "functionName": "dailyStepGoalStreak",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SLIDING_WINDOW"],
+    "description": "A fitness app records your daily step count.\n\nGiven an array `steps` and an integer `goal`, return the length of the longest continuous streak of days where every day reached at least `goal` steps.",
+    "examples": [
+      {
+        "input": "`steps = [8000, 10000, 12000, 7000, 11000]`, `goal = 10000`",
+        "output": "`2`",
+        "explanation": "The longest streak is `[10000, 12000]`."
+      },
+      {
+        "input": "`steps = [3000, 4000]`, `goal = 8000`",
+        "output": "`0`"
+      }
+    ],
+    "constraints": "- `0 <= steps.length <= 10^5`\n- `0 <= steps[i] <= 10^6`\n- `0 <= goal <= 10^6`",
+    "starterCode": {
+      "JAVASCRIPT": "function dailyStepGoalStreak(steps, goal) {\n  // Return the longest streak of days reaching at least goal steps.\n}",
+      "TYPESCRIPT": "function dailyStepGoalStreak(steps: number[], goal: number): number {\n  // Return the longest streak of days reaching at least goal steps.\n}",
+      "PYTHON": "from typing import List\n\ndef daily_step_goal_streak(steps: List[int], goal: int) -> int:\n    # Return the longest streak of days reaching at least goal steps.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint dailyStepGoalStreak(vector<int>& steps, int goal) {\n    // Return the longest streak of days reaching at least goal steps.\n}",
+      "JAVA": "class Solution {\n    public int dailyStepGoalStreak(int[] steps, int goal) {\n        // Return the longest streak of days reaching at least goal steps.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[8000,10000,12000,7000,11000]\n10000",
+        "expected": "2"
+      },
+      {
+        "input": "[]\n10000",
+        "expected": "0"
+      },
+      {
+        "input": "[3000,4000]\n8000",
+        "expected": "0"
+      },
+      {
+        "input": "[10000]\n10000",
+        "expected": "1"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "3"
+      },
+      {
+        "input": "[1,2,3,2,3,4]\n3",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "This is similar to finding the longest streak of valid values."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Increase the current streak when steps[i] >= goal. Reset it otherwise."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set current = 0 and best = 0.\nLoop through steps.\nIf count >= goal, increase current and update best.\nOtherwise reset current to 0.\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction dailyStepGoalStreak(steps, goal) {\n  let current = 0;\n  let best = 0;\n\n  for (const count of steps) {\n    if (count >= goal) {\n      current++;\n      best = Math.max(best, current);\n    } else {\n      current = 0;\n    }\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is steps.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Plant Watering Schedule",
+    "slug": "plant-watering-schedule",
+    "functionName": "plantWateringSchedule",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "GREEDY"],
+    "description": "You are checking your plants before going on vacation.\n\nEach number in `dryness` represents how dry a plant is. You have `waterCans` cans of water, and each can fully waters one plant.\n\nReturn the maximum total dryness you can remove by watering exactly `waterCans` plants. If there are fewer plants than cans, water all plants.",
+    "examples": [
+      {
+        "input": "`dryness = [5, 1, 9, 3]`, `waterCans = 2`",
+        "output": "`14`",
+        "explanation": "Water the plants with dryness `9` and `5`."
+      },
+      {
+        "input": "`dryness = [2, 4]`, `waterCans = 5`",
+        "output": "`6`",
+        "explanation": "There are only two plants, so water both."
+      }
+    ],
+    "constraints": "- `0 <= dryness.length <= 10^5`\n- `0 <= dryness[i] <= 10^6`\n- `0 <= waterCans <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function plantWateringSchedule(dryness, waterCans) {\n  // Return the maximum total dryness removed.\n}",
+      "TYPESCRIPT": "function plantWateringSchedule(dryness: number[], waterCans: number): number {\n  // Return the maximum total dryness removed.\n}",
+      "PYTHON": "from typing import List\n\ndef plant_watering_schedule(dryness: List[int], water_cans: int) -> int:\n    # Return the maximum total dryness removed.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint plantWateringSchedule(vector<int>& dryness, int waterCans) {\n    // Return the maximum total dryness removed.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int plantWateringSchedule(int[] dryness, int waterCans) {\n        // Return the maximum total dryness removed.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[5,1,9,3]\n2",
+        "expected": "14"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[2,4]\n5",
+        "expected": "6"
+      },
+      {
+        "input": "[10]\n0",
+        "expected": "0"
+      },
+      {
+        "input": "[3,3,3]\n2",
+        "expected": "6"
+      },
+      {
+        "input": "[1,10,2,9]\n3",
+        "expected": "21"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "To remove the most dryness, choose the driest plants."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the dryness values in descending order and take the first `waterCans` values."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort dryness descending.\nSet total = 0.\nLoop from i = 0 while i < waterCans and i < dryness.length.\nAdd dryness[i] to total.\nReturn total."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction plantWateringSchedule(dryness, waterCans) {\n  dryness.sort((a, b) => b - a);\n\n  let total = 0;\n  const limit = Math.min(waterCans, dryness.length);\n\n  for (let i = 0; i < limit; i++) {\n    total += dryness[i];\n  }\n\n  return total;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "Movie Marathon Pair",
+    "slug": "movie-marathon-pair",
+    "functionName": "movieMarathonPair",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You are planning a movie marathon with exactly two movies.\n\nGiven an array `durations` and an integer `freeTime`, return `true` if there are two different movies whose durations add up exactly to `freeTime`. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`durations = [90, 85, 75, 60]`, `freeTime = 150`",
+        "output": "`true`",
+        "explanation": "`90 + 60 = 150`."
+      },
+      {
+        "input": "`durations = [100, 120]`, `freeTime = 150`",
+        "output": "`false`"
+      }
+    ],
+    "constraints": "- `0 <= durations.length <= 10^5`\n- `0 <= durations[i] <= 10^6`\n- `0 <= freeTime <= 10^6`",
+    "starterCode": {
+      "JAVASCRIPT": "function movieMarathonPair(durations, freeTime) {\n  // Return true if two different movies add up to freeTime.\n}",
+      "TYPESCRIPT": "function movieMarathonPair(durations: number[], freeTime: number): boolean {\n  // Return true if two different movies add up to freeTime.\n}",
+      "PYTHON": "from typing import List\n\ndef movie_marathon_pair(durations: List[int], free_time: int) -> bool:\n    # Return true if two different movies add up to free_time.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nbool movieMarathonPair(vector<int>& durations, int freeTime) {\n    // Return true if two different movies add up to freeTime.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public boolean movieMarathonPair(int[] durations, int freeTime) {\n        // Return true if two different movies add up to freeTime.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[90,85,75,60]\n150",
+        "expected": "true"
+      },
+      {
+        "input": "[]\n150",
+        "expected": "false"
+      },
+      {
+        "input": "[100]\n100",
+        "expected": "false"
+      },
+      {
+        "input": "[100,120]\n150",
+        "expected": "false"
+      },
+      {
+        "input": "[50,50]\n100",
+        "expected": "true"
+      },
+      {
+        "input": "[0,30,60]\n30",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For each movie, think about the duration needed to complete `freeTime`."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a set to store durations you have already seen."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create an empty set.\nFor each duration, compute needed = freeTime - duration.\nIf needed is already in the set, return true.\nAdd duration to the set.\nReturn false at the end."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction movieMarathonPair(durations, freeTime) {\n  const seen = new Set();\n\n  for (const duration of durations) {\n    const needed = freeTime - duration;\n\n    if (seen.has(needed)) {\n      return true;\n    }\n\n    seen.add(duration);\n  }\n\n  return false;\n}\n\nTime complexity: O(n), where n is durations.length.\nSpace complexity: O(n), because we store seen durations."
+      }
+    ]
+  },
+  {
+    "title": "Rainy Day Umbrella Sharing",
+    "slug": "rainy-day-umbrella-sharing",
+    "functionName": "rainyDayUmbrellaSharing",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "GREEDY", "SORTING", "TWO_POINTERS"],
+    "description": "A group of people are leaving an office during heavy rain.\n\nEach number in `people` is one person's weight. Each umbrella can safely carry at most two people, and their combined weight must be less than or equal to `limit`.\n\nReturn the minimum number of umbrellas needed for everyone.",
+    "examples": [
+      {
+        "input": "`people = [3, 2, 2, 1]`, `limit = 3`",
+        "output": "`3`",
+        "explanation": "One possible plan is `[1, 2]`, `[2]`, and `[3]`."
+      },
+      {
+        "input": "`people = [1, 1, 1, 1]`, `limit = 2`",
+        "output": "`2`",
+        "explanation": "Each umbrella can carry two people."
+      }
+    ],
+    "constraints": "- `0 <= people.length <= 10^5`\n- `1 <= people[i] <= limit`\n- `1 <= limit <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function rainyDayUmbrellaSharing(people, limit) {\n  // Return the minimum number of umbrellas needed.\n}",
+      "TYPESCRIPT": "function rainyDayUmbrellaSharing(people: number[], limit: number): number {\n  // Return the minimum number of umbrellas needed.\n}",
+      "PYTHON": "from typing import List\n\ndef rainy_day_umbrella_sharing(people: List[int], limit: int) -> int:\n    # Return the minimum number of umbrellas needed.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint rainyDayUmbrellaSharing(vector<int>& people, int limit) {\n    // Return the minimum number of umbrellas needed.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int rainyDayUmbrellaSharing(int[] people, int limit) {\n        // Return the minimum number of umbrellas needed.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[3,2,2,1]\n3",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[1]\n3",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1,1]\n2",
+        "expected": "2"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "3"
+      },
+      {
+        "input": "[2,3,4,5]\n5",
+        "expected": "4"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Try pairing the lightest person with the heaviest person."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the array and use two pointers."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort people ascending.\nSet left = 0 and right = people.length - 1.\nWhile left <= right, always give the heaviest remaining person an umbrella.\nIf the lightest can share with them, move left forward.\nMove right backward and increase umbrella count.\nReturn the count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction rainyDayUmbrellaSharing(people, limit) {\n  people.sort((a, b) => a - b);\n\n  let left = 0;\n  let right = people.length - 1;\n  let umbrellas = 0;\n\n  while (left <= right) {\n    if (people[left] + people[right] <= limit) {\n      left++;\n    }\n\n    right--;\n    umbrellas++;\n  }\n\n  return umbrellas;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "K-Pop Lightstick Wave",
+    "slug": "k-pop-lightstick-wave",
+    "functionName": "kPopLightstickWave",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "HASH_MAP"],
+    "description": "At a concert, fans raise lightsticks in different colors.\n\nEach number in `colors` represents a lightstick color ID. Return the length of the longest continuous section where there are at most `maxColors` different colors.\n\nThis helps find the longest clean color wave in the crowd.",
+    "examples": [
+      {
+        "input": "`colors = [1, 2, 1, 3, 2, 2]`, `maxColors = 2`",
+        "output": "`3`",
+        "explanation": "The section `[1, 2, 1]` has only two colors and length `3`. The section `[3, 2, 2]` also has length `3`."
+      },
+      {
+        "input": "`colors = [1, 1, 1]`, `maxColors = 1`",
+        "output": "`3`",
+        "explanation": "The whole section uses only one color."
+      }
+    ],
+    "constraints": "- `0 <= colors.length <= 10^5`\n- `0 <= colors[i] <= 10^9`\n- `0 <= maxColors <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function kPopLightstickWave(colors, maxColors) {\n  // Return the longest section with at most maxColors different colors.\n}",
+      "TYPESCRIPT": "function kPopLightstickWave(colors: number[], maxColors: number): number {\n  // Return the longest section with at most maxColors different colors.\n}",
+      "PYTHON": "from typing import List\n\ndef k_pop_lightstick_wave(colors: List[int], max_colors: int) -> int:\n    # Return the longest section with at most max_colors different colors.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint kPopLightstickWave(vector<int>& colors, int maxColors) {\n    // Return the longest section with at most maxColors different colors.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int kPopLightstickWave(int[] colors, int maxColors) {\n        // Return the longest section with at most maxColors different colors.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,1,3,2,2]\n2",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n2",
+        "expected": "0"
+      },
+      {
+        "input": "[1,1,1]\n1",
+        "expected": "3"
+      },
+      {
+        "input": "[1,2,3]\n0",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2,3,2,2]\n2",
+        "expected": "4"
+      },
+      {
+        "input": "[5]\n3",
+        "expected": "1"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You need to track how many different colors are inside the current window."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use sliding window with a frequency map."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If maxColors is 0, return 0.\nUse left = 0 and a map of color counts.\nMove right through colors and add colors[right].\nWhile the map has more than maxColors keys, remove colors[left] and move left forward.\nUpdate the best window length."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction kPopLightstickWave(colors, maxColors) {\n  if (maxColors === 0) return 0;\n\n  const counts = new Map();\n  let left = 0;\n  let best = 0;\n\n  for (let right = 0; right < colors.length; right++) {\n    const color = colors[right];\n    counts.set(color, (counts.get(color) || 0) + 1);\n\n    while (counts.size > maxColors) {\n      const leftColor = colors[left];\n      counts.set(leftColor, counts.get(leftColor) - 1);\n\n      if (counts.get(leftColor) === 0) {\n        counts.delete(leftColor);\n      }\n\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is colors.length.\nSpace complexity: O(k), where k is the number of colors in the current window."
+      }
+    ]
+  },
+  {
+    "title": "Midnight Snack Raid",
+    "slug": "midnight-snack-raid",
+    "functionName": "midnightSnackRaid",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "You are sneaking into the kitchen for a midnight snack.\n\nEach number in `snacks` represents the calories of one snack. Return the total calories of all snacks that are **less than or equal to** `calorieLimit`.\n\nSnacks above the limit are ignored.",
+    "examples": [
+      {
+        "input": "`snacks = [80, 200, 120, 50]`, `calorieLimit = 100`",
+        "output": "`130`",
+        "explanation": "Only snacks `80` and `50` are counted."
+      },
+      {
+        "input": "`snacks = [300, 400]`, `calorieLimit = 100`",
+        "output": "`0`",
+        "explanation": "No snack is under the limit."
+      }
+    ],
+    "constraints": "- `0 <= snacks.length <= 10^4`\n- `0 <= snacks[i] <= 10^5`\n- `0 <= calorieLimit <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function midnightSnackRaid(snacks, calorieLimit) {\n  // Return the total calories of snacks within the calorie limit.\n}",
+      "TYPESCRIPT": "function midnightSnackRaid(snacks: number[], calorieLimit: number): number {\n  // Return the total calories of snacks within the calorie limit.\n}",
+      "PYTHON": "from typing import List\n\ndef midnight_snack_raid(snacks: List[int], calorie_limit: int) -> int:\n    # Return the total calories of snacks within the calorie limit.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint midnightSnackRaid(vector<int>& snacks, int calorieLimit) {\n    // Return the total calories of snacks within the calorie limit.\n}",
+      "JAVA": "class Solution {\n    public int midnightSnackRaid(int[] snacks, int calorieLimit) {\n        // Return the total calories of snacks within the calorie limit.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[80,200,120,50]\n100",
+        "expected": "130"
+      },
+      {
+        "input": "[]\n100",
+        "expected": "0"
+      },
+      {
+        "input": "[300,400]\n100",
+        "expected": "0"
+      },
+      {
+        "input": "[0,10,20]\n0",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "15"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Only add a snack if it is less than or equal to the limit."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a running total while scanning the array."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set total = 0.\nLoop through snacks.\nIf snack <= calorieLimit, add it to total.\nReturn total."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction midnightSnackRaid(snacks, calorieLimit) {\n  let total = 0;\n\n  for (const snack of snacks) {\n    if (snack <= calorieLimit) {\n      total += snack;\n    }\n  }\n\n  return total;\n}\n\nTime complexity: O(n), where n is snacks.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Phone Battery Panic",
+    "slug": "phone-battery-panic",
+    "functionName": "phoneBatteryPanic",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "Your phone records battery percentages throughout the day.\n\nGiven an array `batteryLevels`, return the first index where the battery level drops below `20`.\n\nIf the battery never drops below `20`, return `-1`.",
+    "examples": [
+      {
+        "input": "`batteryLevels = [87, 54, 21, 19, 10]`",
+        "output": "`3`",
+        "explanation": "The first battery level below `20` is `19` at index `3`."
+      },
+      {
+        "input": "`batteryLevels = [100, 80, 50]`",
+        "output": "`-1`",
+        "explanation": "The battery never drops below `20`."
+      }
+    ],
+    "constraints": "- `0 <= batteryLevels.length <= 10^4`\n- `0 <= batteryLevels[i] <= 100`",
+    "starterCode": {
+      "JAVASCRIPT": "function phoneBatteryPanic(batteryLevels) {\n  // Return the first index where battery is below 20, or -1.\n}",
+      "TYPESCRIPT": "function phoneBatteryPanic(batteryLevels: number[]): number {\n  // Return the first index where battery is below 20, or -1.\n}",
+      "PYTHON": "from typing import List\n\ndef phone_battery_panic(battery_levels: List[int]) -> int:\n    # Return the first index where battery is below 20, or -1.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint phoneBatteryPanic(vector<int>& batteryLevels) {\n    // Return the first index where battery is below 20, or -1.\n}",
+      "JAVA": "class Solution {\n    public int phoneBatteryPanic(int[] batteryLevels) {\n        // Return the first index where battery is below 20, or -1.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[87,54,21,19,10]",
+        "expected": "3"
+      },
+      {
+        "input": "[]",
+        "expected": "-1"
+      },
+      {
+        "input": "[100,80,50]",
+        "expected": "-1"
+      },
+      {
+        "input": "[19]",
+        "expected": "0"
+      },
+      {
+        "input": "[20,20,19]",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Scan from left to right and stop when you find the first low battery level."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Return immediately when `batteryLevels[i] < 20`."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Loop through each index.\nIf batteryLevels[i] < 20, return i.\nAfter the loop, return -1."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction phoneBatteryPanic(batteryLevels) {\n  for (let i = 0; i < batteryLevels.length; i++) {\n    if (batteryLevels[i] < 20) {\n      return i;\n    }\n  }\n\n  return -1;\n}\n\nTime complexity: O(n), where n is batteryLevels.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Sticker Album Duplicates",
+    "slug": "sticker-album-duplicates",
+    "functionName": "stickerAlbumDuplicates",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You are organizing a sticker album.\n\nEach number in `stickers` represents a sticker ID. Return `true` if there is at least one duplicate sticker. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`stickers = [4, 7, 2, 7]`",
+        "output": "`true`",
+        "explanation": "Sticker `7` appears more than once."
+      },
+      {
+        "input": "`stickers = [1, 2, 3]`",
+        "output": "`false`",
+        "explanation": "Every sticker is unique."
+      }
+    ],
+    "constraints": "- `0 <= stickers.length <= 10^5`\n- `0 <= stickers[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function stickerAlbumDuplicates(stickers) {\n  // Return true if any sticker ID appears more than once.\n}",
+      "TYPESCRIPT": "function stickerAlbumDuplicates(stickers: number[]): boolean {\n  // Return true if any sticker ID appears more than once.\n}",
+      "PYTHON": "from typing import List\n\ndef sticker_album_duplicates(stickers: List[int]) -> bool:\n    # Return true if any sticker ID appears more than once.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nbool stickerAlbumDuplicates(vector<int>& stickers) {\n    // Return true if any sticker ID appears more than once.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public boolean stickerAlbumDuplicates(int[] stickers) {\n        // Return true if any sticker ID appears more than once.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[4,7,2,7]",
+        "expected": "true"
+      },
+      {
+        "input": "[]",
+        "expected": "false"
+      },
+      {
+        "input": "[1]",
+        "expected": "false"
+      },
+      {
+        "input": "[1,2,3]",
+        "expected": "false"
+      },
+      {
+        "input": "[5,5,5]",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You need to remember which sticker IDs you have already seen."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a Set to store seen sticker IDs."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create an empty set.\nFor each sticker, check if it is already in the set.\nIf yes, return true.\nOtherwise add it to the set.\nReturn false after the loop."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction stickerAlbumDuplicates(stickers) {\n  const seen = new Set();\n\n  for (const sticker of stickers) {\n    if (seen.has(sticker)) {\n      return true;\n    }\n\n    seen.add(sticker);\n  }\n\n  return false;\n}\n\nTime complexity: O(n), where n is stickers.length.\nSpace complexity: O(n), because we store seen sticker IDs."
+      }
+    ]
+  },
+  {
+    "title": "Morning Coffee Queue",
+    "slug": "morning-coffee-queue",
+    "functionName": "morningCoffeeQueue",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "A coffee shop records how many minutes each drink takes to prepare.\n\nGiven an array `orders`, return the total waiting time for the last person in line.\n\nThe last person must wait for every drink before them and their own drink.",
+    "examples": [
+      {
+        "input": "`orders = [3, 5, 2]`",
+        "output": "`10`",
+        "explanation": "The total time is `3 + 5 + 2 = 10` minutes."
+      },
+      {
+        "input": "`orders = []`",
+        "output": "`0`",
+        "explanation": "There are no orders."
+      }
+    ],
+    "constraints": "- `0 <= orders.length <= 10^4`\n- `0 <= orders[i] <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function morningCoffeeQueue(orders) {\n  // Return the total waiting time for the last person.\n}",
+      "TYPESCRIPT": "function morningCoffeeQueue(orders: number[]): number {\n  // Return the total waiting time for the last person.\n}",
+      "PYTHON": "from typing import List\n\ndef morning_coffee_queue(orders: List[int]) -> int:\n    # Return the total waiting time for the last person.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint morningCoffeeQueue(vector<int>& orders) {\n    // Return the total waiting time for the last person.\n}",
+      "JAVA": "class Solution {\n    public int morningCoffeeQueue(int[] orders) {\n        // Return the total waiting time for the last person.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[3,5,2]",
+        "expected": "10"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[7]",
+        "expected": "7"
+      },
+      {
+        "input": "[1,2,3,4]",
+        "expected": "10"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "The answer is the sum of all preparation times."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a running sum."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set total = 0.\nFor each order time, add it to total.\nReturn total."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction morningCoffeeQueue(orders) {\n  let total = 0;\n\n  for (const minutes of orders) {\n    total += minutes;\n  }\n\n  return total;\n}\n\nTime complexity: O(n), where n is orders.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Vending Machine Change",
+    "slug": "vending-machine-change",
+    "functionName": "vendingMachineChange",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "GREEDY"],
+    "description": "A vending machine accepts coins from customers one by one.\n\nEach number in `payments` is the amount paid by a customer for a snack that costs exactly `5`. Customers can pay with `5`, `10`, or `20`.\n\nReturn `true` if the machine can give correct change to every customer in order. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`payments = [5, 5, 10, 20]`",
+        "output": "`true`",
+        "explanation": "The machine can give `5` change for `10`, then `15` change for `20`."
+      },
+      {
+        "input": "`payments = [10]`",
+        "output": "`false`",
+        "explanation": "The first customer pays `10`, but the machine has no `5` coin for change."
+      }
+    ],
+    "constraints": "- `0 <= payments.length <= 10^5`\n- `payments[i]` is one of `5`, `10`, or `20`.",
+    "starterCode": {
+      "JAVASCRIPT": "function vendingMachineChange(payments) {\n  // Return true if correct change can be given to every customer.\n}",
+      "TYPESCRIPT": "function vendingMachineChange(payments: number[]): boolean {\n  // Return true if correct change can be given to every customer.\n}",
+      "PYTHON": "from typing import List\n\ndef vending_machine_change(payments: List[int]) -> bool:\n    # Return true if correct change can be given to every customer.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nbool vendingMachineChange(vector<int>& payments) {\n    // Return true if correct change can be given to every customer.\n}",
+      "JAVA": "class Solution {\n    public boolean vendingMachineChange(int[] payments) {\n        // Return true if correct change can be given to every customer.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[5,5,10,20]",
+        "expected": "true"
+      },
+      {
+        "input": "[]",
+        "expected": "true"
+      },
+      {
+        "input": "[10]",
+        "expected": "false"
+      },
+      {
+        "input": "[5]",
+        "expected": "true"
+      },
+      {
+        "input": "[5,10,10]",
+        "expected": "false"
+      },
+      {
+        "input": "[5,5,5,10,20]",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Track how many `5` and `10` coins the machine has."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "For a `20` payment, prefer giving one `10` and one `5` if possible."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set five = 0 and ten = 0.\nFor each payment:\nIf payment is 5, increase five.\nIf payment is 10, you need one five as change.\nIf payment is 20, give 10 + 5 if possible, otherwise give three 5 coins.\nIf change cannot be made, return false.\nReturn true at the end."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction vendingMachineChange(payments) {\n  let five = 0;\n  let ten = 0;\n\n  for (const payment of payments) {\n    if (payment === 5) {\n      five++;\n    } else if (payment === 10) {\n      if (five === 0) return false;\n      five--;\n      ten++;\n    } else {\n      if (ten > 0 && five > 0) {\n        ten--;\n        five--;\n      } else if (five >= 3) {\n        five -= 3;\n      } else {\n        return false;\n      }\n    }\n  }\n\n  return true;\n}\n\nTime complexity: O(n), where n is payments.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Sleep Debt Recovery",
+    "slug": "sleep-debt-recovery",
+    "functionName": "sleepDebtRecovery",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SLIDING_WINDOW"],
+    "description": "A sleep tracker records how many hours you sleep each night.\n\nGiven an array `hours` and an integer `target`, return the length of the smallest continuous period where the total sleep is at least `target` hours.\n\nIf no such period exists, return `0`.",
+    "examples": [
+      {
+        "input": "`hours = [4, 3, 2, 6, 5]`, `target = 10`",
+        "output": "`2`",
+        "explanation": "The period `[6, 5]` has total `11` and length `2`."
+      },
+      {
+        "input": "`hours = [2, 2, 2]`, `target = 10`",
+        "output": "`0`",
+        "explanation": "No continuous period reaches the target."
+      }
+    ],
+    "constraints": "- `0 <= hours.length <= 10^5`\n- `0 <= hours[i] <= 24`\n- `1 <= target <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function sleepDebtRecovery(hours, target) {\n  // Return the minimum length of a continuous period with total sleep >= target.\n}",
+      "TYPESCRIPT": "function sleepDebtRecovery(hours: number[], target: number): number {\n  // Return the minimum length of a continuous period with total sleep >= target.\n}",
+      "PYTHON": "from typing import List\n\ndef sleep_debt_recovery(hours: List[int], target: int) -> int:\n    # Return the minimum length of a continuous period with total sleep >= target.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\n#include <climits>\nusing namespace std;\n\nint sleepDebtRecovery(vector<int>& hours, int target) {\n    // Return the minimum length of a continuous period with total sleep >= target.\n}",
+      "JAVA": "class Solution {\n    public int sleepDebtRecovery(int[] hours, int target) {\n        // Return the minimum length of a continuous period with total sleep >= target.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[4,3,2,6,5]\n10",
+        "expected": "2"
+      },
+      {
+        "input": "[]\n10",
+        "expected": "0"
+      },
+      {
+        "input": "[2,2,2]\n10",
+        "expected": "0"
+      },
+      {
+        "input": "[10]\n10",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1,7]\n7",
+        "expected": "1"
+      },
+      {
+        "input": "[3,3,3,3]\n6",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "All values are non-negative, so a sliding window can work."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Expand the right side until the sum is large enough, then shrink from the left."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set left = 0, sum = 0, best = Infinity.\nFor each right index, add hours[right] to sum.\nWhile sum >= target, update best and remove hours[left], then move left.\nReturn 0 if best was never updated."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction sleepDebtRecovery(hours, target) {\n  let left = 0;\n  let sum = 0;\n  let best = Infinity;\n\n  for (let right = 0; right < hours.length; right++) {\n    sum += hours[right];\n\n    while (sum >= target) {\n      best = Math.min(best, right - left + 1);\n      sum -= hours[left];\n      left++;\n    }\n  }\n\n  return best === Infinity ? 0 : best;\n}\n\nTime complexity: O(n), where n is hours.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Closet Outfit Match",
+    "slug": "closet-outfit-match",
+    "functionName": "closetOutfitMatch",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You are planning an outfit from your closet.\n\nEach number in `tops` represents a color ID of a top. Each number in `bottoms` represents a color ID of a bottom.\n\nReturn how many outfit pairs can be made where the top and bottom have the same color ID. Each item can be used at most once.",
+    "examples": [
+      {
+        "input": "`tops = [1, 2, 2, 3]`, `bottoms = [2, 2, 4]`",
+        "output": "`2`",
+        "explanation": "Two tops with color `2` can match two bottoms with color `2`."
+      },
+      {
+        "input": "`tops = [1, 2]`, `bottoms = [3, 4]`",
+        "output": "`0`",
+        "explanation": "There are no matching colors."
+      }
+    ],
+    "constraints": "- `0 <= tops.length <= 10^5`\n- `0 <= bottoms.length <= 10^5`\n- `0 <= tops[i] <= 10^9`\n- `0 <= bottoms[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function closetOutfitMatch(tops, bottoms) {\n  // Return how many same-color outfit pairs can be made.\n}",
+      "TYPESCRIPT": "function closetOutfitMatch(tops: number[], bottoms: number[]): number {\n  // Return how many same-color outfit pairs can be made.\n}",
+      "PYTHON": "from typing import List\n\ndef closet_outfit_match(tops: List[int], bottoms: List[int]) -> int:\n    # Return how many same-color outfit pairs can be made.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nint closetOutfitMatch(vector<int>& tops, vector<int>& bottoms) {\n    // Return how many same-color outfit pairs can be made.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int closetOutfitMatch(int[] tops, int[] bottoms) {\n        // Return how many same-color outfit pairs can be made.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,2,3]\n[2,2,4]",
+        "expected": "2"
+      },
+      {
+        "input": "[]\n[1,2]",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2]\n[]",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2]\n[3,4]",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5,5]\n[5,5]",
+        "expected": "2"
+      },
+      {
+        "input": "[1,1,2,3]\n[1,2,2,3]",
+        "expected": "3"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Count how many tops you have for each color."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a frequency map for one array, then consume matches from the other array."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Build a map of top color counts.\nSet pairs = 0.\nLoop through bottoms.\nIf the bottom color exists in the map with count > 0, increase pairs and decrease that count.\nReturn pairs."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction closetOutfitMatch(tops, bottoms) {\n  const counts = new Map();\n\n  for (const color of tops) {\n    counts.set(color, (counts.get(color) || 0) + 1);\n  }\n\n  let pairs = 0;\n\n  for (const color of bottoms) {\n    const available = counts.get(color) || 0;\n\n    if (available > 0) {\n      pairs++;\n      counts.set(color, available - 1);\n    }\n  }\n\n  return pairs;\n}\n\nTime complexity: O(n + m), where n is tops.length and m is bottoms.length.\nSpace complexity: O(k), where k is the number of unique top colors."
+      }
+    ]
+  },
+  {
+    "title": "Arcade Prize Tickets",
+    "slug": "arcade-prize-tickets",
+    "functionName": "arcadePrizeTickets",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SORTING", "GREEDY"],
+    "description": "You are at an arcade trying to buy as many prizes as possible.\n\nEach number in `prizes` is the ticket cost of one prize. You have `tickets` total tickets.\n\nReturn the maximum number of prizes you can buy.",
+    "examples": [
+      {
+        "input": "`prizes = [4, 2, 8, 1]`, `tickets = 7`",
+        "output": "`3`",
+        "explanation": "Buy prizes costing `1`, `2`, and `4` for a total of `7`."
+      },
+      {
+        "input": "`prizes = [10, 20]`, `tickets = 5`",
+        "output": "`0`",
+        "explanation": "No prize is affordable."
+      }
+    ],
+    "constraints": "- `0 <= prizes.length <= 10^5`\n- `0 <= prizes[i] <= 10^9`\n- `0 <= tickets <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function arcadePrizeTickets(prizes, tickets) {\n  // Return the maximum number of prizes that can be bought.\n}",
+      "TYPESCRIPT": "function arcadePrizeTickets(prizes: number[], tickets: number): number {\n  // Return the maximum number of prizes that can be bought.\n}",
+      "PYTHON": "from typing import List\n\ndef arcade_prize_tickets(prizes: List[int], tickets: int) -> int:\n    # Return the maximum number of prizes that can be bought.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint arcadePrizeTickets(vector<int>& prizes, int tickets) {\n    // Return the maximum number of prizes that can be bought.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int arcadePrizeTickets(int[] prizes, int tickets) {\n        // Return the maximum number of prizes that can be bought.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[4,2,8,1]\n7",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n10",
+        "expected": "0"
+      },
+      {
+        "input": "[10,20]\n5",
+        "expected": "0"
+      },
+      {
+        "input": "[5]\n5",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1]\n2",
+        "expected": "2"
+      },
+      {
+        "input": "[3,3,3]\n10",
+        "expected": "3"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "To buy the most prizes, start with the cheapest ones."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the prize costs in ascending order."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort prizes ascending.\nSet count = 0.\nLoop through each cost.\nIf tickets >= cost, subtract cost and increase count.\nOtherwise stop.\nReturn count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction arcadePrizeTickets(prizes, tickets) {\n  prizes.sort((a, b) => a - b);\n\n  let count = 0;\n\n  for (const cost of prizes) {\n    if (tickets < cost) break;\n\n    tickets -= cost;\n    count++;\n  }\n\n  return count;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "Taxi Ride Pairing",
+    "slug": "taxi-ride-pairing",
+    "functionName": "taxiRidePairing",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "TWO_POINTERS", "SORTING", "GREEDY"],
+    "description": "A group of friends are sharing taxis after a party.\n\nEach number in `groups` represents the number of people in one friend group. Each taxi can carry at most two groups, and the total number of people in those groups must be less than or equal to `capacity`.\n\nReturn the minimum number of taxis needed.",
+    "examples": [
+      {
+        "input": "`groups = [2, 3, 4, 5]`, `capacity = 5`",
+        "output": "`3`",
+        "explanation": "One possible plan is `[2, 3]`, `[4]`, and `[5]`."
+      },
+      {
+        "input": "`groups = [1, 1, 1, 1]`, `capacity = 2`",
+        "output": "`2`",
+        "explanation": "Each taxi can carry two groups of size `1`."
+      }
+    ],
+    "constraints": "- `0 <= groups.length <= 10^5`\n- `1 <= groups[i] <= capacity`\n- `1 <= capacity <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function taxiRidePairing(groups, capacity) {\n  // Return the minimum number of taxis needed.\n}",
+      "TYPESCRIPT": "function taxiRidePairing(groups: number[], capacity: number): number {\n  // Return the minimum number of taxis needed.\n}",
+      "PYTHON": "from typing import List\n\ndef taxi_ride_pairing(groups: List[int], capacity: int) -> int:\n    # Return the minimum number of taxis needed.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint taxiRidePairing(vector<int>& groups, int capacity) {\n    // Return the minimum number of taxis needed.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int taxiRidePairing(int[] groups, int capacity) {\n        // Return the minimum number of taxis needed.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,3,4,5]\n5",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n5",
+        "expected": "0"
+      },
+      {
+        "input": "[1]\n4",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1,1]\n2",
+        "expected": "2"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "3"
+      },
+      {
+        "input": "[1,2,2,3]\n4",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Try pairing the smallest remaining group with the largest remaining group."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the groups and use two pointers."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort groups ascending.\nSet left = 0 and right = groups.length - 1.\nWhile left <= right, always place the largest group in a taxi.\nIf the smallest group can fit with it, move left forward.\nMove right backward and increase taxi count.\nReturn the taxi count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction taxiRidePairing(groups, capacity) {\n  groups.sort((a, b) => a - b);\n\n  let left = 0;\n  let right = groups.length - 1;\n  let taxis = 0;\n\n  while (left <= right) {\n    if (groups[left] + groups[right] <= capacity) {\n      left++;\n    }\n\n    right--;\n    taxis++;\n  }\n\n  return taxis;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "Theme Park Photo Burst",
+    "slug": "theme-park-photo-burst",
+    "functionName": "themeParkPhotoBurst",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "HASH_MAP"],
+    "description": "At a theme park, your camera records the ride ID in every photo you take.\n\nGiven an array `photos`, return the length of the longest continuous photo burst that contains at most `maxRides` different ride IDs.\n\nThis helps you find the longest focused photo session.",
+    "examples": [
+      {
+        "input": "`photos = [1, 2, 1, 2, 3]`, `maxRides = 2`",
+        "output": "`4`",
+        "explanation": "The burst `[1, 2, 1, 2]` contains only two ride IDs."
+      },
+      {
+        "input": "`photos = [5, 5, 5]`, `maxRides = 1`",
+        "output": "`3`",
+        "explanation": "The whole burst contains one ride ID."
+      }
+    ],
+    "constraints": "- `0 <= photos.length <= 10^5`\n- `0 <= photos[i] <= 10^9`\n- `0 <= maxRides <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function themeParkPhotoBurst(photos, maxRides) {\n  // Return the longest burst with at most maxRides different ride IDs.\n}",
+      "TYPESCRIPT": "function themeParkPhotoBurst(photos: number[], maxRides: number): number {\n  // Return the longest burst with at most maxRides different ride IDs.\n}",
+      "PYTHON": "from typing import List\n\ndef theme_park_photo_burst(photos: List[int], max_rides: int) -> int:\n    # Return the longest burst with at most max_rides different ride IDs.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint themeParkPhotoBurst(vector<int>& photos, int maxRides) {\n    // Return the longest burst with at most maxRides different ride IDs.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int themeParkPhotoBurst(int[] photos, int maxRides) {\n        // Return the longest burst with at most maxRides different ride IDs.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,1,2,3]\n2",
+        "expected": "4"
+      },
+      {
+        "input": "[]\n2",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5,5]\n1",
+        "expected": "3"
+      },
+      {
+        "input": "[1,2,3]\n0",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2,3,2,2]\n2",
+        "expected": "4"
+      },
+      {
+        "input": "[9]\n5",
+        "expected": "1"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Track the ride IDs inside the current window."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use sliding window with a frequency map."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If maxRides is 0, return 0.\nUse left = 0 and a map.\nMove right through photos and add photos[right].\nWhile the map has more than maxRides keys, remove photos[left] and move left.\nUpdate the longest window length."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction themeParkPhotoBurst(photos, maxRides) {\n  if (maxRides === 0) return 0;\n\n  const counts = new Map();\n  let left = 0;\n  let best = 0;\n\n  for (let right = 0; right < photos.length; right++) {\n    const ride = photos[right];\n    counts.set(ride, (counts.get(ride) || 0) + 1);\n\n    while (counts.size > maxRides) {\n      const leftRide = photos[left];\n      counts.set(leftRide, counts.get(leftRide) - 1);\n\n      if (counts.get(leftRide) === 0) {\n        counts.delete(leftRide);\n      }\n\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is photos.length.\nSpace complexity: O(k), where k is the number of ride IDs in the current window."
+      }
+    ]
+  },
+  {
+    "title": "Delivery Drone Battery Route",
+    "slug": "delivery-drone-battery-route",
+    "functionName": "deliveryDroneBatteryRoute",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "GREEDY"],
+    "description": "A delivery drone flies across a line of checkpoints.\n\nEach number in `batteryChanges` represents how much battery changes after reaching that checkpoint. Positive numbers recharge the drone, and negative numbers drain the battery.\n\nThe drone starts with `initialBattery`. Return `true` if the drone can visit every checkpoint in order without its battery ever dropping below `0`. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`batteryChanges = [-2, 4, -3, -2]`, `initialBattery = 3`",
+        "output": "`true`",
+        "explanation": "Battery levels become `1`, `5`, `2`, and `0`, so the drone never drops below `0`."
+      },
+      {
+        "input": "`batteryChanges = [-5, 2]`, `initialBattery = 3`",
+        "output": "`false`",
+        "explanation": "The battery becomes `-2` at the first checkpoint."
+      }
+    ],
+    "constraints": "- `0 <= batteryChanges.length <= 10^5`\n- `-10^9 <= batteryChanges[i] <= 10^9`\n- `0 <= initialBattery <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function deliveryDroneBatteryRoute(batteryChanges, initialBattery) {\n  // Return true if the drone can complete the route without battery dropping below 0.\n}",
+      "TYPESCRIPT": "function deliveryDroneBatteryRoute(batteryChanges: number[], initialBattery: number): boolean {\n  // Return true if the drone can complete the route without battery dropping below 0.\n}",
+      "PYTHON": "from typing import List\n\ndef delivery_drone_battery_route(battery_changes: List[int], initial_battery: int) -> bool:\n    # Return true if the drone can complete the route without battery dropping below 0.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nbool deliveryDroneBatteryRoute(vector<int>& batteryChanges, long long initialBattery) {\n    // Return true if the drone can complete the route without battery dropping below 0.\n}",
+      "JAVA": "class Solution {\n    public boolean deliveryDroneBatteryRoute(int[] batteryChanges, long initialBattery) {\n        // Return true if the drone can complete the route without battery dropping below 0.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[-2,4,-3,-2]\n3",
+        "expected": "true"
+      },
+      {
+        "input": "[-5,2]\n3",
+        "expected": "false"
+      },
+      {
+        "input": "[]\n0",
+        "expected": "true"
+      },
+      {
+        "input": "[0,0,0]\n0",
+        "expected": "true"
+      },
+      {
+        "input": "[-1]\n0",
+        "expected": "false"
+      },
+      {
+        "input": "[-3,10,-8]\n3",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Simulate the battery level checkpoint by checkpoint."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a running battery value and stop early if it becomes negative."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set battery = initialBattery.\nLoop through batteryChanges.\nAdd each change to battery.\nIf battery < 0, return false.\nReturn true after processing all checkpoints."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction deliveryDroneBatteryRoute(batteryChanges, initialBattery) {\n  let battery = initialBattery;\n\n  for (const change of batteryChanges) {\n    battery += change;\n\n    if (battery < 0) {\n      return false;\n    }\n  }\n\n  return true;\n}\n\nTime complexity: O(n), where n is batteryChanges.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Festival Food Stall Profit",
+    "slug": "festival-food-stall-profit",
+    "functionName": "festivalFoodStallProfit",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You run a food stall at a festival.\n\nEach number in `dailyProfits` represents the profit or loss from one day. You want to choose one continuous block of days to analyze as your **best festival run**.\n\nReturn the maximum possible sum of any continuous subarray.\n\nIf `dailyProfits` is empty, return `0`.",
+    "examples": [
+      {
+        "input": "`dailyProfits = [-2, 3, -1, 5, -6]`",
+        "output": "`7`",
+        "explanation": "The best continuous block is `[3, -1, 5]`, with total profit `7`."
+      },
+      {
+        "input": "`dailyProfits = [-5, -2, -8]`",
+        "output": "`-2`",
+        "explanation": "The least bad single day is `-2`."
+      }
+    ],
+    "constraints": "- `0 <= dailyProfits.length <= 10^5`\n- `-10^9 <= dailyProfits[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function festivalFoodStallProfit(dailyProfits) {\n  // Return the maximum sum of any continuous block of days.\n}",
+      "TYPESCRIPT": "function festivalFoodStallProfit(dailyProfits: number[]): number {\n  // Return the maximum sum of any continuous block of days.\n}",
+      "PYTHON": "from typing import List\n\ndef festival_food_stall_profit(daily_profits: List[int]) -> int:\n    # Return the maximum sum of any continuous block of days.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long festivalFoodStallProfit(vector<int>& dailyProfits) {\n    // Return the maximum sum of any continuous block of days.\n}",
+      "JAVA": "class Solution {\n    public long festivalFoodStallProfit(int[] dailyProfits) {\n        // Return the maximum sum of any continuous block of days.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[-2,3,-1,5,-6]",
+        "expected": "7"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[-5,-2,-8]",
+        "expected": "-2"
+      },
+      {
+        "input": "[4]",
+        "expected": "4"
+      },
+      {
+        "input": "[1,2,3,4]",
+        "expected": "10"
+      },
+      {
+        "input": "[5,-10,6,7]",
+        "expected": "13"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "At each day, decide whether to extend the previous block or start fresh from today."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "This is Kadane's algorithm."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If dailyProfits is empty, return 0.\nSet current = dailyProfits[0] and best = dailyProfits[0].\nFor each next profit, set current = max(profit, current + profit).\nUpdate best = max(best, current).\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction festivalFoodStallProfit(dailyProfits) {\n  if (dailyProfits.length === 0) return 0;\n\n  let current = dailyProfits[0];\n  let best = dailyProfits[0];\n\n  for (let i = 1; i < dailyProfits.length; i++) {\n    current = Math.max(dailyProfits[i], current + dailyProfits[i]);\n    best = Math.max(best, current);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is dailyProfits.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Concert Crowd Energy Spike",
+    "slug": "concert-crowd-energy-spike",
+    "functionName": "concertCrowdEnergySpike",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "HASH_MAP"],
+    "description": "At a concert, the crowd's energy is recorded every second.\n\nEach number in `energyLevels` represents the energy at one second. Return the length of the longest continuous section where the difference between the highest and lowest energy level is at most `limit`.\n\nThis helps find the longest stable hype wave.",
+    "examples": [
+      {
+        "input": "`energyLevels = [8, 2, 4, 7]`, `limit = 4`",
+        "output": "`2`",
+        "explanation": "The section `[2, 4]` has max `4`, min `2`, and difference `2`."
+      },
+      {
+        "input": "`energyLevels = [10, 1, 2, 4, 7, 2]`, `limit = 5`",
+        "output": "`4`",
+        "explanation": "The section `[2, 4, 7, 2]` has max `7`, min `2`, and difference `5`."
+      }
+    ],
+    "constraints": "- `0 <= energyLevels.length <= 10^5`\n- `-10^9 <= energyLevels[i] <= 10^9`\n- `0 <= limit <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function concertCrowdEnergySpike(energyLevels, limit) {\n  // Return the longest stable section where max - min <= limit.\n}",
+      "TYPESCRIPT": "function concertCrowdEnergySpike(energyLevels: number[], limit: number): number {\n  // Return the longest stable section where max - min <= limit.\n}",
+      "PYTHON": "from typing import List\n\ndef concert_crowd_energy_spike(energy_levels: List[int], limit: int) -> int:\n    # Return the longest stable section where max - min <= limit.\n    pass",
+      "CPP": "#include <vector>\n#include <deque>\n#include <algorithm>\nusing namespace std;\n\nint concertCrowdEnergySpike(vector<int>& energyLevels, int limit) {\n    // Return the longest stable section where max - min <= limit.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int concertCrowdEnergySpike(int[] energyLevels, int limit) {\n        // Return the longest stable section where max - min <= limit.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[8,2,4,7]\n4",
+        "expected": "2"
+      },
+      {
+        "input": "[10,1,2,4,7,2]\n5",
+        "expected": "4"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[5]\n0",
+        "expected": "1"
+      },
+      {
+        "input": "[3,3,3]\n0",
+        "expected": "3"
+      },
+      {
+        "input": "[1,5,6,7,8,10,6,5,6]\n4",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You need to know the current window's maximum and minimum quickly."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use two monotonic queues: one for maximum values and one for minimum values."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Move right across the array.\nMaintain a decreasing deque for max values and an increasing deque for min values.\nWhile maxDeque[0] - minDeque[0] > limit, move left and remove outdated values.\nUpdate the best window length."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction concertCrowdEnergySpike(energyLevels, limit) {\n  const maxDeque = [];\n  const minDeque = [];\n  let left = 0;\n  let best = 0;\n\n  for (let right = 0; right < energyLevels.length; right++) {\n    const value = energyLevels[right];\n\n    while (maxDeque.length && maxDeque[maxDeque.length - 1] < value) {\n      maxDeque.pop();\n    }\n    maxDeque.push(value);\n\n    while (minDeque.length && minDeque[minDeque.length - 1] > value) {\n      minDeque.pop();\n    }\n    minDeque.push(value);\n\n    while (maxDeque[0] - minDeque[0] > limit) {\n      if (energyLevels[left] === maxDeque[0]) maxDeque.shift();\n      if (energyLevels[left] === minDeque[0]) minDeque.shift();\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is energyLevels.length.\nSpace complexity: O(n), because the deques can store window values."
+      }
+    ]
+  },
+  {
+    "title": "Streaming Buffer Meltdown",
+    "slug": "streaming-buffer-meltdown",
+    "functionName": "streamingBufferMeltdown",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "BINARY_SEARCH", "GREEDY"],
+    "description": "A streaming app downloads video chunks before playback.\n\nEach number in `chunks` is the size of one video chunk. You want to split the chunks into at most `sessions` continuous download sessions.\n\nReturn the smallest possible value of the largest session size.\n\nIn other words, minimize the heaviest continuous group after splitting the array.",
+    "examples": [
+      {
+        "input": "`chunks = [7, 2, 5, 10, 8]`, `sessions = 2`",
+        "output": "`18`",
+        "explanation": "One optimal split is `[7, 2, 5]` and `[10, 8]`. The largest session size is `18`."
+      },
+      {
+        "input": "`chunks = [1, 2, 3, 4, 5]`, `sessions = 2`",
+        "output": "`9`",
+        "explanation": "One optimal split is `[1, 2, 3]` and `[4, 5]`."
+      }
+    ],
+    "constraints": "- `1 <= chunks.length <= 10^5`\n- `0 <= chunks[i] <= 10^9`\n- `1 <= sessions <= chunks.length`",
+    "starterCode": {
+      "JAVASCRIPT": "function streamingBufferMeltdown(chunks, sessions) {\n  // Return the minimized largest continuous session size.\n}",
+      "TYPESCRIPT": "function streamingBufferMeltdown(chunks: number[], sessions: number): number {\n  // Return the minimized largest continuous session size.\n}",
+      "PYTHON": "from typing import List\n\ndef streaming_buffer_meltdown(chunks: List[int], sessions: int) -> int:\n    # Return the minimized largest continuous session size.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\n\nlong long streamingBufferMeltdown(vector<int>& chunks, int sessions) {\n    // Return the minimized largest continuous session size.\n}",
+      "JAVA": "class Solution {\n    public long streamingBufferMeltdown(int[] chunks, int sessions) {\n        // Return the minimized largest continuous session size.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[7,2,5,10,8]\n2",
+        "expected": "18"
+      },
+      {
+        "input": "[1,2,3,4,5]\n2",
+        "expected": "9"
+      },
+      {
+        "input": "[5]\n1",
+        "expected": "5"
+      },
+      {
+        "input": "[1,1,1,1]\n4",
+        "expected": "1"
+      },
+      {
+        "input": "[10,20,30]\n1",
+        "expected": "60"
+      },
+      {
+        "input": "[0,0,0]\n2",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "The answer is between the largest single chunk and the sum of all chunks."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Binary search the answer. For a candidate maximum session size, greedily check how many sessions are needed."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set low = max(chunks) and high = sum(chunks).\nFor each mid, scan chunks and create a new session whenever adding the next chunk would exceed mid.\nIf the needed sessions <= sessions, mid is possible, so search lower.\nOtherwise search higher."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction streamingBufferMeltdown(chunks, sessions) {\n  let low = Math.max(...chunks);\n  let high = chunks.reduce((sum, value) => sum + value, 0);\n\n  function canSplit(maxSize) {\n    let used = 1;\n    let current = 0;\n\n    for (const chunk of chunks) {\n      if (current + chunk > maxSize) {\n        used++;\n        current = chunk;\n      } else {\n        current += chunk;\n      }\n    }\n\n    return used <= sessions;\n  }\n\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n\n    if (canSplit(mid)) {\n      high = mid;\n    } else {\n      low = mid + 1;\n    }\n  }\n\n  return low;\n}\n\nTime complexity: O(n log S), where n is chunks.length and S is the sum range.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Bookstore Shelf Rescue",
+    "slug": "bookstore-shelf-rescue",
+    "functionName": "bookstoreShelfRescue",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING", "BINARY_SEARCH"],
+    "description": "A bookstore is arranging books on shelves.\n\nEach number in `books` represents the thickness of one book. Books must stay in their original order. You need to split them across exactly `shelves` shelves, where each shelf holds a continuous group of books.\n\nReturn the smallest possible maximum shelf thickness.\n\nIf there are more shelves than books, some shelves may stay empty.",
+    "examples": [
+      {
+        "input": "`books = [12, 34, 67, 90]`, `shelves = 2`",
+        "output": "`113`",
+        "explanation": "One optimal split is `[12, 34, 67]` and `[90]`. The maximum shelf thickness is `113`."
+      },
+      {
+        "input": "`books = [5, 5, 5]`, `shelves = 5`",
+        "output": "`5`",
+        "explanation": "Since extra shelves may stay empty, each book can be placed on its own shelf."
+      }
+    ],
+    "constraints": "- `0 <= books.length <= 10^5`\n- `0 <= books[i] <= 10^9`\n- `1 <= shelves <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function bookstoreShelfRescue(books, shelves) {\n  // Return the minimized maximum shelf thickness.\n}",
+      "TYPESCRIPT": "function bookstoreShelfRescue(books: number[], shelves: number): number {\n  // Return the minimized maximum shelf thickness.\n}",
+      "PYTHON": "from typing import List\n\ndef bookstore_shelf_rescue(books: List[int], shelves: int) -> int:\n    # Return the minimized maximum shelf thickness.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\n\nlong long bookstoreShelfRescue(vector<int>& books, int shelves) {\n    // Return the minimized maximum shelf thickness.\n}",
+      "JAVA": "class Solution {\n    public long bookstoreShelfRescue(int[] books, int shelves) {\n        // Return the minimized maximum shelf thickness.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[12,34,67,90]\n2",
+        "expected": "113"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5,5]\n5",
+        "expected": "5"
+      },
+      {
+        "input": "[10]\n1",
+        "expected": "10"
+      },
+      {
+        "input": "[1,2,3,4,5]\n2",
+        "expected": "9"
+      },
+      {
+        "input": "[10,20,30]\n1",
+        "expected": "60"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "The answer cannot be smaller than the thickest single book."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "This is a binary search on the answer problem, similar to splitting an array into groups."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If books is empty, return 0.\nSet low = max book thickness and high = total thickness.\nFor each candidate limit, greedily count how many shelves are needed.\nIf the number of shelves needed is <= shelves, try a smaller limit.\nOtherwise try a larger limit."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction bookstoreShelfRescue(books, shelves) {\n  if (books.length === 0) return 0;\n\n  let low = Math.max(...books);\n  let high = books.reduce((sum, value) => sum + value, 0);\n\n  function canArrange(limit) {\n    let usedShelves = 1;\n    let current = 0;\n\n    for (const book of books) {\n      if (current + book > limit) {\n        usedShelves++;\n        current = book;\n      } else {\n        current += book;\n      }\n    }\n\n    return usedShelves <= shelves;\n  }\n\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n\n    if (canArrange(mid)) {\n      high = mid;\n    } else {\n      low = mid + 1;\n    }\n  }\n\n  return low;\n}\n\nTime complexity: O(n log S), where n is books.length and S is the total thickness range.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Pet Cafe Treat Counter",
+    "slug": "pet-cafe-treat-counter",
+    "functionName": "petCafeTreatCounter",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "MATH"],
+    "description": "A pet cafe tracks how many treats each animal received today.\n\nGiven an array `treats`, return the total number of treats given to all animals.\n\nIf there are no animals, return `0`.",
+    "examples": [
+      {
+        "input": "`treats = [2, 4, 1]`",
+        "output": "`7`",
+        "explanation": "The total is `2 + 4 + 1 = 7`."
+      },
+      {
+        "input": "`treats = []`",
+        "output": "`0`",
+        "explanation": "There are no treats to count."
+      }
+    ],
+    "constraints": "- `0 <= treats.length <= 10^4`\n- `0 <= treats[i] <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function petCafeTreatCounter(treats) {\n  // Return the total number of treats.\n}",
+      "TYPESCRIPT": "function petCafeTreatCounter(treats: number[]): number {\n  // Return the total number of treats.\n}",
+      "PYTHON": "from typing import List\n\ndef pet_cafe_treat_counter(treats: List[int]) -> int:\n    # Return the total number of treats.\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\n\nint petCafeTreatCounter(vector<int>& treats) {\n    // Return the total number of treats.\n}",
+      "JAVA": "class Solution {\n    public int petCafeTreatCounter(int[] treats) {\n        // Return the total number of treats.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,4,1]",
+        "expected": "7"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[9]",
+        "expected": "9"
+      },
+      {
+        "input": "[1,1,1,1]",
+        "expected": "4"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Add every number in the array."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a running sum while looping through `treats`."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set total = 0.\nLoop through each treat count.\nAdd it to total.\nReturn total."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction petCafeTreatCounter(treats) {\n  let total = 0;\n\n  for (const count of treats) {\n    total += count;\n  }\n\n  return total;\n}\n\nTime complexity: O(n), where n is treats.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Raincoat Size Finder",
+    "slug": "raincoat-size-finder",
+    "functionName": "raincoatSizeFinder",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "A school trip needs to find the largest raincoat size available.\n\nGiven an array `sizes`, return the largest size.\n\nIf there are no raincoats, return `null`.",
+    "examples": [
+      {
+        "input": "`sizes = [3, 7, 2, 9]`",
+        "output": "`9`",
+        "explanation": "`9` is the largest size."
+      },
+      {
+        "input": "`sizes = []`",
+        "output": "`null`",
+        "explanation": "There are no raincoats."
+      }
+    ],
+    "constraints": "- `0 <= sizes.length <= 10^4`\n- `0 <= sizes[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function raincoatSizeFinder(sizes) {\n  // Return the largest raincoat size, or null if the array is empty.\n}",
+      "TYPESCRIPT": "function raincoatSizeFinder(sizes: number[]): number | null {\n  // Return the largest raincoat size, or null if the array is empty.\n}",
+      "PYTHON": "from typing import List, Optional\n\ndef raincoat_size_finder(sizes: List[int]) -> Optional[int]:\n    # Return the largest raincoat size, or None if the array is empty.\n    pass",
+      "CPP": "#include <vector>\n#include <optional>\nusing namespace std;\n\noptional<int> raincoatSizeFinder(vector<int>& sizes) {\n    // Return the largest raincoat size, or nullopt if the array is empty.\n}",
+      "JAVA": "class Solution {\n    public Integer raincoatSizeFinder(int[] sizes) {\n        // Return the largest raincoat size, or null if the array is empty.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[3,7,2,9]",
+        "expected": "9"
+      },
+      {
+        "input": "[]",
+        "expected": "null"
+      },
+      {
+        "input": "[5]",
+        "expected": "5"
+      },
+      {
+        "input": "[4,4,4]",
+        "expected": "4"
+      },
+      {
+        "input": "[0,2,1]",
+        "expected": "2"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Track the largest number seen so far."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Start from the first element, then compare each later element."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If sizes is empty, return null.\nSet largest = sizes[0].\nLoop through sizes.\nIf size > largest, update largest.\nReturn largest."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction raincoatSizeFinder(sizes) {\n  if (sizes.length === 0) return null;\n\n  let largest = sizes[0];\n\n  for (const size of sizes) {\n    if (size > largest) {\n      largest = size;\n    }\n  }\n\n  return largest;\n}\n\nTime complexity: O(n), where n is sizes.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Picnic Basket Pair",
+    "slug": "picnic-basket-pair",
+    "functionName": "picnicBasketPair",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You are packing two food boxes for a picnic.\n\nEach number in `boxes` represents the weight of one food box. Return `true` if there are two different boxes whose weights add up exactly to `targetWeight`. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`boxes = [4, 7, 1, 9]`, `targetWeight = 10`",
+        "output": "`true`",
+        "explanation": "`1 + 9 = 10`."
+      },
+      {
+        "input": "`boxes = [3, 5, 8]`, `targetWeight = 20`",
+        "output": "`false`",
+        "explanation": "No two boxes add up to `20`."
+      }
+    ],
+    "constraints": "- `0 <= boxes.length <= 10^5`\n- `0 <= boxes[i] <= 10^9`\n- `0 <= targetWeight <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function picnicBasketPair(boxes, targetWeight) {\n  // Return true if two different boxes add up to targetWeight.\n}",
+      "TYPESCRIPT": "function picnicBasketPair(boxes: number[], targetWeight: number): boolean {\n  // Return true if two different boxes add up to targetWeight.\n}",
+      "PYTHON": "from typing import List\n\ndef picnic_basket_pair(boxes: List[int], target_weight: int) -> bool:\n    # Return true if two different boxes add up to target_weight.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nbool picnicBasketPair(vector<int>& boxes, int targetWeight) {\n    // Return true if two different boxes add up to targetWeight.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public boolean picnicBasketPair(int[] boxes, int targetWeight) {\n        // Return true if two different boxes add up to targetWeight.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[4,7,1,9]\n10",
+        "expected": "true"
+      },
+      {
+        "input": "[]\n10",
+        "expected": "false"
+      },
+      {
+        "input": "[5]\n5",
+        "expected": "false"
+      },
+      {
+        "input": "[3,5,8]\n20",
+        "expected": "false"
+      },
+      {
+        "input": "[5,5]\n10",
+        "expected": "true"
+      },
+      {
+        "input": "[0,4,6]\n4",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For each box, ask what weight would complete the target."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a Set to remember weights you have already seen."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Create seen = new Set().\nFor each weight, compute needed = targetWeight - weight.\nIf seen contains needed, return true.\nAdd weight to seen.\nReturn false."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction picnicBasketPair(boxes, targetWeight) {\n  const seen = new Set();\n\n  for (const weight of boxes) {\n    const needed = targetWeight - weight;\n\n    if (seen.has(needed)) {\n      return true;\n    }\n\n    seen.add(weight);\n  }\n\n  return false;\n}\n\nTime complexity: O(n), where n is boxes.length.\nSpace complexity: O(n)."
+      }
+    ]
+  },
+  {
+    "title": "Study Session Focus Window",
+    "slug": "study-session-focus-window",
+    "functionName": "studySessionFocusWindow",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SLIDING_WINDOW"],
+    "description": "A study app records your focus score every minute.\n\nGiven an array `focusScores` and an integer `minutes`, return the highest total focus score from any continuous block of exactly `minutes` minutes.\n\nIf `minutes` is larger than the number of scores, return the total of all scores.",
+    "examples": [
+      {
+        "input": "`focusScores = [3, 6, 2, 8, 4]`, `minutes = 3`",
+        "output": "`14`",
+        "explanation": "The best 3-minute block is `[2, 8, 4]`, with total `14`."
+      },
+      {
+        "input": "`focusScores = [5, 5]`, `minutes = 5`",
+        "output": "`10`",
+        "explanation": "The requested window is larger than the data, so return the total."
+      }
+    ],
+    "constraints": "- `0 <= focusScores.length <= 10^5`\n- `0 <= focusScores[i] <= 10^5`\n- `1 <= minutes <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function studySessionFocusWindow(focusScores, minutes) {\n  // Return the highest total focus score in any continuous window.\n}",
+      "TYPESCRIPT": "function studySessionFocusWindow(focusScores: number[], minutes: number): number {\n  // Return the highest total focus score in any continuous window.\n}",
+      "PYTHON": "from typing import List\n\ndef study_session_focus_window(focus_scores: List[int], minutes: int) -> int:\n    # Return the highest total focus score in any continuous window.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint studySessionFocusWindow(vector<int>& focusScores, int minutes) {\n    // Return the highest total focus score in any continuous window.\n}",
+      "JAVA": "class Solution {\n    public int studySessionFocusWindow(int[] focusScores, int minutes) {\n        // Return the highest total focus score in any continuous window.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[3,6,2,8,4]\n3",
+        "expected": "14"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[5,5]\n5",
+        "expected": "10"
+      },
+      {
+        "input": "[7]\n1",
+        "expected": "7"
+      },
+      {
+        "input": "[1,1,1,1]\n2",
+        "expected": "2"
+      },
+      {
+        "input": "[10,0,10,0]\n2",
+        "expected": "10"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Avoid summing every window from scratch."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use a fixed-size sliding window."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If focusScores is empty, return 0.\nIf minutes >= focusScores.length, return the total sum.\nSum the first `minutes` values.\nSlide the window by adding the next value and removing the value that leaves.\nTrack the maximum sum."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction studySessionFocusWindow(focusScores, minutes) {\n  if (focusScores.length === 0) return 0;\n\n  if (minutes >= focusScores.length) {\n    return focusScores.reduce((sum, value) => sum + value, 0);\n  }\n\n  let current = 0;\n\n  for (let i = 0; i < minutes; i++) {\n    current += focusScores[i];\n  }\n\n  let best = current;\n\n  for (let right = minutes; right < focusScores.length; right++) {\n    current += focusScores[right];\n    current -= focusScores[right - minutes];\n    best = Math.max(best, current);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is focusScores.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Museum Ticket Groups",
+    "slug": "museum-ticket-groups",
+    "functionName": "museumTicketGroups",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SORTING", "GREEDY"],
+    "description": "A museum wants to let in as many visitor groups as possible before closing.\n\nEach number in `groupTimes` is how many minutes one group needs for their visit. The museum has `minutesLeft` minutes left today.\n\nReturn the maximum number of groups that can visit if you choose the groups wisely.",
+    "examples": [
+      {
+        "input": "`groupTimes = [20, 10, 30, 5]`, `minutesLeft = 35`",
+        "output": "`3`",
+        "explanation": "Choose groups taking `5`, `10`, and `20` minutes."
+      },
+      {
+        "input": "`groupTimes = [50, 60]`, `minutesLeft = 20`",
+        "output": "`0`",
+        "explanation": "No group can fit before closing."
+      }
+    ],
+    "constraints": "- `0 <= groupTimes.length <= 10^5`\n- `0 <= groupTimes[i] <= 10^9`\n- `0 <= minutesLeft <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function museumTicketGroups(groupTimes, minutesLeft) {\n  // Return the maximum number of groups that can visit.\n}",
+      "TYPESCRIPT": "function museumTicketGroups(groupTimes: number[], minutesLeft: number): number {\n  // Return the maximum number of groups that can visit.\n}",
+      "PYTHON": "from typing import List\n\ndef museum_ticket_groups(group_times: List[int], minutes_left: int) -> int:\n    # Return the maximum number of groups that can visit.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint museumTicketGroups(vector<int>& groupTimes, int minutesLeft) {\n    // Return the maximum number of groups that can visit.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int museumTicketGroups(int[] groupTimes, int minutesLeft) {\n        // Return the maximum number of groups that can visit.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[20,10,30,5]\n35",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n10",
+        "expected": "0"
+      },
+      {
+        "input": "[50,60]\n20",
+        "expected": "0"
+      },
+      {
+        "input": "[10]\n10",
+        "expected": "1"
+      },
+      {
+        "input": "[5,5,5]\n10",
+        "expected": "2"
+      },
+      {
+        "input": "[1,2,3,4]\n100",
+        "expected": "4"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "To fit the most groups, choose shorter visits first."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the group times in ascending order."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort groupTimes ascending.\nSet count = 0.\nFor each time, if minutesLeft >= time, subtract time and increase count.\nOtherwise stop.\nReturn count."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction museumTicketGroups(groupTimes, minutesLeft) {\n  groupTimes.sort((a, b) => a - b);\n\n  let count = 0;\n\n  for (const time of groupTimes) {\n    if (minutesLeft < time) break;\n\n    minutesLeft -= time;\n    count++;\n  }\n\n  return count;\n}\n\nTime complexity: O(n log n), because of sorting.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  },
+  {
+    "title": "Closet Color Variety",
+    "slug": "closet-color-variety",
+    "functionName": "closetColorVariety",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "HASH_MAP"],
+    "description": "You are planning outfits from a row of clothes in your closet.\n\nEach number in `colors` represents a clothing color ID. Return the length of the longest continuous section that contains at most `maxColors` different colors.",
+    "examples": [
+      {
+        "input": "`colors = [1, 2, 1, 3, 2, 2]`, `maxColors = 2`",
+        "output": "`3`",
+        "explanation": "The sections `[1, 2, 1]` and `[3, 2, 2]` both have length `3`."
+      },
+      {
+        "input": "`colors = [4, 4, 4]`, `maxColors = 1`",
+        "output": "`3`",
+        "explanation": "The whole section has one color."
+      }
+    ],
+    "constraints": "- `0 <= colors.length <= 10^5`\n- `0 <= colors[i] <= 10^9`\n- `0 <= maxColors <= 10^5`",
+    "starterCode": {
+      "JAVASCRIPT": "function closetColorVariety(colors, maxColors) {\n  // Return the longest continuous section with at most maxColors different colors.\n}",
+      "TYPESCRIPT": "function closetColorVariety(colors: number[], maxColors: number): number {\n  // Return the longest continuous section with at most maxColors different colors.\n}",
+      "PYTHON": "from typing import List\n\ndef closet_color_variety(colors: List[int], max_colors: int) -> int:\n    # Return the longest continuous section with at most max_colors different colors.\n    pass",
+      "CPP": "#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint closetColorVariety(vector<int>& colors, int maxColors) {\n    // Return the longest continuous section with at most maxColors different colors.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int closetColorVariety(int[] colors, int maxColors) {\n        // Return the longest continuous section with at most maxColors different colors.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,1,3,2,2]\n2",
+        "expected": "3"
+      },
+      {
+        "input": "[]\n2",
+        "expected": "0"
+      },
+      {
+        "input": "[4,4,4]\n1",
+        "expected": "3"
+      },
+      {
+        "input": "[1,2,3]\n0",
+        "expected": "0"
+      },
+      {
+        "input": "[1,2,3,2,2]\n2",
+        "expected": "4"
+      },
+      {
+        "input": "[9]\n5",
+        "expected": "1"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Track how many of each color is inside the current window."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use sliding window with a frequency map."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If maxColors is 0, return 0.\nUse left = 0 and a map.\nMove right through colors and add colors[right].\nWhile the map has more than maxColors keys, remove colors[left] and move left.\nUpdate best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction closetColorVariety(colors, maxColors) {\n  if (maxColors === 0) return 0;\n\n  const counts = new Map();\n  let left = 0;\n  let best = 0;\n\n  for (let right = 0; right < colors.length; right++) {\n    const color = colors[right];\n    counts.set(color, (counts.get(color) || 0) + 1);\n\n    while (counts.size > maxColors) {\n      const leftColor = colors[left];\n      counts.set(leftColor, counts.get(leftColor) - 1);\n\n      if (counts.get(leftColor) === 0) {\n        counts.delete(leftColor);\n      }\n\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is colors.length.\nSpace complexity: O(k), where k is the number of colors in the current window."
+      }
+    ]
+  },
+  {
+    "title": "City Power Surge",
+    "slug": "city-power-surge",
+    "functionName": "cityPowerSurge",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "A city records power usage changes throughout the day.\n\nEach number in `changes` represents a gain or drop in power usage during one time block. Return the maximum possible sum of any continuous block.\n\nIf `changes` is empty, return `0`.",
+    "examples": [
+      {
+        "input": "`changes = [-3, 5, -1, 6, -8]`",
+        "output": "`10`",
+        "explanation": "The best continuous block is `[5, -1, 6]`, with sum `10`."
+      },
+      {
+        "input": "`changes = [-4, -2, -7]`",
+        "output": "`-2`",
+        "explanation": "The best choice is the least negative block, `[-2]`."
+      }
+    ],
+    "constraints": "- `0 <= changes.length <= 10^5`\n- `-10^9 <= changes[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function cityPowerSurge(changes) {\n  // Return the maximum sum of any continuous block.\n}",
+      "TYPESCRIPT": "function cityPowerSurge(changes: number[]): number {\n  // Return the maximum sum of any continuous block.\n}",
+      "PYTHON": "from typing import List\n\ndef city_power_surge(changes: List[int]) -> int:\n    # Return the maximum sum of any continuous block.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long cityPowerSurge(vector<int>& changes) {\n    // Return the maximum sum of any continuous block.\n}",
+      "JAVA": "class Solution {\n    public long cityPowerSurge(int[] changes) {\n        // Return the maximum sum of any continuous block.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[-3,5,-1,6,-8]",
+        "expected": "10"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[-4,-2,-7]",
+        "expected": "-2"
+      },
+      {
+        "input": "[4]",
+        "expected": "4"
+      },
+      {
+        "input": "[1,2,3]",
+        "expected": "6"
+      },
+      {
+        "input": "[5,-10,7,8]",
+        "expected": "15"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "At each position, decide whether to continue the current block or start a new one."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use Kadane's algorithm."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If changes is empty, return 0.\nSet current and best to changes[0].\nFor each next value, current = max(value, current + value).\nUpdate best with current.\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction cityPowerSurge(changes) {\n  if (changes.length === 0) return 0;\n\n  let current = changes[0];\n  let best = changes[0];\n\n  for (let i = 1; i < changes.length; i++) {\n    current = Math.max(changes[i], current + changes[i]);\n    best = Math.max(best, current);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is changes.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Apartment Rent Split Limit",
+    "slug": "apartment-rent-split-limit",
+    "functionName": "apartmentRentSplitLimit",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "BINARY_SEARCH", "GREEDY"],
+    "description": "A shared apartment tracks monthly expenses in order.\n\nEach number in `expenses` is one expense. You want to split the expenses into at most `months` continuous groups for budgeting.\n\nReturn the smallest possible value of the largest group sum.",
+    "examples": [
+      {
+        "input": "`expenses = [7, 2, 5, 10, 8]`, `months = 2`",
+        "output": "`18`",
+        "explanation": "One optimal split is `[7, 2, 5]` and `[10, 8]`."
+      },
+      {
+        "input": "`expenses = [1, 2, 3, 4, 5]`, `months = 2`",
+        "output": "`9`",
+        "explanation": "One optimal split is `[1, 2, 3]` and `[4, 5]`."
+      }
+    ],
+    "constraints": "- `1 <= expenses.length <= 10^5`\n- `0 <= expenses[i] <= 10^9`\n- `1 <= months <= expenses.length`",
+    "starterCode": {
+      "JAVASCRIPT": "function apartmentRentSplitLimit(expenses, months) {\n  // Return the minimized largest continuous expense group sum.\n}",
+      "TYPESCRIPT": "function apartmentRentSplitLimit(expenses: number[], months: number): number {\n  // Return the minimized largest continuous expense group sum.\n}",
+      "PYTHON": "from typing import List\n\ndef apartment_rent_split_limit(expenses: List[int], months: int) -> int:\n    # Return the minimized largest continuous expense group sum.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\n\nlong long apartmentRentSplitLimit(vector<int>& expenses, int months) {\n    // Return the minimized largest continuous expense group sum.\n}",
+      "JAVA": "class Solution {\n    public long apartmentRentSplitLimit(int[] expenses, int months) {\n        // Return the minimized largest continuous expense group sum.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[7,2,5,10,8]\n2",
+        "expected": "18"
+      },
+      {
+        "input": "[1,2,3,4,5]\n2",
+        "expected": "9"
+      },
+      {
+        "input": "[5]\n1",
+        "expected": "5"
+      },
+      {
+        "input": "[1,1,1,1]\n4",
+        "expected": "1"
+      },
+      {
+        "input": "[10,20,30]\n1",
+        "expected": "60"
+      },
+      {
+        "input": "[0,0,0]\n2",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "The answer must be at least the largest single expense and at most the total expense."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Binary search the answer and greedily check if a limit is possible."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set low = max(expenses), high = sum(expenses).\nFor a candidate limit, scan expenses and create a new group whenever adding the next expense would exceed limit.\nIf the number of groups is <= months, try a smaller limit.\nOtherwise try a larger limit."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction apartmentRentSplitLimit(expenses, months) {\n  let low = Math.max(...expenses);\n  let high = expenses.reduce((sum, value) => sum + value, 0);\n\n  function canSplit(limit) {\n    let groups = 1;\n    let current = 0;\n\n    for (const expense of expenses) {\n      if (current + expense > limit) {\n        groups++;\n        current = expense;\n      } else {\n        current += expense;\n      }\n    }\n\n    return groups <= months;\n  }\n\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n\n    if (canSplit(mid)) {\n      high = mid;\n    } else {\n      low = mid + 1;\n    }\n  }\n\n  return low;\n}\n\nTime complexity: O(n log S), where n is expenses.length and S is the sum range.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Subway Crowd Stability",
+    "slug": "subway-crowd-stability",
+    "functionName": "subwayCrowdStability",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "SLIDING_WINDOW", "MONOTONIC_QUEUE"],
+    "description": "A subway station records the number of people on the platform every minute.\n\nGiven an array `crowdLevels` and an integer `limit`, return the length of the longest continuous time period where the difference between the highest and lowest crowd level is at most `limit`.",
+    "examples": [
+      {
+        "input": "`crowdLevels = [8, 2, 4, 7]`, `limit = 4`",
+        "output": "`2`",
+        "explanation": "The period `[2, 4]` has difference `2`."
+      },
+      {
+        "input": "`crowdLevels = [10, 1, 2, 4, 7, 2]`, `limit = 5`",
+        "output": "`4`",
+        "explanation": "The period `[2, 4, 7, 2]` has max `7`, min `2`, and difference `5`."
+      }
+    ],
+    "constraints": "- `0 <= crowdLevels.length <= 10^5`\n- `-10^9 <= crowdLevels[i] <= 10^9`\n- `0 <= limit <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function subwayCrowdStability(crowdLevels, limit) {\n  // Return the longest period where max - min <= limit.\n}",
+      "TYPESCRIPT": "function subwayCrowdStability(crowdLevels: number[], limit: number): number {\n  // Return the longest period where max - min <= limit.\n}",
+      "PYTHON": "from typing import List\n\ndef subway_crowd_stability(crowd_levels: List[int], limit: int) -> int:\n    # Return the longest period where max - min <= limit.\n    pass",
+      "CPP": "#include <vector>\n#include <deque>\n#include <algorithm>\nusing namespace std;\n\nint subwayCrowdStability(vector<int>& crowdLevels, int limit) {\n    // Return the longest period where max - min <= limit.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public int subwayCrowdStability(int[] crowdLevels, int limit) {\n        // Return the longest period where max - min <= limit.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[8,2,4,7]\n4",
+        "expected": "2"
+      },
+      {
+        "input": "[10,1,2,4,7,2]\n5",
+        "expected": "4"
+      },
+      {
+        "input": "[]\n3",
+        "expected": "0"
+      },
+      {
+        "input": "[5]\n0",
+        "expected": "1"
+      },
+      {
+        "input": "[3,3,3]\n0",
+        "expected": "3"
+      },
+      {
+        "input": "[1,5,6,7,8,10,6,5,6]\n4",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "You need to know the current window's maximum and minimum efficiently."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use two monotonic queues: one decreasing for max values and one increasing for min values."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Move right through the array.\nMaintain maxDeque in decreasing order and minDeque in increasing order.\nWhile maxDeque[0] - minDeque[0] > limit, move left and remove outdated values.\nUpdate the best window length."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction subwayCrowdStability(crowdLevels, limit) {\n  const maxDeque = [];\n  const minDeque = [];\n  let left = 0;\n  let best = 0;\n\n  for (let right = 0; right < crowdLevels.length; right++) {\n    const value = crowdLevels[right];\n\n    while (maxDeque.length && maxDeque[maxDeque.length - 1] < value) {\n      maxDeque.pop();\n    }\n    maxDeque.push(value);\n\n    while (minDeque.length && minDeque[minDeque.length - 1] > value) {\n      minDeque.pop();\n    }\n    minDeque.push(value);\n\n    while (maxDeque[0] - minDeque[0] > limit) {\n      if (crowdLevels[left] === maxDeque[0]) maxDeque.shift();\n      if (crowdLevels[left] === minDeque[0]) minDeque.shift();\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is crowdLevels.length.\nSpace complexity: O(n), because the queues can store window values."
+      }
+    ]
+  },
+  {
+    "title": "Gaming Loot Chest Merge",
+    "slug": "gaming-loot-chest-merge",
+    "functionName": "gamingLootChestMerge",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You are opening loot chests in a game.\n\nEach number in `lootValues` represents the value of one chest in a row. You may choose chests to open, but you cannot open two adjacent chests because the trap alarm will trigger.\n\nReturn the maximum total loot value you can collect.",
+    "examples": [
+      {
+        "input": "`lootValues = [2, 7, 9, 3, 1]`",
+        "output": "`12`",
+        "explanation": "Open chests with values `2`, `9`, and `1` for a total of `12`."
+      },
+      {
+        "input": "`lootValues = [5, 1, 1, 5]`",
+        "output": "`10`",
+        "explanation": "Open the first and last chests."
+      }
+    ],
+    "constraints": "- `0 <= lootValues.length <= 10^5`\n- `0 <= lootValues[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function gamingLootChestMerge(lootValues) {\n  // Return the maximum loot without opening adjacent chests.\n}",
+      "TYPESCRIPT": "function gamingLootChestMerge(lootValues: number[]): number {\n  // Return the maximum loot without opening adjacent chests.\n}",
+      "PYTHON": "from typing import List\n\ndef gaming_loot_chest_merge(loot_values: List[int]) -> int:\n    # Return the maximum loot without opening adjacent chests.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long gamingLootChestMerge(vector<int>& lootValues) {\n    // Return the maximum loot without opening adjacent chests.\n}",
+      "JAVA": "class Solution {\n    public long gamingLootChestMerge(int[] lootValues) {\n        // Return the maximum loot without opening adjacent chests.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,7,9,3,1]",
+        "expected": "12"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[5]",
+        "expected": "5"
+      },
+      {
+        "input": "[5,1,1,5]",
+        "expected": "10"
+      },
+      {
+        "input": "[1,2,3,1]",
+        "expected": "4"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For each chest, choose between opening it or skipping it."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "This is a dynamic programming problem similar to House Robber."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Keep two values: prev2 for the best result two positions back, and prev1 for the best result one position back.\nFor each loot value, current = max(prev1, prev2 + value).\nMove prev2 and prev1 forward.\nReturn prev1."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction gamingLootChestMerge(lootValues) {\n  let prev2 = 0;\n  let prev1 = 0;\n\n  for (const value of lootValues) {\n    const current = Math.max(prev1, prev2 + value);\n    prev2 = prev1;\n    prev1 = current;\n  }\n\n  return prev1;\n}\n\nTime complexity: O(n), where n is lootValues.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Airport Luggage Conveyor",
+    "slug": "airport-luggage-conveyor",
+    "functionName": "airportLuggageConveyor",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "BINARY_SEARCH", "GREEDY"],
+    "description": "An airport conveyor belt must ship luggage over several trips.\n\nEach number in `bags` is the weight of one bag in order. You need to move all bags within `trips` trips. Bags must be loaded in the original order, and each trip can carry a continuous group of bags.\n\nReturn the minimum conveyor capacity needed.",
+    "examples": [
+      {
+        "input": "`bags = [1, 2, 3, 4, 5]`, `trips = 2`",
+        "output": "`9`",
+        "explanation": "One optimal plan is `[1, 2, 3]` and `[4, 5]`."
+      },
+      {
+        "input": "`bags = [10, 20, 30]`, `trips = 1`",
+        "output": "`60`",
+        "explanation": "All bags must fit in one trip."
+      }
+    ],
+    "constraints": "- `1 <= bags.length <= 10^5`\n- `0 <= bags[i] <= 10^9`\n- `1 <= trips <= bags.length`",
+    "starterCode": {
+      "JAVASCRIPT": "function airportLuggageConveyor(bags, trips) {\n  // Return the minimum conveyor capacity needed.\n}",
+      "TYPESCRIPT": "function airportLuggageConveyor(bags: number[], trips: number): number {\n  // Return the minimum conveyor capacity needed.\n}",
+      "PYTHON": "from typing import List\n\ndef airport_luggage_conveyor(bags: List[int], trips: int) -> int:\n    # Return the minimum conveyor capacity needed.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\n\nlong long airportLuggageConveyor(vector<int>& bags, int trips) {\n    // Return the minimum conveyor capacity needed.\n}",
+      "JAVA": "class Solution {\n    public long airportLuggageConveyor(int[] bags, int trips) {\n        // Return the minimum conveyor capacity needed.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,3,4,5]\n2",
+        "expected": "9"
+      },
+      {
+        "input": "[10,20,30]\n1",
+        "expected": "60"
+      },
+      {
+        "input": "[5]\n1",
+        "expected": "5"
+      },
+      {
+        "input": "[1,1,1,1]\n4",
+        "expected": "1"
+      },
+      {
+        "input": "[7,2,5,10,8]\n2",
+        "expected": "18"
+      },
+      {
+        "input": "[0,0,0]\n2",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "The minimum capacity must be at least the heaviest bag."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Binary search the capacity and check if it can finish within `trips`."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set low = max(bags), high = sum(bags).\nFor each capacity candidate, greedily load bags until adding the next one would exceed capacity, then start a new trip.\nIf needed trips <= trips, try a smaller capacity.\nOtherwise try a larger capacity."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction airportLuggageConveyor(bags, trips) {\n  let low = Math.max(...bags);\n  let high = bags.reduce((sum, weight) => sum + weight, 0);\n\n  function canShip(capacity) {\n    let usedTrips = 1;\n    let current = 0;\n\n    for (const weight of bags) {\n      if (current + weight > capacity) {\n        usedTrips++;\n        current = weight;\n      } else {\n        current += weight;\n      }\n    }\n\n    return usedTrips <= trips;\n  }\n\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n\n    if (canShip(mid)) {\n      high = mid;\n    } else {\n      low = mid + 1;\n    }\n  }\n\n  return low;\n}\n\nTime complexity: O(n log S), where n is bags.length and S is the sum range.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Night Market Coupon Combo",
+    "slug": "night-market-coupon-combo",
+    "functionName": "nightMarketCouponCombo",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "TWO_POINTERS", "SORTING"],
+    "description": "You are shopping at a night market with a coupon.\n\nEach number in `prices` is the price of one item. You want to buy exactly three different items. Return `true` if there are three items whose total price is exactly `target`. Otherwise, return `false`.",
+    "examples": [
+      {
+        "input": "`prices = [2, 7, 4, 0, 9]`, `target = 11`",
+        "output": "`true`",
+        "explanation": "`2 + 0 + 9 = 11`."
+      },
+      {
+        "input": "`prices = [1, 2, 3]`, `target = 10`",
+        "output": "`false`",
+        "explanation": "The three prices only sum to `6`."
+      }
+    ],
+    "constraints": "- `0 <= prices.length <= 10^4`\n- `-10^9 <= prices[i] <= 10^9`\n- `-10^9 <= target <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function nightMarketCouponCombo(prices, target) {\n  // Return true if three different items sum exactly to target.\n}",
+      "TYPESCRIPT": "function nightMarketCouponCombo(prices: number[], target: number): boolean {\n  // Return true if three different items sum exactly to target.\n}",
+      "PYTHON": "from typing import List\n\ndef night_market_coupon_combo(prices: List[int], target: int) -> bool:\n    # Return true if three different items sum exactly to target.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nbool nightMarketCouponCombo(vector<int>& prices, int target) {\n    // Return true if three different items sum exactly to target.\n}",
+      "JAVA": "import java.util.*;\n\nclass Solution {\n    public boolean nightMarketCouponCombo(int[] prices, int target) {\n        // Return true if three different items sum exactly to target.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,7,4,0,9]\n11",
+        "expected": "true"
+      },
+      {
+        "input": "[]\n0",
+        "expected": "false"
+      },
+      {
+        "input": "[1,2]\n3",
+        "expected": "false"
+      },
+      {
+        "input": "[1,2,3]\n10",
+        "expected": "false"
+      },
+      {
+        "input": "[0,0,0]\n0",
+        "expected": "true"
+      },
+      {
+        "input": "[-1,0,1,2]\n0",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Fix one item, then search for two more items that complete the target."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Sort the array and use two pointers for the remaining two items."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Sort prices ascending.\nLoop i from 0 to prices.length - 3.\nSet left = i + 1 and right = prices.length - 1.\nCalculate sum = prices[i] + prices[left] + prices[right].\nIf sum equals target, return true.\nIf sum is too small, move left rightward.\nIf sum is too large, move right leftward.\nReturn false."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction nightMarketCouponCombo(prices, target) {\n  if (prices.length < 3) return false;\n\n  prices.sort((a, b) => a - b);\n\n  for (let i = 0; i < prices.length - 2; i++) {\n    let left = i + 1;\n    let right = prices.length - 1;\n\n    while (left < right) {\n      const sum = prices[i] + prices[left] + prices[right];\n\n      if (sum === target) return true;\n\n      if (sum < target) {\n        left++;\n      } else {\n        right--;\n      }\n    }\n  }\n\n  return false;\n}\n\nTime complexity: O(n^2), where n is prices.length.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
+      }
+    ]
+  }
+]

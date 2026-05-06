@@ -119,50 +119,65 @@ export async function GET() {
 
   // ── Makeup days ───────────────────────────────────────────────────────
   const pastDates = getMakeupDates(30);
-  const pastSlots = await prisma.dailyProblem.findMany({
+
+  // Get ALL past slots (not just deduped)
+  const allPastSlots = await prisma.dailyProblem.findMany({
     where: { date: { in: pastDates } },
     include: {
       problem: {
         select: { id: true, title: true, difficulty: true, topics: true },
       },
     },
-    orderBy: { date: "desc" },
   });
 
-  // Dedupe by date — for makeup, show the hardest scheduled problem per day
-  const makeupByDate = new Map<string, (typeof pastSlots)[0]>();
-  for (const slot of pastSlots) {
-    const existing = makeupByDate.get(slot.date);
-    if (!existing) {
-      makeupByDate.set(slot.date, slot);
-    } else {
-      const order = ["EASY", "MEDIUM", "HARD"];
-      if (order.indexOf(slot.difficulty) > order.indexOf(existing.difficulty)) {
-        makeupByDate.set(slot.date, slot);
-      }
-    }
+  // Get all problem IDs across all past slots
+  const allPastProblemIds = allPastSlots.map((s) => s.problemId);
+
+  const existingSolves = await prisma.solve.findMany({
+    where: { userId, problemId: { in: allPastProblemIds }, passed: true },
+    select: { problemId: true },
+  });
+  const solvedProblemIds = new Set(existingSolves.map((s) => s.problemId));
+
+  // Group slots by date first
+  const slotsByDate = new Map<string, typeof allPastSlots>();
+  for (const slot of allPastSlots) {
+    if (!slotsByDate.has(slot.date)) slotsByDate.set(slot.date, []);
+    slotsByDate.get(slot.date)!.push(slot);
   }
 
-  const pastProblemIds = [...makeupByDate.values()].map((s) => s.problemId);
-  const existingSolves = await prisma.solve.findMany({
-    where: { userId, problemId: { in: pastProblemIds } },
-    select: { problemId: true, passed: true },
-  });
-  const solvedProblemIds = new Set(
-    existingSolves.filter((s) => s.passed).map((s) => s.problemId),
-  );
+  // Pick best slot per date using same logic as daily
+  const makeupByDate = new Map<string, (typeof allPastSlots)[0]>();
+  for (const [date, slots] of slotsByDate) {
+    const availableDiffs = slots.map((s) => s.difficulty);
+    const bestDiff = pickBestDifficulty(
+      user?.preferredDifficulty ?? "ANY",
+      availableDiffs,
+    );
+    const bestSlot = slots.find((s) => s.difficulty === bestDiff);
+    if (bestSlot) makeupByDate.set(date, bestSlot);
+  }
 
+  // A day is "already solved" if ANY problem scheduled for that date was solved
   const makeupDays = [...makeupByDate.values()]
-    .map((s) => ({
-      date: s.date,
-      daysAgo: getDaysAgo(s.date),
-      problemId: s.problemId,
-      problemTitle: s.problem.title,
-      difficulty: s.problem.difficulty,
-      topics: s.problem.topics,
-      starCost: getMakeupCost(getDaysAgo(s.date)),
-      alreadySolved: solvedProblemIds.has(s.problemId),
-    }))
+    .map((s) => {
+      const dateSlotIds = allPastSlots
+        .filter((slot) => slot.date === s.date)
+        .map((slot) => slot.problemId);
+
+      const alreadySolved = dateSlotIds.some((id) => solvedProblemIds.has(id));
+
+      return {
+        date: s.date,
+        daysAgo: getDaysAgo(s.date),
+        problemId: s.problemId,
+        problemTitle: s.problem.title,
+        difficulty: s.problem.difficulty,
+        topics: s.problem.topics,
+        starCost: getMakeupCost(getDaysAgo(s.date)),
+        alreadySolved,
+      };
+    })
     .sort((a, b) => a.daysAgo - b.daysAgo);
 
   const freshUser = await prisma.user.findUnique({ where: { id: userId } });
