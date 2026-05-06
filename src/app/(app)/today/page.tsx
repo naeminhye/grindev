@@ -1,22 +1,38 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { TimerDisplay } from "@/components/ui/TimerDisplay";
 import { LanguageSelector } from "@/components/editor/LanguageSelector";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
-import { getTimeLimit, calculateStarDelta } from "@/lib/challenge";
+import { getTimeLimit } from "@/lib/challenge";
 import { getMonacoLanguage } from "@/lib/languages";
 import type { Language } from "@/lib/languages";
-import type { DailyResponse, SolveResponse, HintResponse } from "@/types";
+import type {
+  DailyResponse,
+  SolveResponse,
+  HintResponse,
+  ProblemExample,
+  NoProblemResponse,
+} from "@/types";
 import type { ChallengeMode } from "@/lib/challenge";
 import type { MakeupDay } from "@/lib/makeup";
 import { cn } from "@/lib/utils";
+import { NoProblemScreen } from "@/components/ui/NoProblemScreen";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -37,6 +53,12 @@ export default function TodayPage() {
   const [starDelta, setStarDelta] = useState<number | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [noProblemData, setNoProblemData] = useState<NoProblemResponse | null>(
+    null,
+  );
+  const [diffNoteVisible, setDiffNoteVisible] = useState(true);
+
   const hasStartedTyping = useRef(false);
 
   const timer = useTimer({
@@ -56,6 +78,12 @@ export default function TodayPage() {
           DailyResponse,
           { challengeMode: ChallengeMode },
         ]) => {
+          if ((dailyData as any).noProblemToday) {
+            setNoProblemData(dailyData as unknown as NoProblemResponse);
+            setPageState("ready"); // stop loading spinner
+            return;
+          }
+
           setDaily(dailyData);
           setCode((dailyData.problem.starterCode as any)["JAVASCRIPT"] ?? "");
           setStars(dailyData.userStats.stars);
@@ -64,6 +92,7 @@ export default function TodayPage() {
           setChallengeMode(settingsData.challengeMode);
           setPageState(dailyData.alreadySolved ? "solved" : "ready");
           if (dailyData.alreadySolved) setModeLocked(true);
+          setDiffNoteVisible(true);
         },
       )
       .catch((err) => {
@@ -101,13 +130,14 @@ export default function TodayPage() {
       const starter = daily
         ? ((daily.problem.starterCode as any)[language] ?? "")
         : "";
+
       if (!hasStartedTyping.current && value !== starter) {
         hasStartedTyping.current = true;
         setModeLocked(true);
         if (challengeMode === "HARD") timer.start();
       }
     },
-    [daily, language, challengeMode, timer],
+    [daily, language, challengeMode, timer, modeLocked],
   );
 
   const handleRun = useCallback(async () => {
@@ -139,6 +169,7 @@ export default function TodayPage() {
           setStarDelta(result.starDelta);
           setStars((s) => Math.max(0, s + result.starDelta!));
         }
+        setShowSuccessModal(true);
       } else {
         setPageState("ready");
         // Switch to problem tab on mobile to show results
@@ -199,15 +230,25 @@ export default function TodayPage() {
     );
   }
 
+  function handleResetCode() {
+    // TODO: show confirmation before reseting
+    const starter = (daily?.problem?.starterCode as any)[language] ?? "";
+    setCode(starter);
+    setSolveResult(null);
+    setModeLocked(false);
+    hasStartedTyping.current = false;
+  }
+
   const { problem, userStats } = daily;
   const isHard = challengeMode === "HARD";
   const isSolved = pageState === "solved";
 
   // ── Makeup section after solve ────────────────────────────────────────
-  if (isSolved && daily.makeupDays.length > 0) {
+  if (isSolved) {
     const unsolvedMakeups = daily.makeupDays.filter((d) => !d.alreadySolved);
     return (
       <div className="flex-1 flex flex-col">
+        {/* Solved banner */}
         <div className="bg-lime-400/10 border-b border-lime-500/20 px-4 md:px-6 py-4 flex items-center gap-3 flex-wrap">
           <i className="ri-checkbox-circle-fill text-lime-400 text-xl" />
           <div className="flex-1 min-w-0">
@@ -215,14 +256,7 @@ export default function TodayPage() {
               Today's problem solved!
             </p>
             <p className="text-xs font-mono text-zinc-400 mt-0.5">
-              {solveResult?.streak?.isNewRecord
-                ? `New record — ${solveResult.streak.currentStreak} day streak 🔥`
-                : `${userStats.currentStreak} day streak`}
-              {starDelta !== null && starDelta !== 0 && (
-                <span className="ml-2 text-yellow-400">
-                  {starDelta > 0 ? `+${starDelta}` : starDelta} ⭐
-                </span>
-              )}
+              {userStats.currentStreak} day streak
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -232,56 +266,64 @@ export default function TodayPage() {
         </div>
 
         <div className="max-w-2xl mx-auto w-full px-4 md:px-6 py-8 space-y-6">
-          <div>
-            <h2 className="font-heading text-xl font-bold tracking-tight">
-              Make-Up Tasks
-            </h2>
-            <p className="text-sm font-mono text-zinc-400 mt-1">
-              Catch up on missed problems.
-            </p>
-          </div>
-
-          <div
-            className={cn(
-              "flex items-start gap-3 p-4 rounded-md border text-xs font-mono",
-              daily.makeupRewardGivenToday
-                ? "bg-zinc-900 border-zinc-700 text-zinc-500"
-                : "bg-yellow-500/5 border-yellow-500/20 text-yellow-400",
-            )}
-          >
-            <i
-              className={cn(
-                "text-base mt-0.5",
-                daily.makeupRewardGivenToday
-                  ? "ri-information-line text-zinc-600"
-                  : "ri-star-line",
-              )}
-            />
-            <div>
-              {daily.makeupRewardGivenToday
-                ? "You've already received your makeup star reward today. Additional make-ups cost stars with no reward."
-                : "First make-up solve today earns stars (minus the attempt cost). After that, additional make-ups only cost stars."}
-            </div>
-          </div>
-
           {unsolvedMakeups.length === 0 ? (
-            <div className="text-center py-12 space-y-2">
-              <i className="ri-check-double-line text-3xl text-lime-400" />
-              <p className="font-mono text-sm text-zinc-400">All caught up!</p>
+            // No makeup tasks
+            <div className="text-center py-16 space-y-3">
+              <i className="ri-check-double-line text-4xl text-lime-400" />
+              <p className="font-heading font-bold text-lg">All caught up!</p>
+              <p className="font-mono text-sm text-zinc-400">
+                No missed problems. Come back tomorrow.
+              </p>
             </div>
           ) : (
-            <div className="space-y-2">
-              {unsolvedMakeups.map((day) => (
-                <MakeupCard
-                  key={day.date}
-                  day={day}
-                  userStars={stars}
-                  onStart={() => router.push(`/makeup/${day.date}`)}
+            // Makeup tasks available
+            <>
+              <div>
+                <h2 className="font-heading text-xl font-bold tracking-tight">
+                  Make-Up Tasks
+                </h2>
+                <p className="text-sm font-mono text-zinc-400 mt-1">
+                  Catch up on missed problems.
+                </p>
+              </div>
+
+              <div
+                className={cn(
+                  "flex items-start gap-3 p-4 rounded-md border text-xs font-mono",
+                  daily.makeupRewardGivenToday
+                    ? "bg-zinc-900 border-zinc-700 text-zinc-500"
+                    : "bg-yellow-500/5 border-yellow-500/20 text-yellow-400",
+                )}
+              >
+                <i
+                  className={cn(
+                    "text-base mt-0.5",
+                    daily.makeupRewardGivenToday
+                      ? "ri-information-line text-zinc-600"
+                      : "ri-star-line",
+                  )}
                 />
-              ))}
-            </div>
+                <div>
+                  {daily.makeupRewardGivenToday
+                    ? "You've already received your makeup star reward today. Additional make-ups cost stars with no reward."
+                    : "First make-up solve today earns stars (minus the attempt cost). After that, additional make-ups only cost stars."}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {unsolvedMakeups.map((day) => (
+                  <MakeupCard
+                    key={day.date}
+                    day={day}
+                    userStars={stars}
+                    onStart={() => router.push(`/makeup/${day.date}`)}
+                  />
+                ))}
+              </div>
+            </>
           )}
 
+          {/* Already completed makeups */}
           {daily.makeupDays.filter((d) => d.alreadySolved).length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-mono text-zinc-600 uppercase tracking-widest">
@@ -306,42 +348,61 @@ export default function TodayPage() {
 
   // ── Problem header ────────────────────────────────────────────────────
   const Header = (
-    <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
-      <div className="flex items-center gap-2 min-w-0">
-        <h1 className="font-heading font-bold text-sm md:text-base truncate">
-          {problem.title}
-        </h1>
-        <DifficultyBadge difficulty={problem.difficulty} />
-        <span className="hidden sm:block text-xs text-zinc-500 font-mono uppercase tracking-wider">
-          {(problem.topics ?? [])
-            .map((t: string) => t.replace(/_/g, " "))
-            .join(", ")}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <div
-          className={cn(
-            "flex items-center gap-1 px-2 py-1 rounded border text-xs font-mono",
-            isHard
-              ? "bg-orange-500/10 border-orange-500/30 text-orange-400"
-              : "bg-zinc-800 border-zinc-700 text-zinc-400",
-          )}
-        >
-          <i className={isHard ? "ri-sword-line" : "ri-shield-line"} />
-          <span className="hidden sm:inline">{isHard ? "Hard" : "Normal"}</span>
-          {modeLocked && <i className="ri-lock-line text-zinc-600 ml-0.5" />}
+    <div className="shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
+          <h1 className="font-heading font-bold text-sm md:text-base truncate">
+            {problem.title}
+          </h1>
+          <DifficultyBadge difficulty={problem.difficulty} />
+          <span className="hidden sm:block text-xs text-zinc-500 font-mono uppercase tracking-wider">
+            {(problem.topics ?? [])
+              .map((t: string) => t.replace(/_/g, " "))
+              .join(", ")}
+          </span>
         </div>
-        {isHard && modeLocked && (
-          <TimerDisplay
-            secondsLeft={timer.secondsLeft}
-            isExpired={timer.isExpired}
-            isVisible={timer.isVisible}
-            onToggleVisibility={timer.toggleVisibility}
-          />
-        )}
-        <StreakBadge streak={userStats.currentStreak} />
-        <StarCount stars={stars} />
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 rounded border text-xs font-mono",
+              isHard
+                ? "bg-orange-500/10 border-orange-500/30 text-orange-400"
+                : "bg-zinc-800 border-zinc-700 text-zinc-400",
+            )}
+          >
+            <i className={isHard ? "ri-sword-line" : "ri-shield-line"} />
+            <span className="hidden sm:inline">
+              {isHard ? "Hard" : "Normal"}
+            </span>
+            {modeLocked && <i className="ri-lock-line text-zinc-600 ml-0.5" />}
+          </div>
+          {isHard && modeLocked && (
+            <TimerDisplay
+              secondsLeft={timer.secondsLeft}
+              isExpired={timer.isExpired}
+              isVisible={timer.isVisible}
+              onToggleVisibility={timer.toggleVisibility}
+            />
+          )}
+          <StreakBadge streak={userStats.currentStreak} />
+          <StarCount stars={stars} />
+        </div>
       </div>
+
+      {/* Difficulty note — shown when fallback used */}
+      {daily.difficultyNote && diffNoteVisible && (
+        <div className="px-4 md:px-6 py-2 bg-yellow-500/5 border-b border-yellow-500/20 flex items-center gap-2 text-xs font-mono text-yellow-400">
+          <i className="ri-information-line shrink-0" />
+          <span className="flex-1">{daily.difficultyNote}</span>
+          <button
+            onClick={() => setDiffNoteVisible(false)}
+            className="text-yellow-600 hover:text-yellow-400 transition-colors shrink-0"
+          >
+            <i className="ri-close-line" />
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -376,27 +437,97 @@ export default function TodayPage() {
   );
 
   // ── Problem panel ─────────────────────────────────────────────────────
+  const examples = (problem.examples ?? []) as ProblemExample[];
+
   const ProblemPanel = (
-    <div
+    <aside
       className={cn(
-        "flex flex-col border-border overflow-y-auto",
-        "md:w-[42%] md:border-r md:flex",
-        mobileTab === "problem" ? "flex flex-1" : "hidden",
+        "min-h-0 overflow-y-auto custom-scrollbar border-border",
+        "md:border-r",
+        mobileTab === "problem" ? "block" : "hidden md:block",
       )}
     >
-      <div
-        className="p-4 md:p-6 prose prose-invert prose-sm max-w-none font-mono
-        prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-        prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-border"
-      >
-        <div
-          dangerouslySetInnerHTML={{
-            __html: markdownToHtml(problem.description),
-          }}
-        />
+      <div className="p-4 md:p-6 space-y-8">
+        <ProblemMarkdownSection>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {problem.description}
+          </ReactMarkdown>
+        </ProblemMarkdownSection>
+
+        {examples.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
+              Examples
+            </h2>
+
+            {examples.map((example, index) => (
+              <div
+                key={index}
+                className="rounded-md border border-border bg-zinc-900/50 overflow-hidden"
+              >
+                <div className="px-4 py-2 border-b border-border bg-zinc-900">
+                  <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
+                    Example {index + 1}
+                  </span>
+                </div>
+
+                <div className="p-4 space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                      Input
+                    </p>
+                    <ProblemMarkdownSection compact>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {example.input}
+                      </ReactMarkdown>
+                    </ProblemMarkdownSection>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                      Output
+                    </p>
+                    <ProblemMarkdownSection compact>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {example.output}
+                      </ReactMarkdown>
+                    </ProblemMarkdownSection>
+                  </div>
+
+                  {example.explanation && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                        Explanation
+                      </p>
+                      <ProblemMarkdownSection compact>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {example.explanation}
+                        </ReactMarkdown>
+                      </ProblemMarkdownSection>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {problem.constraints && (
+          <section className="space-y-3">
+            <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
+              Constraints
+            </h2>
+
+            <ProblemMarkdownSection>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {problem.constraints}
+              </ReactMarkdown>
+            </ProblemMarkdownSection>
+          </section>
+        )}
       </div>
 
-      <div className="border-t border-border p-4 md:p-6 space-y-3 mt-auto">
+      <div className="border-t border-border p-4 md:p-6 space-y-3">
         <div className="flex items-center gap-2 mb-4">
           <i className="ri-lightbulb-line text-yellow-400" />
           <span className="font-mono text-xs uppercase tracking-widest text-zinc-400">
@@ -404,10 +535,12 @@ export default function TodayPage() {
           </span>
           <span className="text-xs text-zinc-600 ml-auto">costs stars</span>
         </div>
+
         {HINT_TIERS.map((tier) => {
           const isUnlocked = hintsUnlocked.includes(tier.tier);
           const content = hintContents[tier.tier];
           const isLoading = hintLoading === tier.tier;
+
           return (
             <div
               key={tier.tier}
@@ -431,6 +564,7 @@ export default function TodayPage() {
                     {tier.label}
                   </span>
                 </div>
+
                 {isUnlocked ? (
                   <span className="text-xs text-lime-400 font-mono flex items-center gap-1">
                     <i className="ri-check-line" /> unlocked
@@ -456,6 +590,7 @@ export default function TodayPage() {
                   </button>
                 )}
               </div>
+
               {isUnlocked && content && (
                 <div className="px-3 pb-3">
                   <div className="text-xs text-zinc-300 font-mono leading-relaxed whitespace-pre-wrap border-t border-lime-500/10 pt-3">
@@ -467,18 +602,18 @@ export default function TodayPage() {
           );
         })}
       </div>
-    </div>
+    </aside>
   );
 
   // ── Code panel ────────────────────────────────────────────────────────
   const CodePanel = (
-    <div
+    <section
       className={cn(
-        "flex flex-col overflow-hidden",
-        "md:flex-1 md:flex",
-        mobileTab === "code" ? "flex flex-1" : "hidden",
+        "min-h-0 overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]",
+        mobileTab === "code" ? "grid" : "hidden md:grid",
       )}
     >
+      {/* Code toolbar */}
       <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-zinc-900 border-b border-border shrink-0">
         {isHard ? (
           <>
@@ -504,18 +639,21 @@ export default function TodayPage() {
         </div>
       </div>
 
-      <CodeEditor
-        value={code}
-        onChange={handleCodeChange}
-        language={getMonacoLanguage(language)}
-        disabled={isSolved}
-        pasteBlocked={isHard}
-        className="flex-1 rounded-none border-0"
-      />
+      {/* Editor */}
+      <div className="min-h-0 overflow-hidden">
+        <CodeEditor
+          value={code}
+          onChange={handleCodeChange}
+          language={getMonacoLanguage(language)}
+          disabled={isSolved}
+          pasteBlocked={isHard}
+          className="h-full min-h-0 rounded-none border-0"
+        />
+      </div>
 
-      <div className="border-t border-border p-3 md:p-4 shrink-0 space-y-3">
+      <div className="border-t border-border shrink-0 space-y-3">
         {solveResult && solveResult.results && (
-          <div className="space-y-2 max-h-48 overflow-y-auto">
+          <div className="space-y-2 max-h-32 md:max-h-44 overflow-y-auto custom-scrollbar">
             {solveResult.results.map((r) => (
               <div
                 key={r.index}
@@ -618,47 +756,90 @@ export default function TodayPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5 shrink-0">
-            <i className="ri-refresh-line" />
-            {attempts === 0
-              ? "No attempts"
-              : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
-          </span>
-          <button
-            onClick={handleRun}
-            disabled={pageState === "running" || isSolved}
-            className={cn(
-              "flex items-center gap-2 px-4 md:px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
-              isSolved
-                ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
-            )}
-          >
-            {pageState === "running" ? (
-              <>
-                <i className="ri-loader-4-line animate-spin" /> Running...
-              </>
-            ) : (
-              <>
-                <i className="ri-play-fill" /> Run Code
-              </>
-            )}
-          </button>
+        <div className="shrink-0 border-t border-border p-3 md:p-4 space-y-3 bg-background">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5 shrink-0">
+              <i className="ri-refresh-line" />
+              {attempts === 0
+                ? "No attempts"
+                : `${attempts} attempt${attempts !== 1 ? "s" : ""}`}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleResetCode}
+                disabled={pageState === "running" || isSolved}
+                className={cn(
+                  "h-10 shrink-0 rounded-md border border-border px-4 text-sm font-mono font-semibold text-zinc-400 transition-colors",
+                  "hover:border-primary hover:text-primary",
+                  "disabled:opacity-50 disabled:cursor-not-allowed",
+                )}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <i className="ri-reset-left-line" />
+                  Reset
+                </span>
+              </button>
+              <button
+                onClick={handleRun}
+                disabled={pageState === "running" || isSolved}
+                className={cn(
+                  "flex items-center gap-2 px-4 md:px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
+                  isSolved
+                    ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                    : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
+                )}
+              >
+                {pageState === "running" ? (
+                  <>
+                    <i className="ri-loader-4-line animate-spin" /> Running...
+                  </>
+                ) : (
+                  <>
+                    <i className="ri-play-fill" /> Run Code
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)]">
-      {Header}
-      {MobileTabs}
-      <div className="flex-1 flex overflow-hidden">
-        {ProblemPanel}
-        {CodePanel}
-      </div>
-    </div>
+    <>
+      {" "}
+      {showSuccessModal && solveResult && (
+        <SuccessModal
+          streak={solveResult.streak?.currentStreak ?? userStats.currentStreak}
+          isNewRecord={solveResult.streak?.isNewRecord ?? false}
+          starDelta={starDelta}
+          isHard={isHard}
+          timeExpired={timer.isExpired}
+          cleanSolve={!hintsUnlocked.length}
+          onConfirm={() => setShowSuccessModal(false)}
+        />
+      )}
+      {noProblemData ? (
+        <NoProblemScreen
+          bonusStars={noProblemData.bonusStars}
+          bonusAlreadyGiven={noProblemData.bonusAlreadyGiven}
+          userStats={noProblemData.userStats}
+        />
+      ) : (
+        <div className="h-[calc(100dvh-3.5rem)] overflow-hidden grid grid-rows-[auto_auto_minmax(0,1fr)] md:grid-rows-[auto_minmax(0,1fr)]">
+          <div className="shrink-0">{Header}</div>
+
+          <div className="md:hidden shrink-0">{MobileTabs}</div>
+
+          <div className="min-h-0 overflow-hidden grid grid-cols-1 md:grid-cols-[50%_minmax(0,1fr)]">
+            {ProblemPanel}
+            {CodePanel}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -731,14 +912,29 @@ function MakeupCard({
   );
 }
 
-function markdownToHtml(md: string): string {
-  return md
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/```[\w]*\n([\s\S]*?)```/g, "<pre><code>$1</code></pre>")
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/^/, "<p>")
-    .replace(/$/, "</p>");
+function ProblemMarkdownSection({
+  children,
+  compact = false,
+}: {
+  children: ReactNode;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "prose prose-invert prose-sm max-w-none font-mono",
+        "prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-zinc-100",
+        "prose-p:text-zinc-300 prose-li:text-zinc-300 prose-strong:text-zinc-100",
+        "prose-code:bg-zinc-800 prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+        "prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-border prose-pre:text-zinc-200",
+        "prose-a:text-lime-400",
+        "prose-table:border prose-table:border-border",
+        "prose-th:border prose-th:border-border prose-th:bg-zinc-900 prose-th:px-3 prose-th:py-2",
+        "prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2",
+        compact && "prose-p:my-1 prose-pre:my-2 prose-ul:my-2 prose-ol:my-2",
+      )}
+    >
+      {children}
+    </div>
+  );
 }

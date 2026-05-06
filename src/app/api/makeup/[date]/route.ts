@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getTodayUTC } from "@/lib/streak";
-import type { MakeupProblemResponse, HintData } from "@/types";
+import {
+  type MakeupProblemResponse,
+  type HintData,
+  parseProblemExamples,
+} from "@/types";
 
 export async function GET(
   _req: Request,
@@ -28,7 +32,7 @@ export async function GET(
     );
   }
 
-  const daily = await prisma.dailyProblem.findUnique({
+  const daily = await prisma.dailyProblem.findFirst({
     where: { date },
     include: { problem: true },
   });
@@ -69,7 +73,10 @@ export async function GET(
       id: problem.id,
       title: problem.title,
       slug: problem.slug,
+      functionName: problem.functionName,
       description: problem.description,
+      examples: parseProblemExamples(problem.examples),
+      constraints: problem.constraints ?? "",
       difficulty: problem.difficulty,
       topics: problem.topics,
       starterCode: problem.starterCode as any,

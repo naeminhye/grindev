@@ -7,14 +7,24 @@ export async function GET() {
   const { error } = await getAdminUserId();
   if (error) return error;
 
-  const scheduled = await prisma.dailyProblem.findMany({
+  const slots = await prisma.dailyProblem.findMany({
     include: {
       problem: { select: { id: true, title: true, difficulty: true } },
     },
     orderBy: { date: "asc" },
   });
 
-  return NextResponse.json({ scheduled });
+  // Group by date
+  const byDate = new Map<string, { date: string; slots: any[] }>();
+  for (const slot of slots) {
+    if (!byDate.has(slot.date))
+      byDate.set(slot.date, { date: slot.date, slots: [] });
+    byDate
+      .get(slot.date)!
+      .slots.push({ difficulty: slot.difficulty, problem: slot.problem });
+  }
+
+  return NextResponse.json({ scheduled: [...byDate.values()] });
 }
 
 export async function POST(req: Request) {
@@ -24,33 +34,42 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = z
     .object({
-      problemId: z.string().min(1),
       date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
+      problemId: z.string().min(1),
     })
     .safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
-  }
-
-  const { problemId, date } = parsed.data;
-
-  // Check date not already taken
-  const existing = await prisma.dailyProblem.findUnique({ where: { date } });
-  if (existing) {
     return NextResponse.json(
-      { error: "This date already has a problem scheduled" },
-      { status: 409 },
+      { error: parsed.error.flatten().fieldErrors },
+      { status: 400 },
     );
   }
 
-  // Check problem exists
+  const { date, difficulty, problemId } = parsed.data;
+
   const problem = await prisma.problem.findUnique({
     where: { id: problemId, deletedAt: null },
   });
   if (!problem)
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
 
-  const slot = await prisma.dailyProblem.create({ data: { date, problemId } });
+  // Verify difficulty matches
+  if (problem.difficulty !== difficulty) {
+    return NextResponse.json(
+      {
+        error: `Problem difficulty (${problem.difficulty}) doesn't match slot (${difficulty})`,
+      },
+      { status: 400 },
+    );
+  }
+
+  const slot = await prisma.dailyProblem.upsert({
+    where: { date_difficulty: { date, difficulty } },
+    update: { problemId },
+    create: { date, difficulty, problemId },
+  });
+
   return NextResponse.json({ slot }, { status: 201 });
 }

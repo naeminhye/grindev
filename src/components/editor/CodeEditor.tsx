@@ -9,7 +9,7 @@ interface CodeEditorProps {
   onChange: (value: string) => void;
   language?: string;
   disabled?: boolean;
-  pasteBlocked?: boolean; // controlled by challenge mode
+  pasteBlocked?: boolean;
   className?: string;
 }
 
@@ -22,18 +22,21 @@ export function CodeEditor({
   className,
 }: CodeEditorProps) {
   const editorRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleMount: OnMount = useCallback(
     (editor, monaco: Monaco) => {
       editorRef.current = editor;
 
-      // ── Paste blocking (only when pasteBlocked = true) ────────────────
       if (pasteBlocked) {
         editor.onDidPaste(() => {
           editor.trigger("keyboard", "undo", null);
+
           const domNode = editor.getDomNode();
+
           if (domNode) {
             domNode.style.outline = "2px solid hsl(0 72% 51% / 0.8)";
+
             setTimeout(() => {
               domNode.style.outline = "";
             }, 600);
@@ -41,7 +44,6 @@ export function CodeEditor({
         });
       }
 
-      // Block Ctrl+V at DOM level when pasteBlocked
       editor.getDomNode()?.addEventListener(
         "keydown",
         (e: KeyboardEvent) => {
@@ -54,7 +56,7 @@ export function CodeEditor({
       );
 
       editor.updateOptions({
-        contextmenu: pasteBlocked ? false : true,
+        contextmenu: !pasteBlocked,
         fontSize: 14,
         lineHeight: 1.7,
         fontFamily: '"JetBrains Mono", monospace',
@@ -70,33 +72,66 @@ export function CodeEditor({
         smoothScrolling: true,
         padding: { top: 16, bottom: 16 },
         readOnly: disabled,
+        automaticLayout: true,
+        scrollbar: {
+          vertical: "visible",
+          horizontal: "visible",
+          verticalScrollbarSize: 10,
+          horizontalScrollbarSize: 10,
+          useShadows: false,
+        },
       });
 
       editor.focus();
+
+      requestAnimationFrame(() => {
+        editor.layout();
+      });
     },
     [disabled, pasteBlocked],
   );
 
+  useEffect(() => {
+    const container = containerRef.current;
+    const editor = editorRef.current;
+
+    if (!container || !editor) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      editor.layout();
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "rounded-md overflow-hidden border border-border",
+        "h-full min-h-0 w-full rounded-md overflow-hidden border border-border",
         className,
       )}
     >
       <Editor
         height="100%"
+        width="100%"
         language={language}
         value={value}
         onChange={(v) => onChange(v ?? "")}
         onMount={handleMount}
         theme="vs-dark"
         options={{
+          automaticLayout: true,
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: 14,
           minimap: { enabled: false },
           contextmenu: !pasteBlocked,
           readOnly: disabled,
+          scrollBeyondLastLine: false,
         }}
       />
     </div>
