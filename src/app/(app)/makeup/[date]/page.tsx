@@ -13,10 +13,8 @@ import remarkGfm from "remark-gfm";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { StarCount } from "@/components/ui/StarCount";
-import { LanguageSelector } from "@/components/editor/LanguageSelector";
 import { HINT_TIERS } from "@/lib/hints";
 import { getMonacoLanguage } from "@/lib/languages";
-import type { Language } from "@/lib/languages";
 import type {
   MakeupProblemResponse,
   SolveResponse,
@@ -34,7 +32,6 @@ export default function MakeupPage() {
 
   const [data, setData] = useState<MakeupProblemResponse | null>(null);
   const [code, setCode] = useState("");
-  const [language, setLanguage] = useState<Language>("JAVASCRIPT");
   const [pageState, setPageState] = useState<PageState>("loading");
   const [solveResult, setSolveResult] = useState<SolveResponse | null>(null);
   const [stars, setStars] = useState(0);
@@ -67,16 +64,6 @@ export default function MakeupPage() {
     return () => controller.abort();
   }, [date]);
 
-  const handleLanguageChange = useCallback(
-    (lang: Language) => {
-      setLanguage(lang);
-      if (!hasStartedTyping.current && data) {
-        setCode((data.problem.starterCode as any)[lang] ?? "");
-      }
-    },
-    [data],
-  );
-
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasStartedTyping.current && pageState === "ready") {
@@ -92,15 +79,21 @@ export default function MakeupPage() {
     (value: string) => {
       setCode(value);
       if (!hasStartedTyping.current && data) {
-        const starter = (data.problem.starterCode as any)[language] ?? "";
+        const starter = (data.problem.starterCode as any)["JAVASCRIPT"] ?? "";
         if (value !== starter) hasStartedTyping.current = true;
       }
     },
-    [data, language],
+    [data],
   );
 
   function handleResetCode() {
-    const starter = (data?.problem?.starterCode as any)?.[language] ?? "";
+    if (
+      !confirm(
+        "Reset code to starter template? Your current code will be lost.",
+      )
+    )
+      return;
+    const starter = (data?.problem?.starterCode as any)?.["JAVASCRIPT"] ?? "";
     setCode(starter);
     setSolveResult(null);
     hasStartedTyping.current = false;
@@ -119,7 +112,7 @@ export default function MakeupPage() {
         body: JSON.stringify({
           problemId: data.problem.id,
           code,
-          language,
+          language: "JAVASCRIPT",
           challengeMode: "NORMAL",
           timeExpired: false,
         }),
@@ -149,7 +142,7 @@ export default function MakeupPage() {
     } catch {
       setPageState("ready");
     }
-  }, [data, date, code, language, pageState]);
+  }, [data, date, code, pageState]);
 
   const handleBuyHint = useCallback(
     async (tier: number) => {
@@ -459,7 +452,12 @@ export default function MakeupPage() {
           Make-up mode — Normal rules apply
         </span>
         <div className="ml-auto">
-          <LanguageSelector value={language} onChange={handleLanguageChange} />
+          {/* TODO: add more language */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-zinc-800 text-xs font-mono text-zinc-400">
+            <i className="ri-code-s-slash-line text-lime-400" />
+            JavaScript
+            <span className="text-zinc-600 text-[10px]">only</span>
+          </div>
         </div>
       </div>
 
@@ -468,7 +466,7 @@ export default function MakeupPage() {
         <CodeEditor
           value={code}
           onChange={handleCodeChange}
-          language={getMonacoLanguage(language)}
+          language={getMonacoLanguage("JAVASCRIPT")}
           disabled={isSolved}
           pasteBlocked={false}
           className="h-full min-h-0 rounded-none border-0"

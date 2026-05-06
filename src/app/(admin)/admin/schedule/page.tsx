@@ -267,6 +267,11 @@ export default function SchedulePage() {
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 14);
 
+  const past = schedule
+    .filter((d) => d.date < today)
+    .sort((a, b) => b.date.localeCompare(a.date)) // newest first
+    .slice(0, 7);
+
   // Unscheduled counts by difficulty
   const unscheduledCounts = DIFFICULTIES.reduce(
     (acc, diff) => {
@@ -554,9 +559,14 @@ export default function SchedulePage() {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              min={today}
               className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
             />
+            {selectedDate < today && (
+              <p className="text-xs font-mono text-yellow-400 flex items-center gap-1.5">
+                <i className="ri-history-line" /> Past date — manual schedule
+                only
+              </p>
+            )}
           </div>
           {message && (
             <p
@@ -712,6 +722,55 @@ export default function SchedulePage() {
             </div>
           </button>
         ))}
+
+        {past.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
+              Past (last 7 days)
+            </h2>
+            {past.map((day) => (
+              <button
+                key={day.date}
+                onClick={() => setSelectedDate(day.date)}
+                className={cn(
+                  "w-full flex items-center gap-4 p-3 rounded-md border transition-colors text-left opacity-60 hover:opacity-100",
+                  selectedDate === day.date
+                    ? "border-lime-500/30 bg-lime-500/5 opacity-100"
+                    : "border-border bg-zinc-900 hover:border-zinc-600",
+                )}
+              >
+                <span className="font-mono text-xs text-zinc-500 w-24 shrink-0">
+                  {day.date}
+                </span>
+                <div className="flex items-center gap-2 flex-1 flex-wrap">
+                  {DIFFICULTIES.map((diff) => {
+                    const slot = day.slots.find((s) => s.difficulty === diff);
+                    const cfg = DIFF_CONFIG[diff];
+                    return slot ? (
+                      <span
+                        key={diff}
+                        className={cn(
+                          "text-xs font-mono px-2 py-0.5 rounded border",
+                          cfg.bg,
+                          cfg.color,
+                        )}
+                      >
+                        {cfg.label}: {slot.problem.title}
+                      </span>
+                    ) : (
+                      <span
+                        key={diff}
+                        className="text-xs font-mono text-zinc-700 px-2 py-0.5 border border-zinc-800 rounded"
+                      >
+                        {cfg.label}: —
+                      </span>
+                    );
+                  })}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

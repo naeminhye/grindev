@@ -15,13 +15,11 @@ import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { TimerDisplay } from "@/components/ui/TimerDisplay";
-import { LanguageSelector } from "@/components/editor/LanguageSelector";
 import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
 import { getTimeLimit } from "@/lib/challenge";
 import { getMonacoLanguage } from "@/lib/languages";
-import type { Language } from "@/lib/languages";
 import type {
   DailyResponse,
   SolveResponse,
@@ -41,7 +39,6 @@ export default function TodayPage() {
   const router = useRouter();
   const [daily, setDaily] = useState<DailyResponse | null>(null);
   const [code, setCode] = useState("");
-  const [language, setLanguage] = useState<Language>("JAVASCRIPT");
   const [pageState, setPageState] = useState<PageState>("loading");
   const [solveResult, setSolveResult] = useState<SolveResponse | null>(null);
   const [stars, setStars] = useState(0);
@@ -103,16 +100,6 @@ export default function TodayPage() {
     return () => controller.abort();
   }, []);
 
-  const handleLanguageChange = useCallback(
-    (lang: Language) => {
-      setLanguage(lang);
-      if (!hasStartedTyping.current && daily) {
-        setCode((daily.problem.starterCode as any)[lang] ?? "");
-      }
-    },
-    [daily],
-  );
-
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasStartedTyping.current && pageState === "ready") {
@@ -128,7 +115,7 @@ export default function TodayPage() {
     (value: string) => {
       setCode(value);
       const starter = daily
-        ? ((daily.problem.starterCode as any)[language] ?? "")
+        ? ((daily.problem.starterCode as any)["JAVASCRIPT"] ?? "")
         : "";
 
       if (!hasStartedTyping.current && value !== starter) {
@@ -137,7 +124,7 @@ export default function TodayPage() {
         if (challengeMode === "HARD") timer.start();
       }
     },
-    [daily, language, challengeMode, timer, modeLocked],
+    [daily, challengeMode, timer, modeLocked],
   );
 
   const handleRun = useCallback(async () => {
@@ -153,7 +140,7 @@ export default function TodayPage() {
         body: JSON.stringify({
           problemId: daily.problem.id,
           code,
-          language,
+          language: "JAVASCRIPT",
           challengeMode,
           timeExpired: timer.isExpired,
         }),
@@ -178,7 +165,7 @@ export default function TodayPage() {
     } catch {
       setPageState("ready");
     }
-  }, [daily, code, language, pageState, challengeMode, timer]);
+  }, [daily, code, pageState, challengeMode, timer]);
 
   const handleBuyHint = useCallback(
     async (tier: number) => {
@@ -223,7 +210,6 @@ export default function TodayPage() {
           <i className="ri-error-warning-line text-4xl text-red-400" />
           <p className="font-mono text-sm text-zinc-400">
             No problem scheduled for today.
-            {/* TODO: On days when no scheduled problems occur, write an apology on the screen today and give the user 15 stars for that day. */}
           </p>
         </div>
       </div>
@@ -231,8 +217,13 @@ export default function TodayPage() {
   }
 
   function handleResetCode() {
-    // TODO: show confirmation before reseting
-    const starter = (daily?.problem?.starterCode as any)[language] ?? "";
+    if (
+      !confirm(
+        "Reset code to starter template? Your current code will be lost.",
+      )
+    )
+      return;
+    const starter = (daily?.problem?.starterCode as any)?.["JAVASCRIPT"] ?? "";
     setCode(starter);
     setSolveResult(null);
     setModeLocked(false);
@@ -631,11 +622,12 @@ export default function TodayPage() {
           </>
         )}
         <div className="ml-auto">
-          <LanguageSelector
-            value={language}
-            onChange={handleLanguageChange}
-            disabled={modeLocked}
-          />
+          {/* TODO: add more language */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-zinc-800 text-xs font-mono text-zinc-400">
+            <i className="ri-code-s-slash-line text-lime-400" />
+            JavaScript
+            <span className="text-zinc-600 text-[10px]">only</span>
+          </div>
         </div>
       </div>
 
@@ -644,7 +636,8 @@ export default function TodayPage() {
         <CodeEditor
           value={code}
           onChange={handleCodeChange}
-          language={getMonacoLanguage(language)}
+          // language={getMonacoLanguage(language)}
+          language={getMonacoLanguage("JAVASCRIPT")}
           disabled={isSolved}
           pasteBlocked={isHard}
           className="h-full min-h-0 rounded-none border-0"

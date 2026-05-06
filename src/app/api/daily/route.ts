@@ -139,18 +139,23 @@ export async function GET() {
   });
   const solvedProblemIds = new Set(existingSolves.map((s) => s.problemId));
 
-  // Dedup by date for display — pick hardest per day
-  const makeupByDate = new Map<string, (typeof allPastSlots)[0]>();
+  // Group slots by date first
+  const slotsByDate = new Map<string, typeof allPastSlots>();
   for (const slot of allPastSlots) {
-    const existing = makeupByDate.get(slot.date);
-    if (!existing) {
-      makeupByDate.set(slot.date, slot);
-    } else {
-      const order = ["EASY", "MEDIUM", "HARD"];
-      if (order.indexOf(slot.difficulty) > order.indexOf(existing.difficulty)) {
-        makeupByDate.set(slot.date, slot);
-      }
-    }
+    if (!slotsByDate.has(slot.date)) slotsByDate.set(slot.date, []);
+    slotsByDate.get(slot.date)!.push(slot);
+  }
+
+  // Pick best slot per date using same logic as daily
+  const makeupByDate = new Map<string, (typeof allPastSlots)[0]>();
+  for (const [date, slots] of slotsByDate) {
+    const availableDiffs = slots.map((s) => s.difficulty);
+    const bestDiff = pickBestDifficulty(
+      user?.preferredDifficulty ?? "ANY",
+      availableDiffs,
+    );
+    const bestSlot = slots.find((s) => s.difficulty === bestDiff);
+    if (bestSlot) makeupByDate.set(date, bestSlot);
   }
 
   // A day is "already solved" if ANY problem scheduled for that date was solved
@@ -176,14 +181,6 @@ export async function GET() {
     .sort((a, b) => a.daysAgo - b.daysAgo);
 
   const freshUser = await prisma.user.findUnique({ where: { id: userId } });
-
-  console.log("pastDates sample:", pastDates.slice(0, 5));
-  console.log("allPastSlots count:", allPastSlots.length);
-  console.log("solvedProblemIds:", [...solvedProblemIds]);
-  console.log(
-    "makeupDays:",
-    makeupDays.map((d) => ({ date: d.date, alreadySolved: d.alreadySolved })),
-  );
 
   const response: DailyResponse = {
     problem: {
