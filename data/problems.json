@@ -3281,5 +3281,1008 @@
         "content": "Full working solution:\n\nfunction nightMarketCouponCombo(prices, target) {\n  if (prices.length < 3) return false;\n\n  prices.sort((a, b) => a - b);\n\n  for (let i = 0; i < prices.length - 2; i++) {\n    let left = i + 1;\n    let right = prices.length - 1;\n\n    while (left < right) {\n      const sum = prices[i] + prices[left] + prices[right];\n\n      if (sum === target) return true;\n\n      if (sum < target) {\n        left++;\n      } else {\n        right--;\n      }\n    }\n  }\n\n  return false;\n}\n\nTime complexity: O(n^2), where n is prices.length.\nSpace complexity: O(1) if sorting is done in place, depending on the language implementation."
       }
     ]
+  },
+
+  {
+    "title": "Maximum Cookies from Houses",
+    "slug": "maximum-cookies-from-houses",
+    "functionName": "maxCookies",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You are collecting cookies from a row of houses at night. Each house `cookies[i]` has a certain number of cookies.\n\nHowever, you **cannot rob two adjacent houses** because the owners will wake up. What is the **maximum** number of cookies you can collect?",
+    "examples": [
+      {
+        "input": "cookies = [2, 7, 9, 3, 1]",
+        "output": "12"
+      }
+    ],
+    "constraints": "- 1 <= cookies.length <= 100\n- 0 <= cookies[i] <= 400",
+    "starterCode": {
+      "JAVASCRIPT": "function maxCookies(cookies) {\n  // return maximum cookies without taking adjacent houses\n}",
+      "TYPESCRIPT": "function maxCookies(cookies: number[]): number {}",
+      "PYTHON": "from typing import List\n\ndef max_cookies(cookies: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint maxCookies(vector<int>& cookies) {}",
+      "JAVA": "class Solution {\n    public int maxCookies(int[] cookies) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,7,9,3,1]",
+        "expected": "12"
+      },
+      {
+        "input": "[1,2,3,1]",
+        "expected": "4"
+      },
+      {
+        "input": "[2,1,1,2]",
+        "expected": "4"
+      },
+      {
+        "input": "[1]",
+        "expected": "1"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Dynamic Programming - decide for each house whether to rob it or not."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use two variables: rob current house or skip it."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "dp[i] = max(dp[i-1], dp[i-2] + cookies[i])"
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction maxCookies(cookies) {\n  if (cookies.length === 0) return 0;\n  if (cookies.length === 1) return cookies[0];\n\n  let prev2 = cookies[0];\n  let prev1 = Math.max(cookies[0], cookies[1]);\n\n  for (let i = 2; i < cookies.length; i++) {\n    let current = Math.max(prev1, prev2 + cookies[i]);\n    prev2 = prev1;\n    prev1 = current;\n  }\n  return prev1;\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Climbing Stairs to Get Treats",
+    "slug": "climbing-stairs-to-get-treats",
+    "functionName": "climbStairsToTreats",
+    "difficulty": "EASY",
+    "topics": ["DYNAMIC_PROGRAMMING"],
+    "description": "Your cat wants to reach the top of the stairs to get a treat. It can climb either **1 step** or **2 steps** at a time.\n\nGiven `n` total steps, return how many **distinct ways** the cat can climb to the top.",
+    "examples": [
+      {
+        "input": "n = 3",
+        "output": "3",
+        "explanation": "Ways: (1+1+1), (1+2), (2+1)"
+      }
+    ],
+    "constraints": "- 1 <= n <= 45",
+    "starterCode": {
+      "JAVASCRIPT": "function climbStairsToTreats(n) {\n  // return number of ways to climb n stairs\n}",
+      "TYPESCRIPT": "function climbStairsToTreats(n: number): number {}",
+      "PYTHON": "def climb_stairs_to_treats(n: int) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint climbStairsToTreats(int n) {}",
+      "JAVA": "class Solution {\n    public int climbStairsToTreats(int n) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "3",
+        "expected": "3"
+      },
+      {
+        "input": "1",
+        "expected": "1"
+      },
+      {
+        "input": "4",
+        "expected": "5"
+      },
+      {
+        "input": "2",
+        "expected": "2"
+      },
+      {
+        "input": "5",
+        "expected": "8"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "This is the classic Fibonacci sequence problem."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Ways to reach step i = ways to i-1 + ways to i-2."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Use bottom-up DP with constant space."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction climbStairsToTreats(n) {\n  if (n <= 1) return 1;\n  let prev2 = 1;\n  let prev1 = 1;\n  for (let i = 2; i <= n; i++) {\n    let current = prev1 + prev2;\n    prev2 = prev1;\n    prev1 = current;\n  }\n  return prev1;\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Minimum Cost to Climb Treat Stairs",
+    "slug": "minimum-cost-to-climb-treat-stairs",
+    "functionName": "minCostClimbingStairs",
+    "difficulty": "MEDIUM",
+    "topics": ["DYNAMIC_PROGRAMMING"],
+    "description": "You are climbing a staircase with `n` steps. Each step has a cost. You can climb 1 or 2 steps at a time. You can start from either step 0 or step 1.\n\nFind the **minimum cost** to reach the top of the stairs.",
+    "examples": [
+      {
+        "input": "cost = [10, 15, 20]",
+        "output": "15"
+      }
+    ],
+    "constraints": "- 2 <= cost.length <= 1000\n- 0 <= cost[i] <= 999",
+    "starterCode": {
+      "JAVASCRIPT": "function minCostClimbingStairs(cost) {\n  // return minimum cost to reach top\n}",
+      "TYPESCRIPT": "function minCostClimbingStairs(cost: number[]): number {}",
+      "PYTHON": "from typing import List\n\ndef min_cost_climbing_stairs(cost: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint minCostClimbingStairs(vector<int>& cost) {}",
+      "JAVA": "class Solution {\n    public int minCostClimbingStairs(int[] cost) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[10,15,20]",
+        "expected": "15"
+      },
+      {
+        "input": "[1,100,1,1,1,100,1,1,100,1]",
+        "expected": "6"
+      },
+      {
+        "input": "[0,0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[5,10]",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Dynamic programming - decide minimum cost to reach each step."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "You can arrive at step i from i-1 or i-2."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "dp[i] = cost[i] + min(dp[i-1], dp[i-2])"
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction minCostClimbingStairs(cost) {\n  let prev2 = 0;\n  let prev1 = 0;\n  for (let c of cost) {\n    let current = c + Math.min(prev1, prev2);\n    prev2 = prev1;\n    prev1 = current;\n  }\n  return Math.min(prev1, prev2);\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Trapping Rain in Backyard Pots",
+    "slug": "trapping-rain-in-backyard-pots",
+    "functionName": "trapRainPots",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "TWO_POINTERS"],
+    "description": "After a heavy rain, water gets trapped between your flower pots of varying heights. Given the height of each pot in array `height`, calculate **how many units of rainwater** can be trapped between them.",
+    "examples": [
+      {
+        "input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+        "output": "6"
+      }
+    ],
+    "constraints": "- 1 <= height.length <= 2*10^4\n- 0 <= height[i] <= 10^5",
+    "starterCode": {
+      "JAVASCRIPT": "function trapRainPots(height) {\n  // return total trapped rainwater units\n}",
+      "TYPESCRIPT": "function trapRainPots(height: number[]): number {}",
+      "PYTHON": "from typing import List\n\ndef trap_rain_pots(height: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint trapRainPots(vector<int>& height) {}",
+      "JAVA": "class Solution {\n    public int trapRainPots(int[] height) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[0,1,0,2,1,0,1,3,2,1,2,1]",
+        "expected": "6"
+      },
+      {
+        "input": "[4,2,0,3,2,5]",
+        "expected": "9"
+      },
+      {
+        "input": "[1,0,1]",
+        "expected": "1"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For each pot, water trapped = min(left max height, right max height) - current height."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Two pointers starting from both ends is very efficient."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Always move the pointer with smaller height and keep track of max heights."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction trapRainPots(height) {\n  let left = 0, right = height.length - 1;\n  let leftMax = 0, rightMax = 0;\n  let water = 0;\n  while (left < right) {\n    if (height[left] < height[right]) {\n      if (height[left] >= leftMax) leftMax = height[left];\n      else water += leftMax - height[left];\n      left++;\n    } else {\n      if (height[right] >= rightMax) rightMax = height[right];\n      else water += rightMax - height[right];\n      right--;\n    }\n  }\n  return water;\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Rotate Lunch Line",
+    "slug": "rotate-lunch-line",
+    "functionName": "rotateLunchLine",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS"],
+    "description": "The school lunch line is represented by array `line`. Due to some kids arriving late, you need to rotate the entire line **to the right** by `k` positions.\n\nModify the array **in-place** so the hungriest kids at the back move forward efficiently.",
+    "examples": [
+      {
+        "input": "line = [1,2,3,4,5], k = 2",
+        "output": "[4,5,1,2,3]"
+      }
+    ],
+    "constraints": "- 1 <= line.length <= 10^5\n- 0 <= k <= 10^5",
+    "starterCode": {
+      "JAVASCRIPT": "function rotateLunchLine(line, k) {\n  // modify line in-place\n}",
+      "TYPESCRIPT": "function rotateLunchLine(line: number[], k: number): void {}",
+      "PYTHON": "from typing import List\n\ndef rotate_lunch_line(line: List[int], k: int) -> None:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nvoid rotateLunchLine(vector<int>& line, int k) {}",
+      "JAVA": "class Solution {\n    public void rotateLunchLine(int[] line, int k) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,3,4,5]\n2",
+        "expected": "[4,5,1,2,3]"
+      },
+      {
+        "input": "[1,2]\n3",
+        "expected": "[2,1]"
+      },
+      {
+        "input": "[7]",
+        "expected": "[7]"
+      },
+      {
+        "input": "[10,20,30]\n1",
+        "expected": "[30,10,20]"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Reversing parts of the array is very effective."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Reduce k using modulo first (k %= n)."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Reverse whole array → reverse first k → reverse the rest."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction rotateLunchLine(line, k) {\n  k = k % line.length;\n  const reverse = (arr, start, end) => {\n    while (start < end) {\n      [arr[start], arr[end]] = [arr[end], arr[start]];\n      start++;\n      end--;\n    }\n  };\n  reverse(line, 0, line.length - 1);\n  reverse(line, 0, k - 1);\n  reverse(line, k, line.length - 1);\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Longest Happy Puppy Walk",
+    "slug": "longest-happy-puppy-walk",
+    "functionName": "maxPuppyHappiness",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You took your energetic puppy for a long walk and recorded its mood every minute in the array `moods`.\n\nFind the **longest continuous segment** of the walk where the total happiness was maximum. Return that maximum happiness value.",
+    "examples": [
+      {
+        "input": "moods = [-2,1,-3,4,-1,2,1,-5,4]",
+        "output": "6"
+      }
+    ],
+    "constraints": "- 1 <= moods.length <= 10^5\n- -10^4 <= moods[i] <= 10^4",
+    "starterCode": {
+      "JAVASCRIPT": "function maxPuppyHappiness(moods) {\n  // return max contiguous happiness sum\n}",
+      "TYPESCRIPT": "function maxPuppyHappiness(moods: number[]): number {}",
+      "PYTHON": "from typing import List\n\ndef max_puppy_happiness(moods: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint maxPuppyHappiness(vector<int>& moods) {}",
+      "JAVA": "class Solution {\n    public int maxPuppyHappiness(int[] moods) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[-2,1,-3,4,-1,2,1,-5,4]",
+        "expected": "6"
+      },
+      {
+        "input": "[1]",
+        "expected": "1"
+      },
+      {
+        "input": "[-3,-2,-1]",
+        "expected": "-1"
+      },
+      {
+        "input": "[5,4,-1,7,8]",
+        "expected": "23"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Kadane's algorithm - dynamic programming approach."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Decide at each step whether to continue or start a new walk segment."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Keep current sum and global maximum."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction maxPuppyHappiness(moods) {\n  if (moods.length === 0) return 0;\n  let maxCurrent = moods[0];\n  let maxGlobal = moods[0];\n  for (let i = 1; i < moods.length; i++) {\n    maxCurrent = Math.max(moods[i], maxCurrent + moods[i]);\n    maxGlobal = Math.max(maxGlobal, maxCurrent);\n  }\n  return maxGlobal;\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Pizza Orders Without Self",
+    "slug": "pizza-orders-without-self",
+    "functionName": "pizzaExceptSelf",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS"],
+    "description": "You and your friends ordered several pizzas. The array `orders` contains the number of toppings on each pizza.\n\nFor fairness, create a new array where each position shows the **total number of toppings on all other pizzas** (excluding its own). Solve this in O(n) time **without using division**.",
+    "examples": [
+      {
+        "input": "orders = [2, 3, 4]",
+        "output": "[12, 8, 6]"
+      }
+    ],
+    "constraints": "- 2 <= orders.length <= 10^5\n- 1 <= orders[i] <= 30",
+    "starterCode": {
+      "JAVASCRIPT": "function pizzaExceptSelf(orders) {\n  // return array of products excluding self\n}",
+      "TYPESCRIPT": "function pizzaExceptSelf(orders: number[]): number[] {}",
+      "PYTHON": "from typing import List\n\ndef pizza_except_self(orders: List[int]) -> List[int]:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nvector<int> pizzaExceptSelf(vector<int>& orders) {}",
+      "JAVA": "class Solution {\n    public int[] pizzaExceptSelf(int[] orders) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,3,4]",
+        "expected": "[12,8,6]"
+      },
+      {
+        "input": "[1,2,3,4]",
+        "expected": "[24,12,8,6]"
+      },
+      {
+        "input": "[5,5]",
+        "expected": "[5,5]"
+      },
+      {
+        "input": "[0,10,0]",
+        "expected": "[0,0,0]"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Calculate prefix and suffix products separately."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Two passes: left to right, then right to left."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Store left products first, then multiply with right products on the fly."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction pizzaExceptSelf(orders) {\n  const n = orders.length;\n  const result = new Array(n).fill(1);\n  let left = 1;\n  for (let i = 0; i < n; i++) {\n    result[i] *= left;\n    left *= orders[i];\n  }\n  let right = 1;\n  for (let i = n-1; i >= 0; i--) {\n    result[i] *= right;\n    right *= orders[i];\n  }\n  return result;\n}\n\nTime: O(n), Space: O(1) extra"
+      }
+    ]
+  },
+  {
+    "title": "Best Time to Feed the Ducks",
+    "slug": "best-time-to-feed-the-ducks",
+    "functionName": "maxDuckJoy",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS"],
+    "description": "Every day you record how happy your ducks are when you feed them. The array `joy` contains these happiness scores.\n\nYou can only feed them once per day (buy at one time) and continue feeding on a later day (sell). Find the maximum possible happiness you can give them by choosing the best start and end day.",
+    "examples": [
+      {
+        "input": "joy = [2, 8, 1, 9, 4]",
+        "output": "8"
+      }
+    ],
+    "constraints": "- 1 <= joy.length <= 10^5\n- 0 <= joy[i] <= 10^4",
+    "starterCode": {
+      "JAVASCRIPT": "function maxDuckJoy(joy) {\n  // return maximum happiness difference\n}",
+      "TYPESCRIPT": "function maxDuckJoy(joy: number[]): number {\n}",
+      "PYTHON": "from typing import List\n\ndef max_duck_joy(joy: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint maxDuckJoy(vector<int>& joy) {}",
+      "JAVA": "class Solution {\n    public int maxDuckJoy(int[] joy) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,8,1,9,4]",
+        "expected": "8"
+      },
+      {
+        "input": "[7,6,5,4]",
+        "expected": "0"
+      },
+      {
+        "input": "[1]",
+        "expected": "0"
+      },
+      {
+        "input": "[3,1,6,2]",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Keep track of the lowest joy (worst feeding day) seen so far."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "One single pass through the array."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "At each day, calculate joy today minus minimum joy so far."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction maxDuckJoy(joy) {\n  let minJoy = Infinity;\n  let maxProfit = 0;\n  for (let j of joy) {\n    minJoy = Math.min(minJoy, j);\n    maxProfit = Math.max(maxProfit, j - minJoy);\n  }\n  return maxProfit;\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Duplicate Snacks for Hamsters",
+    "slug": "duplicate-snacks-for-hamsters",
+    "functionName": "hasDuplicateSnacks",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "HASH_MAP"],
+    "description": "You have two adorable but greedy hamsters. You prepared an array `snacks` where each number represents a type of snack.\n\nIf any snack type appears **more than once**, the hamsters will fight over it. Return `true` if there is any duplicate snack type, otherwise return `false`.",
+    "examples": [
+      {
+        "input": "snacks = [1, 2, 3, 1]",
+        "output": "true",
+        "explanation": "Snack type 1 appears twice → hamsters will argue!"
+      }
+    ],
+    "constraints": "- 1 <= snacks.length <= 10^5\n- 1 <= snacks[i] <= 10^9",
+    "starterCode": {
+      "JAVASCRIPT": "function hasDuplicateSnacks(snacks) {\n  // return true if any duplicate snack type exists\n}",
+      "TYPESCRIPT": "function hasDuplicateSnacks(snacks: number[]): boolean {\n  // return true if any duplicate snack type exists\n}",
+      "PYTHON": "from typing import List\n\ndef has_duplicate_snacks(snacks: List[int]) -> bool:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nbool hasDuplicateSnacks(vector<int>& snacks) {}",
+      "JAVA": "class Solution {\n    public boolean hasDuplicateSnacks(int[] snacks) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,2,3,1]",
+        "expected": "true"
+      },
+      {
+        "input": "[5,6,7,8]",
+        "expected": "false"
+      },
+      {
+        "input": "[]",
+        "expected": "false"
+      },
+      {
+        "input": "[9,9,9]",
+        "expected": "true"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Use a Set to remember snacks you've already seen."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Hash set gives O(1) lookup time."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "As you iterate, if a snack is already in the set, return true."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction hasDuplicateSnacks(snacks) {\n  const set = new Set();\n  for (let snack of snacks) {\n    if (set.has(snack)) return true;\n    set.add(snack);\n  }\n  return false;\n}\n\nTime: O(n), Space: O(n)"
+      }
+    ]
+  },
+  {
+    "title": "Minimum Cost to Climb Treat Stairs",
+    "slug": "minimum-cost-to-climb-treat-stairs",
+    "functionName": "minCostClimbingStairs",
+    "difficulty": "MEDIUM",
+    "topics": ["DYNAMIC_PROGRAMMING"],
+    "description": "You are climbing a staircase with `n` steps. Each step has a cost. You can climb 1 or 2 steps at a time. You can start from either step 0 or step 1.\n\nFind the **minimum cost** to reach the top of the stairs.",
+    "examples": [
+      {
+        "input": "cost = [10, 15, 20]",
+        "output": "15"
+      }
+    ],
+    "constraints": "- 2 <= cost.length <= 1000\n- 0 <= cost[i] <= 999",
+    "starterCode": {
+      "JAVASCRIPT": "function minCostClimbingStairs(cost) {\n  // return minimum cost to reach top\n}",
+      "TYPESCRIPT": "function minCostClimbingStairs(cost: number[]): number {}",
+      "PYTHON": "from typing import List\n\ndef min_cost_climbing_stairs(cost: List[int]) -> int:\n    pass",
+      "CPP": "#include <vector>\nusing namespace std;\nint minCostClimbingStairs(vector<int>& cost) {}",
+      "JAVA": "class Solution {\n    public int minCostClimbingStairs(int[] cost) {}\n}"
+    },
+    "testCases": [
+      {
+        "input": "[10,15,20]",
+        "expected": "15"
+      },
+      {
+        "input": "[1,100,1,1,1,100,1,1,100,1]",
+        "expected": "6"
+      },
+      {
+        "input": "[0,0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[5,10]",
+        "expected": "5"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Dynamic programming - decide minimum cost to reach each step."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "You can arrive at step i from i-1 or i-2."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "dp[i] = cost[i] + min(dp[i-1], dp[i-2])"
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution (JavaScript):\n\nfunction minCostClimbingStairs(cost) {\n  let prev2 = 0;\n  let prev1 = 0;\n  for (let c of cost) {\n    let current = c + Math.min(prev1, prev2);\n    prev2 = prev1;\n    prev1 = current;\n  }\n  return Math.min(prev1, prev2);\n}\n\nTime: O(n), Space: O(1)"
+      }
+    ]
+  },
+  {
+    "title": "Habit Streak Keeper",
+    "slug": "habit-streak-keeper",
+    "functionName": "habitStreakKeeper",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "A habit tracker records whether you completed a habit each day.\n\nGiven an array `days`, where `1` means completed and `0` means missed, return the length of the longest continuous completion streak.\n\nIf there are no completed days, return `0`.",
+    "examples": [
+      {
+        "input": "`days = [1, 1, 0, 1, 1, 1]`",
+        "output": "`3`",
+        "explanation": "The longest completion streak is `[1, 1, 1]`."
+      },
+      {
+        "input": "`days = [0, 0, 0]`",
+        "output": "`0`",
+        "explanation": "There are no completed days."
+      }
+    ],
+    "constraints": "- `0 <= days.length <= 10^5`\n- `days[i]` is either `0` or `1`.",
+    "starterCode": {
+      "JAVASCRIPT": "function habitStreakKeeper(days) {\n  // Return the longest continuous completion streak.\n}",
+      "TYPESCRIPT": "function habitStreakKeeper(days: number[]): number {\n  // Return the longest continuous completion streak.\n}",
+      "PYTHON": "from typing import List\n\ndef habit_streak_keeper(days: List[int]) -> int:\n    # Return the longest continuous completion streak.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint habitStreakKeeper(vector<int>& days) {\n    // Return the longest continuous completion streak.\n}",
+      "JAVA": "class Solution {\n    public int habitStreakKeeper(int[] days) {\n        // Return the longest continuous completion streak.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[1,1,0,1,1,1]",
+        "expected": "3"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      },
+      {
+        "input": "[1]",
+        "expected": "1"
+      },
+      {
+        "input": "[1,1,1,1]",
+        "expected": "4"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "Keep track of the current streak and the best streak so far."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "This can be seen as a simple DP: `dp[i]` is the streak ending at day `i`."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Set current = 0 and best = 0.\nFor each day:\nIf day is 1, current = current + 1.\nIf day is 0, current = 0.\nUpdate best with current.\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction habitStreakKeeper(days) {\n  let current = 0;\n  let best = 0;\n\n  for (const day of days) {\n    if (day === 1) {\n      current++;\n      best = Math.max(best, current);\n    } else {\n      current = 0;\n    }\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is days.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Cozy Cafe Profit Run",
+    "slug": "cozy-cafe-profit-run",
+    "functionName": "cozyCafeProfitRun",
+    "difficulty": "EASY",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "A cozy cafe tracks daily profit changes.\n\nEach number in `profits` represents profit or loss for one day. Return the maximum possible sum of any continuous block of days.\n\nIf `profits` is empty, return `0`.",
+    "examples": [
+      {
+        "input": "`profits = [-2, 4, -1, 3, -5]`",
+        "output": "`6`",
+        "explanation": "The best continuous block is `[4, -1, 3]`, with total `6`."
+      },
+      {
+        "input": "`profits = [-5, -2, -8]`",
+        "output": "`-2`",
+        "explanation": "The best choice is the least negative day."
+      }
+    ],
+    "constraints": "- `0 <= profits.length <= 10^5`\n- `-10^9 <= profits[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function cozyCafeProfitRun(profits) {\n  // Return the maximum sum of any continuous block.\n}",
+      "TYPESCRIPT": "function cozyCafeProfitRun(profits: number[]): number {\n  // Return the maximum sum of any continuous block.\n}",
+      "PYTHON": "from typing import List\n\ndef cozy_cafe_profit_run(profits: List[int]) -> int:\n    # Return the maximum sum of any continuous block.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long cozyCafeProfitRun(vector<int>& profits) {\n    // Return the maximum sum of any continuous block.\n}",
+      "JAVA": "class Solution {\n    public long cozyCafeProfitRun(int[] profits) {\n        // Return the maximum sum of any continuous block.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[-2,4,-1,3,-5]",
+        "expected": "6"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[-5,-2,-8]",
+        "expected": "-2"
+      },
+      {
+        "input": "[7]",
+        "expected": "7"
+      },
+      {
+        "input": "[1,2,3]",
+        "expected": "6"
+      },
+      {
+        "input": "[5,-10,8,9]",
+        "expected": "17"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "At each day, decide whether to continue the previous block or start a new one."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use Kadane's algorithm."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "If profits is empty, return 0.\nSet current = profits[0] and best = profits[0].\nFor each next profit, current = max(profit, current + profit).\nUpdate best.\nReturn best."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction cozyCafeProfitRun(profits) {\n  if (profits.length === 0) return 0;\n\n  let current = profits[0];\n  let best = profits[0];\n\n  for (let i = 1; i < profits.length; i++) {\n    current = Math.max(profits[i], current + profits[i]);\n    best = Math.max(best, current);\n  }\n\n  return best;\n}\n\nTime complexity: O(n), where n is profits.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Game Quest Loot Path",
+    "slug": "game-quest-loot-path",
+    "functionName": "gameQuestLootPath",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You are walking through a row of treasure rooms in a game.\n\nEach number in `rooms` represents the loot value in one room. You may collect loot from any rooms, but you cannot collect from two adjacent rooms because the alarm will trigger.\n\nReturn the maximum total loot you can collect.",
+    "examples": [
+      {
+        "input": "`rooms = [2, 7, 9, 3, 1]`",
+        "output": "`12`",
+        "explanation": "Collect from rooms with values `2`, `9`, and `1`."
+      },
+      {
+        "input": "`rooms = [5, 1, 1, 5]`",
+        "output": "`10`",
+        "explanation": "Collect from the first and last rooms."
+      }
+    ],
+    "constraints": "- `0 <= rooms.length <= 10^5`\n- `0 <= rooms[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function gameQuestLootPath(rooms) {\n  // Return the maximum loot without collecting from adjacent rooms.\n}",
+      "TYPESCRIPT": "function gameQuestLootPath(rooms: number[]): number {\n  // Return the maximum loot without collecting from adjacent rooms.\n}",
+      "PYTHON": "from typing import List\n\ndef game_quest_loot_path(rooms: List[int]) -> int:\n    # Return the maximum loot without collecting from adjacent rooms.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long gameQuestLootPath(vector<int>& rooms) {\n    // Return the maximum loot without collecting from adjacent rooms.\n}",
+      "JAVA": "class Solution {\n    public long gameQuestLootPath(int[] rooms) {\n        // Return the maximum loot without collecting from adjacent rooms.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[2,7,9,3,1]",
+        "expected": "12"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[5]",
+        "expected": "5"
+      },
+      {
+        "input": "[5,1,1,5]",
+        "expected": "10"
+      },
+      {
+        "input": "[1,2,3,1]",
+        "expected": "4"
+      },
+      {
+        "input": "[0,0,0]",
+        "expected": "0"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For every room, choose between taking it or skipping it."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "This is the classic House Robber dynamic programming pattern."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Let `prev2` be the best answer two rooms back.\nLet `prev1` be the best answer one room back.\nFor each room value, current = max(prev1, prev2 + value).\nMove prev2 and prev1 forward.\nReturn prev1."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction gameQuestLootPath(rooms) {\n  let prev2 = 0;\n  let prev1 = 0;\n\n  for (const value of rooms) {\n    const current = Math.max(prev1, prev2 + value);\n    prev2 = prev1;\n    prev1 = current;\n  }\n\n  return prev1;\n}\n\nTime complexity: O(n), where n is rooms.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Plant Shelf Arrangement",
+    "slug": "plant-shelf-arrangement",
+    "functionName": "plantShelfArrangement",
+    "difficulty": "MEDIUM",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You are arranging plants on a narrow shelf.\n\nEach number in `plants` represents the beauty score of one plant. You want to choose some plants to display, but you cannot choose two adjacent plants because they need breathing space.\n\nReturn the maximum total beauty score you can display.",
+    "examples": [
+      {
+        "input": "`plants = [4, 2, 7, 9, 1]`",
+        "output": "`14`",
+        "explanation": "Choose plants with scores `4`, `9`, and `1` for total `14`."
+      },
+      {
+        "input": "`plants = [3, 3, 3]`",
+        "output": "`6`",
+        "explanation": "Choose the first and last plants."
+      }
+    ],
+    "constraints": "- `0 <= plants.length <= 10^5`\n- `0 <= plants[i] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function plantShelfArrangement(plants) {\n  // Return the maximum total beauty score without choosing adjacent plants.\n}",
+      "TYPESCRIPT": "function plantShelfArrangement(plants: number[]): number {\n  // Return the maximum total beauty score without choosing adjacent plants.\n}",
+      "PYTHON": "from typing import List\n\ndef plant_shelf_arrangement(plants: List[int]) -> int:\n    # Return the maximum total beauty score without choosing adjacent plants.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long plantShelfArrangement(vector<int>& plants) {\n    // Return the maximum total beauty score without choosing adjacent plants.\n}",
+      "JAVA": "class Solution {\n    public long plantShelfArrangement(int[] plants) {\n        // Return the maximum total beauty score without choosing adjacent plants.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[4,2,7,9,1]",
+        "expected": "14"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[8]",
+        "expected": "8"
+      },
+      {
+        "input": "[3,3,3]",
+        "expected": "6"
+      },
+      {
+        "input": "[1,2,3,1]",
+        "expected": "4"
+      },
+      {
+        "input": "[10,1,1,10]",
+        "expected": "20"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "At each plant, choose whether to include it or skip it."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use the same DP idea as House Robber: best up to index `i`."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Keep two rolling values.\n`prev2` is the best score before the previous plant.\n`prev1` is the best score up to the previous plant.\nFor each plant, current = max(prev1, prev2 + plant).\nReturn prev1 at the end."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction plantShelfArrangement(plants) {\n  let prev2 = 0;\n  let prev1 = 0;\n\n  for (const plant of plants) {\n    const current = Math.max(prev1, prev2 + plant);\n    prev2 = prev1;\n    prev1 = current;\n  }\n\n  return prev1;\n}\n\nTime complexity: O(n), where n is plants.length.\nSpace complexity: O(1)."
+      }
+    ]
+  },
+  {
+    "title": "Sticker Path Combo",
+    "slug": "sticker-path-combo",
+    "functionName": "stickerPathCombo",
+    "difficulty": "HARD",
+    "topics": ["ARRAYS", "DYNAMIC_PROGRAMMING"],
+    "description": "You are collecting stickers from two rows in an album.\n\nThe input `stickers` is a 2D array with exactly two rows. `stickers[0][i]` is the value of the sticker in the top row at column `i`, and `stickers[1][i]` is the value of the sticker in the bottom row at column `i`.\n\nYou may collect stickers, but you cannot collect two stickers that share an edge vertically or horizontally.\n\nReturn the maximum total sticker value you can collect.",
+    "examples": [
+      {
+        "input": "`stickers = [[50, 10, 100, 20], [30, 50, 70, 10]]`",
+        "output": "`200`",
+        "explanation": "One optimal choice is top column `0`, bottom column `1`, top column `2`, and bottom column `3`, totaling `200`."
+      },
+      {
+        "input": "`stickers = [[1], [5]]`",
+        "output": "`5`",
+        "explanation": "Choose the bottom sticker."
+      }
+    ],
+    "constraints": "- `stickers.length == 2`\n- `0 <= stickers[0].length <= 10^5`\n- `stickers[0].length == stickers[1].length`\n- `0 <= stickers[row][col] <= 10^9`",
+    "starterCode": {
+      "JAVASCRIPT": "function stickerPathCombo(stickers) {\n  // Return the maximum total sticker value without choosing edge-adjacent stickers.\n}",
+      "TYPESCRIPT": "function stickerPathCombo(stickers: number[][]): number {\n  // Return the maximum total sticker value without choosing edge-adjacent stickers.\n}",
+      "PYTHON": "from typing import List\n\ndef sticker_path_combo(stickers: List[List[int]]) -> int:\n    # Return the maximum total sticker value without choosing edge-adjacent stickers.\n    pass",
+      "CPP": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nlong long stickerPathCombo(vector<vector<int>>& stickers) {\n    // Return the maximum total sticker value without choosing edge-adjacent stickers.\n}",
+      "JAVA": "class Solution {\n    public long stickerPathCombo(int[][] stickers) {\n        // Return the maximum total sticker value without choosing edge-adjacent stickers.\n    }\n}"
+    },
+    "testCases": [
+      {
+        "input": "[[50,10,100,20],[30,50,70,10]]",
+        "expected": "200"
+      },
+      {
+        "input": "[[],[]]",
+        "expected": "0"
+      },
+      {
+        "input": "[[1],[5]]",
+        "expected": "5"
+      },
+      {
+        "input": "[[5,5],[5,5]]",
+        "expected": "10"
+      },
+      {
+        "input": "[[10,1,10],[1,10,1]]",
+        "expected": "30"
+      }
+    ],
+    "hints": [
+      {
+        "tier": 1,
+        "cost": 1,
+        "content": "For each column, you can choose the top sticker, the bottom sticker, or no sticker."
+      },
+      {
+        "tier": 2,
+        "cost": 3,
+        "content": "Use DP states for ending with top chosen, bottom chosen, or none chosen at the current column."
+      },
+      {
+        "tier": 3,
+        "cost": 7,
+        "content": "Maintain three values:\n`none`: best total if no sticker is chosen in the current column.\n`top`: best total if the top sticker is chosen.\n`bottom`: best total if the bottom sticker is chosen.\nFor each column, calculate new states from the previous states.\nReturn max(none, top, bottom)."
+      },
+      {
+        "tier": 4,
+        "cost": 15,
+        "content": "Full working solution:\n\nfunction stickerPathCombo(stickers) {\n  const n = stickers[0].length;\n  if (n === 0) return 0;\n\n  let none = 0;\n  let top = 0;\n  let bottom = 0;\n\n  for (let i = 0; i < n; i++) {\n    const newNone = Math.max(none, top, bottom);\n    const newTop = Math.max(none, bottom) + stickers[0][i];\n    const newBottom = Math.max(none, top) + stickers[1][i];\n\n    none = newNone;\n    top = newTop;\n    bottom = newBottom;\n  }\n\n  return Math.max(none, top, bottom);\n}\n\nTime complexity: O(n), where n is the number of columns.\nSpace complexity: O(1)."
+      }
+    ]
   }
 ]

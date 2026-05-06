@@ -34,43 +34,50 @@ const schema = z.object({
 });
 
 export async function GET(req: Request) {
-  const { error } = await getAdminUserId();
-  if (error) return error;
+  try {
+    const { error } = await getAdminUserId();
+    if (error) return error;
 
-  const { searchParams } = new URL(req.url);
-  const search = searchParams.get("search") ?? "";
-  const difficulty = searchParams.get("difficulty") ?? "";
-  const topics = searchParams.getAll("topic");
-  const scheduled = searchParams.get("scheduled") ?? "all";
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") ?? "";
+    const difficulty = searchParams.get("difficulty") ?? "";
+    const topics = searchParams.getAll("topic");
+    const scheduled = searchParams.get("scheduled") ?? "all";
 
-  // Get all scheduled problem IDs for filter
-  let scheduledProblemIds: Set<string> | null = null;
-  if (scheduled !== "all") {
-    const slots = await prisma.dailyProblem.findMany({
-      select: { problemId: true },
+    // Get all scheduled problem IDs for filter
+    let scheduledProblemIds: Set<string> | null = null;
+    if (scheduled !== "all") {
+      const slots = await prisma.dailyProblem.findMany({
+        select: { problemId: true },
+      });
+      scheduledProblemIds = new Set(slots.map((s) => s.problemId));
+    }
+
+    const problems = await prisma.problem.findMany({
+      where: {
+        deletedAt: null,
+        ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
+        ...(difficulty ? { difficulty: difficulty as any } : {}),
+        ...(topics.length > 0
+          ? { topics: { hasSome: topics as Topic[] } }
+          : {}),
+      },
+      orderBy: { createdAt: "desc" },
+      include: { _count: { select: { solves: true, dailySlots: true } } },
     });
-    scheduledProblemIds = new Set(slots.map((s) => s.problemId));
+
+    const filtered = problems.filter((p) => {
+      if (!scheduledProblemIds) return true;
+      if (scheduled === "scheduled") return scheduledProblemIds.has(p.id);
+      if (scheduled === "unscheduled") return !scheduledProblemIds.has(p.id);
+      return true;
+    });
+
+    return NextResponse.json({ problems: filtered });
+  } catch (e: any) {
+    console.error("ADMIN PROBLEMS ERROR:", e);
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
-
-  const problems = await prisma.problem.findMany({
-    where: {
-      deletedAt: null,
-      ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
-      ...(difficulty ? { difficulty: difficulty as any } : {}),
-      ...(topics.length > 0 ? { topics: { hasSome: topics as Topic[] } } : {}),
-    },
-    orderBy: { createdAt: "desc" },
-    include: { _count: { select: { solves: true, dailySlots: true } } },
-  });
-
-  const filtered = problems.filter((p) => {
-    if (!scheduledProblemIds) return true;
-    if (scheduled === "scheduled") return scheduledProblemIds.has(p.id);
-    if (scheduled === "unscheduled") return !scheduledProblemIds.has(p.id);
-    return true;
-  });
-
-  return NextResponse.json({ problems: filtered });
 }
 
 export async function POST(req: Request) {

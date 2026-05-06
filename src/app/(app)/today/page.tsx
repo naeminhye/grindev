@@ -16,6 +16,8 @@ import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { TimerDisplay } from "@/components/ui/TimerDisplay";
 import { SuccessModal } from "@/components/ui/SuccessModal";
+import { NoProblemScreen } from "@/components/ui/NoProblemScreen";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useTimer } from "@/hooks/useTimer";
 import { HINT_TIERS } from "@/lib/hints";
 import { getTimeLimit } from "@/lib/challenge";
@@ -30,7 +32,6 @@ import type {
 import type { ChallengeMode } from "@/lib/challenge";
 import type { MakeupDay } from "@/lib/makeup";
 import { cn } from "@/lib/utils";
-import { NoProblemScreen } from "@/components/ui/NoProblemScreen";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -55,6 +56,7 @@ export default function TodayPage() {
     null,
   );
   const [diffNoteVisible, setDiffNoteVisible] = useState(true);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const hasStartedTyping = useRef(false);
 
@@ -217,17 +219,16 @@ export default function TodayPage() {
   }
 
   function handleResetCode() {
-    if (
-      !confirm(
-        "Reset code to starter template? Your current code will be lost.",
-      )
-    )
-      return;
+    setShowResetConfirm(true);
+  }
+
+  function confirmResetCode() {
     const starter = (daily?.problem?.starterCode as any)?.["JAVASCRIPT"] ?? "";
     setCode(starter);
     setSolveResult(null);
     setModeLocked(false);
     hasStartedTyping.current = false;
+    setShowResetConfirm(false);
   }
 
   const { problem, userStats } = daily;
@@ -802,7 +803,16 @@ export default function TodayPage() {
 
   return (
     <>
-      {" "}
+      {showResetConfirm && (
+        <ConfirmDialog
+          title="Reset Code"
+          message="Reset to the starter template? Your current code will be lost."
+          confirmLabel="Reset"
+          variant="warning"
+          onConfirm={confirmResetCode}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
       {showSuccessModal && solveResult && (
         <SuccessModal
           streak={solveResult.streak?.currentStreak ?? userStats.currentStreak}

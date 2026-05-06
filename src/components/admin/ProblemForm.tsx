@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { LANGUAGES } from "@/lib/languages";
 import { TopicTagInput } from "@/components/admin/TopicTagInput";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ProblemExample } from "@/types";
 
 const TOPICS = [
@@ -97,6 +98,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [activeLang, setActiveLang] = useState("JAVASCRIPT");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   function autoSlug(title: string) {
     return title
@@ -198,7 +200,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
       setActiveTab("basic");
       return;
     }
-    
+
     if (form.topics.length === 0) {
       setError("Please select at least one topic.");
       setActiveTab("basic");
@@ -252,12 +254,6 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
 
   async function handleDelete() {
     if (!problemId) return;
-    if (
-      !confirm(
-        "Delete this problem? Solve history will be preserved for users.",
-      )
-    )
-      return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/problems/${problemId}`, {
@@ -271,6 +267,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
       router.refresh();
     } finally {
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   }
 
@@ -287,6 +284,16 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 w-full space-y-6">
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          title="Delete Problem"
+          message={`Delete "${form.title}"? Solve history will be preserved for users.`}
+          confirmLabel={deleting ? "Deleting..." : "Delete"}
+          variant="danger"
+          onConfirm={handleDelete}
+          onCancel={() => !deleting && setShowDeleteConfirm(false)}
+        />
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -300,7 +307,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
         <div className="flex items-center gap-2">
           {isEditing && (
             <button
-              onClick={handleDelete}
+              onClick={() => setShowDeleteConfirm(true)}
               disabled={deleting}
               className="flex items-center gap-2 px-4 py-2 border border-red-500/30 text-red-400 hover:bg-red-500/10 font-mono text-sm rounded transition-colors"
             >

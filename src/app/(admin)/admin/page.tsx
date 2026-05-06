@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { TopicTagInput } from "@/components/admin/TopicTagInput";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { AlertDialog } from "@/components/ui/AlertDialog";
 
 type Problem = {
   id: string;
@@ -44,12 +46,18 @@ export default function AdminDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [deleteTarget, setDeleteTarget] = useState<Problem | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  // Filters
   const [search, setSearch] = useState("");
   const [diffFilter, setDiffFilter] = useState("");
   const [topicFilter, setTopicFilter] = useState<string[]>([]);
   const [scheduledFilter, setScheduledFilter] = useState("all");
+  const [alertData, setAlertData] = useState<{
+    title: string;
+    message: string;
+    variant: "info" | "success" | "danger";
+  } | null>(null);
 
   const fetchProblems = useCallback(async () => {
     setLoading(true);
@@ -82,6 +90,20 @@ export default function AdminDashboard() {
     return () => clearTimeout(t);
   }, [fetchProblems]);
 
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    const res = await fetch(`/api/admin/problems/${deleteTarget.id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setProblems((prev) => prev.filter((p) => p.id !== deleteTarget.id));
+      if (stats) setStats((s) => (s ? { ...s, problems: s.problems - 1 } : s));
+    }
+    setDeleting(false);
+    setDeleteTarget(null);
+  }
+
   async function handleBulkUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -90,7 +112,11 @@ export default function AdminDashboard() {
     try {
       data = JSON.parse(text);
     } catch {
-      alert("Invalid JSON file");
+      setAlertData({
+        title: "Invalid File",
+        message: "The file is not valid JSON.",
+        variant: "danger",
+      });
       return;
     }
     const res = await fetch("/api/admin/problems/bulk", {
@@ -99,17 +125,19 @@ export default function AdminDashboard() {
       body: JSON.stringify(data),
     });
     const result = await res.json();
-    alert(
-      `Created: ${result.created}, Skipped: ${result.skipped}${result.errors?.length ? `, Errors: ${result.errors.length}` : ""}`,
-    );
+    const hasErrors = result.errors?.length > 0;
+    setAlertData({
+      title: "Bulk Upload Complete",
+      message: `Created: ${result.created}\nSkipped: ${result.skipped}${hasErrors ? `\nErrors: ${result.errors.length}` : ""}`,
+      variant: hasErrors ? "info" : "success",
+    });
     fetchProblems();
     e.target.value = "";
   }
 
   function toggleSort(key: SortKey) {
-    if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
       setSortKey(key);
       setSortDir(key === "title" ? "asc" : "desc");
     }
@@ -149,8 +177,60 @@ export default function AdminDashboard() {
     );
   }
 
+  function ProblemActions({ p }: { p: Problem }) {
+    return (
+      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <Link
+          href={`/admin/problems/${p.id}/edit`}
+          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+          title="Edit"
+        >
+          <i className="ri-edit-line text-sm" />
+        </Link>
+        <Link
+          href={`/admin/schedule?highlight=${p.id}`}
+          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+          title="Schedule"
+        >
+          <i className="ri-calendar-line text-sm" />
+        </Link>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setDeleteTarget(p);
+          }}
+          className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+          title="Delete"
+        >
+          <i className="ri-delete-bin-line text-sm" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-8 w-full">
+      {/* Confirm delete dialog */}
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Delete Problem"
+          message={`Delete "${deleteTarget.title}"? Solve history will be preserved for users, but the problem will no longer appear in the problem list or be scheduled.`}
+          confirmLabel={deleting ? "Deleting..." : "Delete"}
+          variant="danger"
+          onConfirm={handleDelete}
+          onCancel={() => !deleting && setDeleteTarget(null)}
+        />
+      )}
+      {/* Alert message */}
+      {alertData && (
+        <AlertDialog
+          title={alertData.title}
+          message={alertData.message}
+          variant={alertData.variant}
+          onClose={() => setAlertData(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -235,7 +315,6 @@ export default function AdminDashboard() {
             Filters
           </span>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="relative">
             <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm" />
@@ -246,7 +325,6 @@ export default function AdminDashboard() {
               className="w-full pl-8 pr-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 transition-colors"
             />
           </div>
-
           <select
             value={diffFilter}
             onChange={(e) => setDiffFilter(e.target.value)}
@@ -257,7 +335,6 @@ export default function AdminDashboard() {
             <option value="MEDIUM">Medium</option>
             <option value="HARD">Hard</option>
           </select>
-
           <select
             value={scheduledFilter}
             onChange={(e) => setScheduledFilter(e.target.value)}
@@ -267,7 +344,6 @@ export default function AdminDashboard() {
             <option value="scheduled">Scheduled only</option>
             <option value="unscheduled">Not scheduled</option>
           </select>
-
           {(search ||
             diffFilter ||
             topicFilter.length > 0 ||
@@ -285,7 +361,6 @@ export default function AdminDashboard() {
             </button>
           )}
         </div>
-
         <div>
           <p className="text-xs font-mono text-zinc-500 mb-1.5">
             Filter by topics
@@ -294,24 +369,20 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Toolbar — count, sort, view toggle */}
+      {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <span className="text-xs font-mono text-zinc-500">
           {loading
             ? "Loading..."
             : `${sorted.length} problem${sorted.length !== 1 ? "s" : ""}`}
         </span>
-
         <div className="flex items-center gap-3">
-          {/* Sort */}
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-mono text-zinc-600">Sort:</span>
             <SortButton label="Name" k="title" />
             <SortButton label="Date" k="createdAt" />
             <SortButton label="Solves" k="solves" />
           </div>
-
-          {/* View toggle */}
           <div className="flex items-center border border-border rounded-md overflow-hidden">
             <button
               onClick={() => setViewMode("list")}
@@ -341,7 +412,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Empty state */}
       {!loading && sorted.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 space-y-3 text-center">
           <i className="ri-inbox-line text-4xl text-zinc-700" />
@@ -401,23 +471,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
               </div>
-
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                <Link
-                  href={`/admin/problems/${p.id}/edit`}
-                  className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
-                  title="Edit"
-                >
-                  <i className="ri-edit-line text-sm" />
-                </Link>
-                <Link
-                  href={`/admin/schedule?highlight=${p.id}`}
-                  className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
-                  title="Schedule"
-                >
-                  <i className="ri-calendar-line text-sm" />
-                </Link>
-              </div>
+              <ProblemActions p={p} />
             </div>
           ))}
         </div>
@@ -431,7 +485,6 @@ export default function AdminDashboard() {
               key={p.id}
               className="bg-zinc-900 border border-border rounded-md p-4 space-y-3 hover:border-zinc-600 transition-colors group flex flex-col"
             >
-              {/* Title + difficulty */}
               <div className="space-y-2 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-mono text-sm font-medium leading-snug line-clamp-2">
@@ -446,8 +499,6 @@ export default function AdminDashboard() {
                     {DIFF_CONFIG[p.difficulty].label}
                   </span>
                 </div>
-
-                {/* Topics */}
                 <div className="flex flex-wrap gap-1">
                   {p.topics.slice(0, 4).map((t) => (
                     <span
@@ -464,8 +515,6 @@ export default function AdminDashboard() {
                   )}
                 </div>
               </div>
-
-              {/* Footer */}
               <div className="pt-2 border-t border-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono text-zinc-600 flex items-center gap-1">
@@ -482,23 +531,7 @@ export default function AdminDashboard() {
                     {formatDate(p.createdAt)}
                   </span>
                 </div>
-
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link
-                    href={`/admin/problems/${p.id}/edit`}
-                    className="p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
-                    title="Edit"
-                  >
-                    <i className="ri-edit-line text-xs" />
-                  </Link>
-                  <Link
-                    href={`/admin/schedule?highlight=${p.id}`}
-                    className="p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
-                    title="Schedule"
-                  >
-                    <i className="ri-calendar-line text-xs" />
-                  </Link>
-                </div>
+                <ProblemActions p={p} />
               </div>
             </div>
           ))}

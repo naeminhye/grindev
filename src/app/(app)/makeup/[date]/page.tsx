@@ -13,6 +13,7 @@ import remarkGfm from "remark-gfm";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { StarCount } from "@/components/ui/StarCount";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { HINT_TIERS } from "@/lib/hints";
 import { getMonacoLanguage } from "@/lib/languages";
 import type {
@@ -41,6 +42,8 @@ export default function MakeupPage() {
   const [attempts, setAttempts] = useState(0);
   const [starDelta, setStarDelta] = useState<number | null>(null);
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
   const hasStartedTyping = useRef(false);
 
   useEffect(() => {
@@ -87,16 +90,14 @@ export default function MakeupPage() {
   );
 
   function handleResetCode() {
-    if (
-      !confirm(
-        "Reset code to starter template? Your current code will be lost.",
-      )
-    )
-      return;
+    setShowResetConfirm(true);
+  }
+  function confirmResetCode() {
     const starter = (data?.problem?.starterCode as any)?.["JAVASCRIPT"] ?? "";
     setCode(starter);
     setSolveResult(null);
     hasStartedTyping.current = false;
+    setShowResetConfirm(false);
   }
 
   const handleRun = useCallback(async () => {
@@ -631,6 +632,17 @@ export default function MakeupPage() {
 
   return (
     <div className="h-[calc(100dvh-3.5rem)] overflow-hidden grid grid-rows-[auto_auto_minmax(0,1fr)] md:grid-rows-[auto_minmax(0,1fr)]">
+      {showResetConfirm && (
+        <ConfirmDialog
+          title="Reset Code"
+          message="Reset to the starter template? Your current code will be lost."
+          confirmLabel="Reset"
+          variant="warning"
+          onConfirm={confirmResetCode}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
+
       <div className="shrink-0">{Header}</div>
       <div className="md:hidden shrink-0">{MobileTabs}</div>
       <div className="min-h-0 overflow-hidden grid grid-cols-1 md:grid-cols-[50%_minmax(0,1fr)]">
