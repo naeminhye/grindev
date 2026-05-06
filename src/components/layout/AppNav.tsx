@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { HelpButton } from "@/components/ui/HelpButton";
 
 const menus = [
   { href: "/today", label: "Today", icon: "ri-code-s-slash-line" },
@@ -18,6 +20,21 @@ interface AppNavProps {
 
 export function AppNav({ userName, userImage }: AppNavProps) {
   const pathname = usePathname();
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (
+        e.key === "?" &&
+        !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement).tagName)
+      ) {
+        // Toggle help — needs a shared state or ref
+        // Simplest: dispatch a custom event
+        window.dispatchEvent(new CustomEvent("grindev:help"));
+      }
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
   return (
     <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
@@ -49,6 +66,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
+        <HelpButton />
         {userImage && (
           <img
             src={userImage}
