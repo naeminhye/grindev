@@ -5,14 +5,7 @@ import { cn } from "@/lib/utils";
 import { getDifficultyNote } from "@/lib/daily-logic";
 import { useTheme, type Theme } from "@/lib/theme";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { ChallengeMode } from "@/lib/challenge";
-
-type PreferredDifficulty = "ANY" | "EASY" | "MEDIUM" | "HARD";
-
-export type Settings = {
-  challengeMode: ChallengeMode;
-  preferredDifficulty: PreferredDifficulty;
-};
+import { PreferredDifficulty, Settings } from "@/types";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -217,6 +210,64 @@ export default function SettingsPage() {
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Practice Mode */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="font-heading font-bold text-base">Practice Mode</h2>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            Choose what you practice each day. Changes take effect the next time
+            you open Today.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {(
+            [
+              {
+                id: "DSA",
+                label: "DSA Problems",
+                icon: "ri-code-s-slash-line",
+                desc: "Daily coding challenges. Solve in the code editor.",
+              },
+              {
+                id: "QUIZ",
+                label: "Knowledge Quiz",
+                icon: "ri-questionnaire-line",
+                desc: "Multiple-choice questions on JS, CSS, databases and more.",
+              },
+            ] as {
+              id: "DSA" | "QUIZ";
+              label: string;
+              icon: string;
+              desc: string;
+            }[]
+          ).map((mode) => (
+            <button
+              key={mode.id}
+              onClick={() => save({ practiceMode: mode.id })}
+              className={cn(
+                "p-4 rounded-md border text-left transition-all space-y-2",
+                settings.practiceMode === mode.id
+                  ? "border-lime-500/50 bg-lime-500/5"
+                  : "border-border bg-zinc-900 hover:border-zinc-600",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <i className={`${mode.icon} text-lime-400`} />
+                  <span className="font-heading font-bold text-sm">
+                    {mode.label}
+                  </span>
+                </div>
+                {settings.practiceMode === mode.id && (
+                  <i className="ri-check-line text-lime-400" />
+                )}
+              </div>
+              <p className="text-xs font-mono text-zinc-500">{mode.desc}</p>
+            </button>
+          ))}
         </div>
       </div>
 

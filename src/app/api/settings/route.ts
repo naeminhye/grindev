@@ -11,7 +11,11 @@ export async function GET() {
   const [user, bonusConfig] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { challengeMode: true, preferredDifficulty: true },
+      select: {
+        challengeMode: true,
+        preferredDifficulty: true,
+        practiceMode: true,
+      },
     }),
     prisma.appConfig.findUnique({ where: { key: "NO_PROBLEM_BONUS_STARS" } }),
   ]);
@@ -20,6 +24,7 @@ export async function GET() {
     challengeMode: user?.challengeMode ?? "NORMAL",
     preferredDifficulty: user?.preferredDifficulty ?? "ANY",
     noProblemBonusStars: bonusConfig ? parseInt(bonusConfig.value) : 5,
+    practiceMode: user?.practiceMode ?? "DSA",
   });
 }
 
@@ -33,6 +38,7 @@ export async function PATCH(req: Request) {
       challengeMode: z.enum(["NORMAL", "HARD"]).optional(),
       preferredDifficulty: z.enum(["ANY", "EASY", "MEDIUM", "HARD"]).optional(),
       noProblemBonusStars: z.number().int().min(0).max(100).optional(),
+      practiceMode: z.enum(["DSA", "QUIZ"]).optional(),
     })
     .safeParse(body);
 

@@ -2,16 +2,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getAdminUserId } from "@/lib/admin-auth";
-import { STAR_REWARD_DEFAULTS, TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
+import { allKeys, STAR_REWARD_DEFAULTS, TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 
 export async function GET() {
   const { error } = await getAdminUserId();
   if (error) return error;
-
-  const allKeys = [
-    ...Object.keys(STAR_REWARD_DEFAULTS),
-    ...Object.keys(TIME_LIMIT_DEFAULTS),
-  ];
 
   const configs = await prisma.appConfig.findMany({
     where: { key: { in: allKeys } },

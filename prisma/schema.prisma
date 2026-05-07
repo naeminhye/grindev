@@ -29,6 +29,8 @@ model User {
   solves           Solve[]
   hintPurchases    HintPurchase[]
   starTransactions StarTransaction[]
+  quizAttempts     QuizAttempt[]
+  practiceMode     PracticeMode      @default(DSA)
 }
 
 model StarTransaction {
@@ -182,4 +184,67 @@ enum StarTransactionReason {
   STREAK_MILESTONE
   FIRST_SOLVE_BONUS
   ADMIN_ADJUSTMENT
+  QUIZ_REWARD
+}
+
+/////////////////////////////////////////////////////
+
+model Quiz {
+  id         String     @id @default(cuid())
+  title      String
+  topic      QuizTopic
+  difficulty Difficulty
+  questions  Json       @default("[]") // QuizQuestion[]
+  deletedAt  DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+
+  dailySlots DailyQuiz[]
+  attempts   QuizAttempt[]
+}
+
+model DailyQuiz {
+  id     String @id @default(cuid())
+  date   String @unique
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
+}
+
+model QuizAttempt {
+  id         String   @id @default(cuid())
+  userId     String
+  quizId     String
+  answers    Json // { questionIndex: number; selectedIndex: number }[]
+  score      Int
+  total      Int
+  passed     Boolean
+  stars      Int      @default(0)
+  isMakeup   Boolean  @default(false)
+  makeupDate String?
+  solvedAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  quiz Quiz @relation(fields: [quizId], references: [id])
+
+  @@unique([userId, quizId])
+}
+
+// ── New enums ─────────────────────────────────────────────────────────────────
+
+enum QuizTopic {
+  JAVASCRIPT
+  TYPESCRIPT
+  PYTHON
+  CSS
+  HTML
+  REACT
+  NODE
+  DATABASES
+  SYSTEM_DESIGN
+  GENERAL_CS
+}
+
+enum PracticeMode {
+  DSA
+  QUIZ
 }

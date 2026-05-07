@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { STAR_REWARD_DEFAULTS, TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 import { useI18n } from "@/lib/i18n";
+import { QUIZ_STAR_DEFAULTS } from "@/lib/quiz-rewards";
 
 type Config = Record<string, number>;
 
@@ -282,6 +283,61 @@ export default function AdminConfigPage() {
             }
             className="w-20 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-center text-zinc-200 font-mono text-sm focus:outline-none focus:border-lime-500/50"
           />
+        </div>
+      </section>
+      {/* Quiz star rewards */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="font-heading font-bold text-base">
+            Quiz Star Rewards
+          </h2>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            Stars awarded based on quiz score percentage.
+          </p>
+        </div>
+        <div className="space-y-3">
+          {[
+            {
+              key: "QUIZ_STARS_PERFECT",
+              label: "100% score",
+              color: "text-lime-400",
+            },
+            {
+              key: "QUIZ_STARS_GREAT",
+              label: "80–99% score",
+              color: "text-green-400",
+            },
+            {
+              key: "QUIZ_STARS_PASS",
+              label: "60–79% score",
+              color: "text-yellow-400",
+            },
+            {
+              key: "QUIZ_PASS_THRESHOLD",
+              label: "Pass threshold (%)",
+              color: "text-zinc-400",
+            },
+          ].map(({ key, label, color }) => (
+            <div
+              key={key}
+              className="flex items-center justify-between p-4 bg-zinc-900 border border-border rounded-md"
+            >
+              <div>
+                <p className={`text-sm font-mono ${color}`}>{label}</p>
+              </div>
+              <input
+                type="number"
+                value={
+                  config.starRewards[key] ??
+                  QUIZ_STAR_DEFAULTS[key as keyof typeof QUIZ_STAR_DEFAULTS]
+                }
+                min={key === "QUIZ_PASS_THRESHOLD" ? 1 : 0}
+                max={key === "QUIZ_PASS_THRESHOLD" ? 100 : 50}
+                onChange={(e) => set(key, parseInt(e.target.value))}
+                className="w-20 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-center text-zinc-200 font-mono text-sm focus:outline-none focus:border-lime-500/50"
+              />
+            </div>
+          ))}
         </div>
       </section>
     </div>
