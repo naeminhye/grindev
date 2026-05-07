@@ -1,4 +1,80 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "登录",
+      "startFree": "免费开始 →",
+      "startFreeShort": "开始 →"
+    },
+    "hero": {
+      "label": "编程 · 每日 · 不找借口",
+      "titleLine1": "打磨",
+      "titleLine2": "你的锋芒。",
+      "subtitleLine1": "每天一道 DSA 题。不复制粘贴。不搜索答案。",
+      "subtitleLine2": "提示需要消耗星星，干净解题可以把它们赚回来。",
+      "cta": "开始今日题目"
+    },
+    "features": {
+      "dailyStreaks": "每日连续记录",
+      "noPaste": "禁止粘贴",
+      "hintEconomy": "提示系统",
+      "hardMode": "困难模式",
+      "makeUpTasks": "补做任务"
+    },
+    "stats": {
+      "problems": "题目",
+      "hintTiers": "提示层级",
+      "streakPotential": "连续记录潜力"
+    },
+    "howItWorks": {
+      "kicker": "使用方式",
+      "title": "三步，让能力更锋利。",
+      "steps": {
+        "dailyProblem": {
+          "title": "领取今日题目",
+          "desc": "每天提供一道 DSA 题。难度会根据你的偏好匹配。如果错过一天，连续记录会重置。"
+        },
+        "solveScratch": {
+          "title": "从零开始解题",
+          "desc": "困难模式下编辑器会禁止粘贴。你需要亲手输入每一个字符。真正的学习就藏在这里。"
+        },
+        "earnBadge": {
+          "title": "获得徽章",
+          "desc": "不使用提示完成干净解题即可获得星星。星星可以在更难的日子用来解锁提示。一个小小的大脑循环。"
+        }
+      }
+    },
+    "hints": {
+      "kicker": "提示系统",
+      "title": "卡住了？这会花星星。",
+      "tier": "层级",
+      "items": {
+        "tier1": {
+          "title": "数据结构",
+          "desc": "轻轻提示你该使用哪种数据结构。"
+        },
+        "tier2": {
+          "title": "算法名称",
+          "desc": "告诉你解决这道题所需的模式或算法。"
+        },
+        "tier3": {
+          "title": "伪代码",
+          "desc": "用清晰的步骤展示解题逻辑。"
+        },
+        "tier4": {
+          "title": "完整讲解",
+          "desc": "提供完整解释。连续记录仍会保留。"
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "今日题目正在",
+      "titleHighlight": "等你。",
+      "cta": "免费开始",
+      "startNow": "立即开始 — 免费 →",
+      "noCreditCard": "无需信用卡。不找借口。",
+      "copyright": "© 2026 GrinDev. 为想不断进步的开发者打造。"
+    }
+  },
   "nav": {
     "today": "今日",
     "history": "历史",

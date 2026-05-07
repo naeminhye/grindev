@@ -1,4 +1,80 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "Đăng nhập",
+      "startFree": "Bắt đầu miễn phí →",
+      "startFreeShort": "Bắt đầu →"
+    },
+    "hero": {
+      "label": "Code · Mỗi ngày · Không viện cớ",
+      "titleLine1": "Mài sắc",
+      "titleLine2": "kỹ năng.",
+      "subtitleLine1": "Mỗi ngày một bài DSA. Không copy-paste. Không Google.",
+      "subtitleLine2": "Gợi ý tốn sao, hãy kiếm lại bằng cách giải sạch.",
+      "cta": "Làm bài hôm nay"
+    },
+    "features": {
+      "dailyStreaks": "Chuỗi ngày",
+      "noPaste": "Không dán code",
+      "hintEconomy": "Hệ thống gợi ý",
+      "hardMode": "Chế độ khó",
+      "makeUpTasks": "Bù bài"
+    },
+    "stats": {
+      "problems": "Bài tập",
+      "hintTiers": "Cấp gợi ý",
+      "streakPotential": "Tiềm năng chuỗi ngày"
+    },
+    "howItWorks": {
+      "kicker": "Cách hoạt động",
+      "title": "Ba bước để code sắc bén hơn.",
+      "steps": {
+        "dailyProblem": {
+          "title": "Nhận bài hôm nay",
+          "desc": "Mỗi ngày có một bài DSA. Độ khó sẽ khớp với lựa chọn của bạn. Bỏ lỡ một ngày thì chuỗi sẽ reset."
+        },
+        "solveScratch": {
+          "title": "Tự giải từ đầu",
+          "desc": "Ở chế độ khó, editor sẽ chặn dán code. Bạn phải tự gõ từng ký tự. Chính chỗ đó mới luyện được não."
+        },
+        "earnBadge": {
+          "title": "Nhận huy hiệu",
+          "desc": "Giải sạch không dùng gợi ý sẽ nhận sao. Sao dùng để mở gợi ý vào những ngày bài khó hơn."
+        }
+      }
+    },
+    "hints": {
+      "kicker": "Hệ thống gợi ý",
+      "title": "Bí bài? Sẽ tốn sao đó.",
+      "tier": "Cấp",
+      "items": {
+        "tier1": {
+          "title": "Cấu trúc dữ liệu",
+          "desc": "Gợi nhẹ về cấu trúc dữ liệu phù hợp."
+        },
+        "tier2": {
+          "title": "Tên thuật toán",
+          "desc": "Pattern hoặc thuật toán cần dùng để giải bài."
+        },
+        "tier3": {
+          "title": "Mã giả",
+          "desc": "Logic từng bước bằng ngôn ngữ dễ hiểu."
+        },
+        "tier4": {
+          "title": "Hướng dẫn đầy đủ",
+          "desc": "Giải thích hoàn chỉnh. Chuỗi ngày vẫn được giữ."
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "Bài hôm nay đang",
+      "titleHighlight": "chờ bạn.",
+      "cta": "Bắt đầu miễn phí",
+      "startNow": "Bắt đầu ngay — miễn phí →",
+      "noCreditCard": "Không cần thẻ tín dụng. Không còn lý do trì hoãn.",
+      "copyright": "© 2026 GrinDev. Dành cho dev muốn tiến bộ mỗi ngày."
+    }
+  },
   "nav": {
     "today": "Hôm nay",
     "history": "Lịch sử",

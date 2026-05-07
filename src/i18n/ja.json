@@ -1,4 +1,80 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "ログイン",
+      "startFree": "無料で始める →",
+      "startFreeShort": "開始 →"
+    },
+    "hero": {
+      "label": "コード · 毎日 · 言い訳なし",
+      "titleLine1": "スキルを",
+      "titleLine2": "研ぎ澄ませ。",
+      "subtitleLine1": "毎日1問のDSA問題。コピー＆ペーストなし。検索なし。",
+      "subtitleLine2": "ヒントにはスターが必要です。クリーンに解いて取り戻しましょう。",
+      "cta": "今日の問題を始める"
+    },
+    "features": {
+      "dailyStreaks": "デイリーストリーク",
+      "noPaste": "ペースト禁止",
+      "hintEconomy": "ヒントシステム",
+      "hardMode": "ハードモード",
+      "makeUpTasks": "補習タスク"
+    },
+    "stats": {
+      "problems": "問題",
+      "hintTiers": "ヒント段階",
+      "streakPotential": "ストリークの可能性"
+    },
+    "howItWorks": {
+      "kicker": "使い方",
+      "title": "3ステップで、もっと鋭く。",
+      "steps": {
+        "dailyProblem": {
+          "title": "今日の問題を受け取る",
+          "desc": "毎日1問のDSA問題が出題されます。難易度はあなたの設定に合わせられます。1日逃すとストリークはリセットされます。"
+        },
+        "solveScratch": {
+          "title": "ゼロから解く",
+          "desc": "ハードモードではエディターでペーストが禁止されます。すべて自分で入力しましょう。学びはそこから始まります。"
+        },
+        "earnBadge": {
+          "title": "バッジを獲得する",
+          "desc": "ヒントなしでクリーンに解くとスターを獲得できます。スターは難しい日にヒントを開くために使えます。小さな脳トレループです。"
+        }
+      }
+    },
+    "hints": {
+      "kicker": "ヒントシステム",
+      "title": "詰まった？スターが必要です。",
+      "tier": "段階",
+      "items": {
+        "tier1": {
+          "title": "データ構造",
+          "desc": "適切なデータ構造へ導く小さなヒントです。"
+        },
+        "tier2": {
+          "title": "アルゴリズム名",
+          "desc": "この問題を解くためのパターンやアルゴリズムです。"
+        },
+        "tier3": {
+          "title": "疑似コード",
+          "desc": "ステップごとのロジックをわかりやすく示します。"
+        },
+        "tier4": {
+          "title": "完全解説",
+          "desc": "完全な解説です。ストリークは維持されます。"
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "今日の問題が",
+      "titleHighlight": "待っています。",
+      "cta": "無料で始める",
+      "startNow": "今すぐ始める — 無料です →",
+      "noCreditCard": "クレジットカード不要。言い訳も不要。",
+      "copyright": "© 2026 GrinDev. もっと成長したい開発者のために作られました。"
+    }
+  },
   "nav": {
     "today": "今日",
     "history": "履歴",
