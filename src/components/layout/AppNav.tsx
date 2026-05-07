@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HelpButton } from "@/components/ui/HelpButton";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { StreakBadge } from "@/components/streak/StreakBadge";
 import { useI18n } from "@/lib/i18n";
 import { APP_MENUS } from "@/lib/menus";
 import { useEffect, useState } from "react";
@@ -11,9 +12,10 @@ import { useEffect, useState } from "react";
 interface AppNavProps {
   userName: string;
   userImage: string | null;
+  streak: number;
 }
 
-export function AppNav({ userName, userImage }: AppNavProps) {
+export function AppNav({ userName, userImage, streak }: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
@@ -63,6 +65,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
           {userName}
         </span>
 
+        <StreakBadge streak={streak} />
         <HelpButton />
         <SignOutButton />
       </div>

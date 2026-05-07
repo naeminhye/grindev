@@ -9,22 +9,21 @@ export const TIME_LIMITS: Record<Difficulty, number> = {
   HARD: 45 * 60, // 45 minutes
 };
 
-// Star rewards
-export const STAR_REWARDS = {
-  NORMAL: {
-    clean: 3, // passed, no hints
-    hints: 1, // passed, used hints
-  },
-  HARD: {
-    clean: 8, // passed, no hints, within time
-    hints: 3, // passed, used hints, within time
-    timeExpired: -2, // deducted if time exceeded (applied on top of reward)
-  },
+export type StarRewardConfig = {
+  STARS_NORMAL_CLEAN_EASY: number;
+  STARS_NORMAL_CLEAN_MEDIUM: number;
+  STARS_NORMAL_CLEAN_HARD: number;
+  STARS_NORMAL_HINTS_EASY: number;
+  STARS_NORMAL_HINTS_MEDIUM: number;
+  STARS_NORMAL_HINTS_HARD: number;
+  STARS_HARD_CLEAN_EASY: number;
+  STARS_HARD_CLEAN_MEDIUM: number;
+  STARS_HARD_CLEAN_HARD: number;
+  STARS_HARD_HINTS_EASY: number;
+  STARS_HARD_HINTS_MEDIUM: number;
+  STARS_HARD_HINTS_HARD: number;
+  STARS_TIME_EXPIRED_PENALTY: number;
 };
-
-export function getTimeLimit(difficulty: Difficulty): number {
-  return TIME_LIMITS[difficulty];
-}
 
 export function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -37,20 +36,28 @@ export function calculateStarDelta({
   passed,
   usedHints,
   timeExpired,
+  difficulty,
+  config,
 }: {
-  mode: ChallengeMode;
+  mode: "NORMAL" | "HARD";
   passed: boolean;
   usedHints: boolean;
   timeExpired: boolean;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+  config: StarRewardConfig;
 }): number {
   if (!passed) return 0;
 
-  if (mode === "NORMAL") {
-    return usedHints ? STAR_REWARDS.NORMAL.hints : STAR_REWARDS.NORMAL.clean;
+  const modeKey = mode === "HARD" ? "HARD" : "NORMAL";
+  const solveKey = usedHints ? "HINTS" : "CLEAN";
+  const key =
+    `STARS_${modeKey}_${solveKey}_${difficulty}` as keyof StarRewardConfig;
+
+  let delta = config[key];
+
+  if (mode === "HARD" && timeExpired) {
+    delta += config.STARS_TIME_EXPIRED_PENALTY;
   }
 
-  // Hard mode
-  const base = usedHints ? STAR_REWARDS.HARD.hints : STAR_REWARDS.HARD.clean;
-  const penalty = timeExpired ? STAR_REWARDS.HARD.timeExpired : 0;
-  return base + penalty; // penalty is negative
+  return delta;
 }

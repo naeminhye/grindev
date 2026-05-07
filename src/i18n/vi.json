@@ -13,7 +13,9 @@
     "attempts": "{count} lần thử",
     "attempts_plural": "{count} lần thử",
     "runCode": "Chạy code",
+    "submit": "Nộp bài",
     "running": "Đang chạy...",
+    "trialRunNote": "Chạy thử — không tính lần nộp",
     "reset": "Đặt lại",
     "alreadySolved": "Đã giải hôm nay!",
     "normalMode": "Chế độ thường — ít sao hơn",
@@ -27,7 +29,19 @@
     "pasteAllowed": "Chế độ thường — cho phép dán, ít sao hơn",
     "makeupMode": "Chế độ bù bài — áp dụng quy tắc thường",
     "solved": "Đã giải xong bài hôm nay!",
-    "streakDays": "Chuỗi {count} ngày"
+    "streakDays": "Chuỗi {count} ngày",
+    "hardModeGate": {
+      "title": "Chế độ khó đang bật",
+      "rulesTitle": "Luật chơi",
+      "rules": {
+        "timer": "Bộ đếm giờ bắt đầu ngay khi bạn bấm Bắt đầu — bao gồm cả thời gian đọc đề.",
+        "noPaste": "Không thể dán code trong trình viết code.",
+        "stars": "Giải được sẽ nhận nhiều sao hơn, nhưng bị trừ −2 sao nếu hết giờ.",
+        "locked": "Không thể đổi chế độ sau khi đã bắt đầu."
+      },
+      "changeMode": "Đổi chế độ",
+      "startTimer": "Bắt đầu tính giờ"
+    }
   },
   "problem": {
     "examples": "Ví dụ",
@@ -368,6 +382,44 @@
       "today": "Hôm nay",
       "yesterday": "Hôm qua",
       "daysAgo": "{count} ngày trước"
+    }
+  },
+  "ai": {
+    "explain": "Giải thích bài",
+    "thinking": "Đang suy nghĩ...",
+    "title": "Giải thích AI",
+    "errorFallback": "Không thể tải giải thích. Vui lòng thử lại.",
+    "poweredBy": "Được hỗ trợ bởi {model}",
+    "hintTiersAvailable": "Các cấp gợi ý vẫn có sẵn bên dưới để hướng dẫn từng bước."
+  },
+  "admin": {
+    "config": {
+      "title": "Cấu hình game",
+      "desc": "Thiết lập sao thưởng và giới hạn thời gian.",
+      "saving": "Đang lưu...",
+      "saved": "Đã lưu!",
+      "timeLimits": {
+        "title": "Giới hạn thời gian chế độ khó",
+        "desc": "Số giây cho từng độ khó trong Chế độ thử thách khó.",
+        "min": "Phút",
+        "sec": "Giây",
+        "total": "= tổng {seconds} giây"
+      },
+      "starRewards": {
+        "title": "Sao thưởng",
+        "desc": "Số sao nhận được theo từng kiểu giải bài. Giá trị âm sẽ trừ sao.",
+        "type": "Loại",
+        "cleanSolve": "✓ Giải sạch",
+        "withHints": "💡 Có dùng gợi ý"
+      },
+      "modes": {
+        "normal": "🛡 Chế độ thường",
+        "hard": "⚔ Chế độ thử thách khó"
+      },
+      "timeExpiredPenalty": {
+        "title": "Phạt khi hết giờ (Chế độ khó)",
+        "desc": "Số sao bị trừ khi bộ đếm giờ chế độ khó chạy hết"
+      }
     }
   }
 }

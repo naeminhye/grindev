@@ -13,7 +13,9 @@
     "attempts": "{count} attempt",
     "attempts_plural": "{count} attempts",
     "runCode": "Run Code",
+    "submit": "Submit",
     "running": "Running...",
+    "trialRunNote": "Trial run — does not count as submission",
     "reset": "Reset",
     "alreadySolved": "Already solved today!",
     "normalMode": "Normal mode — fewer stars",
@@ -27,7 +29,19 @@
     "pasteAllowed": "Normal mode — paste allowed, fewer stars",
     "makeupMode": "Make-up mode — Normal rules apply",
     "solved": "Today's problem solved!",
-    "streakDays": "{count} day streak"
+    "streakDays": "{count} day streak",
+    "hardModeGate": {
+      "title": "Hard Mode Active",
+      "rulesTitle": "Rules",
+      "rules": {
+        "timer": "Timer starts the moment you click Start — this includes reading time.",
+        "noPaste": "Paste is disabled in the code editor.",
+        "stars": "More stars for solving, but −2 stars if time runs out.",
+        "locked": "Mode cannot be changed after you start."
+      },
+      "changeMode": "Change Mode",
+      "startTimer": "Start Timer"
+    }
   },
   "problem": {
     "examples": "Examples",
@@ -368,6 +382,44 @@
       "today": "Today",
       "yesterday": "Yesterday",
       "daysAgo": "{count}d ago"
+    }
+  },
+  "ai": {
+    "explain": "Explain Problem",
+    "thinking": "Thinking...",
+    "title": "AI Explanation",
+    "errorFallback": "Could not load explanation. Please try again.",
+    "poweredBy": "Powered by {model}",
+    "hintTiersAvailable": "Hint tiers still available below for step-by-step guidance."
+  },
+  "admin": {
+    "config": {
+      "title": "Game Config",
+      "desc": "Star rewards and time limits.",
+      "saving": "Saving...",
+      "saved": "Saved!",
+      "timeLimits": {
+        "title": "Hard Mode Time Limits",
+        "desc": "Seconds per difficulty in Hard Challenge Mode.",
+        "min": "Min",
+        "sec": "Sec",
+        "total": "= {seconds}s total"
+      },
+      "starRewards": {
+        "title": "Star Rewards",
+        "desc": "Stars awarded per solve type. Negative values deduct stars.",
+        "type": "Type",
+        "cleanSolve": "✓ Clean solve",
+        "withHints": "💡 With hints"
+      },
+      "modes": {
+        "normal": "🛡 Normal Mode",
+        "hard": "⚔ Hard Challenge Mode"
+      },
+      "timeExpiredPenalty": {
+        "title": "Time expired penalty (Hard Mode)",
+        "desc": "Stars deducted when Hard Mode timer runs out"
+      }
     }
   }
 }

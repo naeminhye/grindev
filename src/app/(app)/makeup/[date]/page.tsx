@@ -97,7 +97,41 @@ export default function MakeupPage() {
     setShowResetConfirm(false);
   }
 
+  // Trial run — no DB writes, no attempt count
   const handleRun = useCallback(async () => {
+    if (!data || pageState === "running") return;
+    setPageState("running");
+    setSolveResult(null);
+    try {
+      const res = await fetch(`/api/makeup/${date}/solve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          problemId: data.problem.id,
+          code,
+          language: "JAVASCRIPT",
+          challengeMode: "NORMAL",
+          timeExpired: false,
+          submit: false,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error);
+        setPageState("ready");
+        return;
+      }
+      const result: SolveResponse = await res.json();
+      setSolveResult(result);
+      setPageState("ready");
+      setMobileTab("code");
+    } catch {
+      setPageState("ready");
+    }
+  }, [data, date, code, pageState]);
+
+  // Submit — counts attempt, deducts star cost, awards reward
+  const handleSubmit = useCallback(async () => {
     if (!data || pageState === "running") return;
     setPageState("running");
     setSolveResult(null);
@@ -112,6 +146,7 @@ export default function MakeupPage() {
           language: "JAVASCRIPT",
           challengeMode: "NORMAL",
           timeExpired: false,
+          submit: true,
         }),
       });
       if (!res.ok) {
@@ -225,7 +260,10 @@ export default function MakeupPage() {
           <div className="w-px h-4 bg-border shrink-0" />
           <span className="text-xs font-mono text-zinc-500 flex items-center gap-1.5 shrink-0">
             <i className="ri-history-line" />
-            <span className="hidden sm:inline">Make-up ·</span> {daysLabel}
+            <span className="hidden sm:inline">
+              {t("profile.makeUp")} ·
+            </span>{" "}
+            {daysLabel}
           </span>
           <div className="w-px h-4 bg-border shrink-0" />
           <h1 className="font-heading font-bold text-sm md:text-base truncate">
@@ -240,7 +278,7 @@ export default function MakeupPage() {
             {data.starCost} {t("makeup.toAttempt")}
           </div>
           {data.makeupRewardGivenToday && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-500 text-xs font-mono">
+            <div className="h-8 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-500 text-xs font-mono">
               <i className="ri-information-line" /> {t("makeup.noRewardToday")}
             </div>
           )}
@@ -336,6 +374,7 @@ export default function MakeupPage() {
               isSolved={isSolved}
               onReset={handleResetCode}
               onRun={handleRun}
+              onSubmit={handleSubmit}
             />
           </div>
         </section>

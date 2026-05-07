@@ -9,12 +9,15 @@ import {
 } from "react";
 import en from "@/i18n/en.json";
 import vi from "@/i18n/vi.json";
+import ja from "@/i18n/ja.json";
+import ko from "@/i18n/ko.json";
+import zh from "@/i18n/zh.json";
 
-export type Locale = "en" | "vi";
+export type Locale = "en" | "vi" | "ja" | "ko" | "zh";
 
 type Translations = typeof en;
 
-const translations: Record<Locale, Translations> = { en, vi };
+const translations: Record<Locale, Translations> = { en, vi, ja, ko, zh };
 
 interface I18nContextValue {
   locale: Locale;
