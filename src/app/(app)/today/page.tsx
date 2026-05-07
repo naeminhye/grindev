@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import { CodeEditor } from "@/components/editor/CodeEditor";
-import { StreakBadge } from "@/components/streak/StreakBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { TimerDisplay } from "@/components/ui/TimerDisplay";
@@ -15,9 +14,13 @@ import { ProblemPanel } from "@/components/problem/ProblemPanel";
 import { MobileTabs } from "@/components/problem/MobileTabs";
 import { TestResults } from "@/components/problem/TestResults";
 import { CodeActionBar } from "@/components/problem/CodeActionBar";
+import { HardModeGate } from "@/components/ui/HardModeGate";
+import {
+  DifficultyReloadBanner,
+  useReloadWarning,
+} from "@/components/ui/ReloadWarning";
 
 import { useTimer } from "@/hooks/useTimer";
-import { getTimeLimit } from "@/lib/challenge";
 import { getMonacoLanguage } from "@/lib/languages";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -31,6 +34,9 @@ import type {
 import type { ChallengeMode } from "@/lib/challenge";
 import type { MakeupDay } from "@/lib/makeup";
 import { MakeupCard } from "@/components/problem/MakeupCard";
+
+import { Settings } from "../settings/page";
+import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -60,13 +66,28 @@ export default function TodayPage() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [skipCount, setSkipCount] = useState(0);
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+  const [hardGatePassed, setHardGatePassed] = useState(false);
+  const [preferredDifficulty, setPreferredDifficulty] = useState("ANY");
 
   const hasStartedTyping = useRef(false);
 
+  const timeLimitSeconds = daily
+    ? (daily.hardTimeLimits?.[daily.problem.difficulty] ??
+      TIME_LIMIT_DEFAULTS[
+        `HARD_TIME_${daily.problem.difficulty}` as keyof typeof TIME_LIMIT_DEFAULTS
+      ])
+    : TIME_LIMIT_DEFAULTS.HARD_TIME_EASY;
+
   const timer = useTimer({
-    initialSeconds: daily ? getTimeLimit(daily?.problem?.difficulty) : 15 * 60,
+    initialSeconds: TIME_LIMIT_DEFAULTS.HARD_TIME_EASY, // placeholder — reset below when daily loads
     onExpire: () => {},
   });
+
+  // Reset to correct duration once daily data and time limits are known
+  useEffect(() => {
+    if (!daily || timer.isRunning || timer.isExpired) return;
+    timer.reset(timeLimitSeconds);
+  }, [daily?.problem?.difficulty, timeLimitSeconds]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -74,28 +95,24 @@ export default function TodayPage() {
       fetch("/api/daily").then((r) => r.json()),
       fetch("/api/settings").then((r) => r.json()),
     ])
-      .then(
-        ([dailyData, settingsData]: [
-          DailyResponse,
-          { challengeMode: ChallengeMode },
-        ]) => {
-          if ((dailyData as any).noProblemToday) {
-            setNoProblemData(dailyData as unknown as NoProblemResponse);
-            setPageState("ready");
-            return;
-          }
-          setDaily(dailyData);
-          setCode((dailyData.problem.starterCode as any)["JAVASCRIPT"] ?? "");
-          setStars(dailyData.userStats.stars);
-          setHintsUnlocked(dailyData.hintsUnlocked);
-          setHintContents(dailyData.unlockedHintContents ?? {});
-          setChallengeMode(settingsData.challengeMode);
-          setPageState(dailyData.alreadySolved ? "solved" : "ready");
-          setSkipCount((dailyData as any).skipCount ?? 0);
-          setDiffNoteVisible(true);
-          if (dailyData.alreadySolved) setModeLocked(true);
-        },
-      )
+      .then(([dailyData, settingsData]: [DailyResponse, Settings]) => {
+        if ((dailyData as any).noProblemToday) {
+          setNoProblemData(dailyData as unknown as NoProblemResponse);
+          setPageState("ready");
+          return;
+        }
+        setDaily(dailyData);
+        setCode((dailyData.problem.starterCode as any)["JAVASCRIPT"] ?? "");
+        setStars(dailyData.userStats.stars);
+        setHintsUnlocked(dailyData.hintsUnlocked);
+        setHintContents(dailyData.unlockedHintContents ?? {});
+        setChallengeMode(settingsData.challengeMode);
+        setPreferredDifficulty(settingsData.preferredDifficulty ?? "ANY");
+        setPageState(dailyData.alreadySolved ? "solved" : "ready");
+        setSkipCount((dailyData as any).skipCount ?? 0);
+        setDiffNoteVisible(true);
+        if (dailyData.alreadySolved) setModeLocked(true);
+      })
       .catch((err) => {
         if (err.name === "AbortError") return;
         setPageState("error");
@@ -103,16 +120,17 @@ export default function TodayPage() {
     return () => controller.abort();
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasStartedTyping.current && pageState === "ready") {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [pageState]);
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  //     if (hasStartedTyping.current && pageState === "ready") {
+  //       e.preventDefault();
+  //       e.returnValue = "";
+  //     }
+  //   };
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  // }, [pageState]);
+  useReloadWarning(hasStartedTyping.current);
 
   const handleCodeChange = useCallback(
     (value: string) => {
@@ -129,7 +147,35 @@ export default function TodayPage() {
     [daily, challengeMode, timer],
   );
 
+  // Run (trial) — no submission
   const handleRun = useCallback(async () => {
+    if (!daily || pageState === "running") return;
+    setPageState("running");
+    setSolveResult(null);
+    try {
+      const res = await fetch("/api/solve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          problemId: daily.problem.id,
+          code,
+          language: "JAVASCRIPT",
+          challengeMode,
+          timeExpired: timer.isExpired,
+          submit: false,
+        }),
+      });
+      const result: SolveResponse = await res.json();
+      setSolveResult(result);
+      setPageState("ready");
+      setMobileTab("code");
+    } catch {
+      setPageState("ready");
+    }
+  }, [daily, code, pageState, challengeMode, timer]);
+
+  // Submit — counts attempts and awards stars
+  const handleSubmit = useCallback(async () => {
     if (!daily || pageState === "running") return;
     setPageState("running");
     setSolveResult(null);
@@ -144,6 +190,7 @@ export default function TodayPage() {
           language: "JAVASCRIPT",
           challengeMode,
           timeExpired: timer.isExpired,
+          submit: true,
         }),
       });
       const result: SolveResponse = await res.json();
@@ -280,7 +327,6 @@ export default function TodayPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <StreakBadge streak={userStats.currentStreak} />
             <StarCount stars={stars} />
           </div>
         </div>
@@ -359,6 +405,19 @@ export default function TodayPage() {
           )}
         </div>
       </div>
+    );
+  }
+
+  if (isHard && !hardGatePassed && !isSolved) {
+    return (
+      <HardModeGate
+        problemTitle={problem.title}
+        onStart={() => {
+          setHardGatePassed(true);
+          timer.start();
+          setModeLocked(true);
+        }}
+      />
     );
   }
 
@@ -453,7 +512,6 @@ export default function TodayPage() {
                   {t("shop.items.problemSkip.title")} ({skipCount})
                 </span>
               </button>
-              <StreakBadge streak={userStats.currentStreak} />
               <StarCount stars={stars} />
             </div>
           </div>
@@ -470,6 +528,8 @@ export default function TodayPage() {
               </button>
             </div>
           )}
+
+          <DifficultyReloadBanner preferredDifficulty={preferredDifficulty} />
         </div>
 
         <MobileTabs activeTab={mobileTab} onTabChange={setMobileTab} />
@@ -547,6 +607,7 @@ export default function TodayPage() {
                 isSolved={isSolved}
                 onReset={handleResetCode}
                 onRun={handleRun}
+                onSubmit={handleSubmit}
               />
             </div>
           </section>

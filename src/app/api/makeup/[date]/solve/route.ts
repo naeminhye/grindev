@@ -8,6 +8,8 @@ import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getTodayUTC } from "@/lib/streak";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
+import { STAR_REWARD_DEFAULTS } from "@/lib/game-config";
+import type { StarRewardConfig } from "@/lib/challenge";
 
 const bodySchema = z.object({
   problemId: z.string().min(1),
@@ -15,6 +17,7 @@ const bodySchema = z.object({
   language: z.enum(["JAVASCRIPT", "TYPESCRIPT", "PYTHON", "CPP", "JAVA"]),
   challengeMode: z.enum(["NORMAL", "HARD"]).default("NORMAL"),
   timeExpired: z.boolean().default(false),
+  submit: z.boolean().default(false),
 });
 
 export async function POST(
@@ -43,7 +46,8 @@ export async function POST(
     );
   }
 
-  const { problemId, code, language, challengeMode, timeExpired } = parsed.data;
+  const { problemId, code, language, challengeMode, timeExpired, submit } =
+    parsed.data;
 
   // find the best slot for this date
   const slots = await prisma.dailyProblem.findMany({
@@ -117,6 +121,17 @@ export async function POST(
   }
 
   const allPassed = results.every((r) => r.passed);
+
+  // ── Trial run — no DB writes ──────────────────────────────────────────
+  if (!submit) {
+    return NextResponse.json({
+      passed: allPassed,
+      results,
+      isTrialRun: true,
+    } satisfies SolveResponse);
+  }
+
+  // ── Submission — record solve, update streak and stars ────────────────
   const hintCount = await prisma.hintPurchase.count({
     where: { userId, problemId },
   });
@@ -158,6 +173,21 @@ export async function POST(
     });
   }
 
+  const rewardKeys = Object.keys(STAR_REWARD_DEFAULTS);
+  const rewardConfigs = await prisma.appConfig.findMany({
+    where: { key: { in: rewardKeys } },
+  });
+  const rewardMap = Object.fromEntries(
+    rewardConfigs.map((c) => [c.key, parseInt(c.value)]),
+  );
+  const starConfig = Object.fromEntries(
+    rewardKeys.map((k) => [
+      k,
+      rewardMap[k] ??
+        STAR_REWARD_DEFAULTS[k as keyof typeof STAR_REWARD_DEFAULTS],
+    ]),
+  ) as StarRewardConfig;
+
   let starDelta = 0;
 
   if (allPassed) {
@@ -173,6 +203,8 @@ export async function POST(
         passed: true,
         usedHints,
         timeExpired,
+        difficulty: problem.difficulty,
+        config: starConfig,
       });
       starDelta = reward - starCost; // net: reward minus cost
       const newStars = Math.max(0, (user?.stars ?? 0) + starDelta);

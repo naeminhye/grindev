@@ -1,6 +1,7 @@
-import { isYesterday, isToday, parseISO } from "date-fns";
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+// import { isYesterday, isToday, parseISO } from "date-fns";
 import { prisma } from "./prisma";
+import { formatInTimeZone } from "date-fns-tz";
+import { subDays } from "date-fns";
 
 /**
  * Get today's date string in the user's timezone.
@@ -22,7 +23,44 @@ export function getTodayUTC(): string {
   return formatInTimeZone(new Date(), "UTC", "yyyy-MM-dd");
 }
 
-export async function updateStreak(userId: string): Promise<{
+function getTodayStr(timeZone: string) {
+  return formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd");
+}
+
+function getDateStr(date: Date, timeZone: string) {
+  return formatInTimeZone(date, timeZone, "yyyy-MM-dd");
+}
+
+export async function checkAndResetStreak(
+  userId: string,
+  timeZone = "UTC",
+): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.lastSolvedAt) return;
+
+  const today = getTodayStr(timeZone);
+  const yesterday = formatInTimeZone(
+    subDays(new Date(), 1),
+    timeZone,
+    "yyyy-MM-dd",
+  );
+  const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
+
+  const missedYesterday =
+    lastSolvedDay !== today && lastSolvedDay !== yesterday;
+
+  if (missedYesterday && user.currentStreak > 0) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { currentStreak: 0 },
+    });
+  }
+}
+
+export async function updateStreak(
+  userId: string,
+  timeZone = "UTC",
+): Promise<{
   currentStreak: number;
   longestStreak: number;
   isNewRecord: boolean;
@@ -30,19 +68,29 @@ export async function updateStreak(userId: string): Promise<{
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  const now = new Date();
-  const lastSolved = user.lastSolvedAt;
+  const today = getTodayStr(timeZone);
+  const yesterday = formatInTimeZone(
+    subDays(new Date(), 1),
+    timeZone,
+    "yyyy-MM-dd",
+  );
 
-  if (lastSolved && isToday(lastSolved)) {
-    return {
-      currentStreak: user.currentStreak,
-      longestStreak: user.longestStreak,
-      isNewRecord: false,
-    };
+  if (user.lastSolvedAt) {
+    const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
+    if (lastSolvedDay === today) {
+      return {
+        currentStreak: user.currentStreak,
+        longestStreak: user.longestStreak,
+        isNewRecord: false,
+      };
+    }
   }
 
   const newStreak =
-    lastSolved && isYesterday(lastSolved) ? user.currentStreak + 1 : 1;
+    user.lastSolvedAt && getDateStr(user.lastSolvedAt, timeZone) === yesterday
+      ? user.currentStreak + 1
+      : 1;
+
   const newLongest = Math.max(newStreak, user.longestStreak);
   const isNewRecord = newStreak > user.longestStreak;
 
@@ -51,24 +99,9 @@ export async function updateStreak(userId: string): Promise<{
     data: {
       currentStreak: newStreak,
       longestStreak: newLongest,
-      lastSolvedAt: now,
+      lastSolvedAt: new Date(),
     },
   });
 
   return { currentStreak: newStreak, longestStreak: newLongest, isNewRecord };
-}
-
-export async function checkAndResetStreak(userId: string): Promise<void> {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user || !user.lastSolvedAt) return;
-
-  const lastSolved = user.lastSolvedAt;
-  const missedYesterday = !isToday(lastSolved) && !isYesterday(lastSolved);
-
-  if (missedYesterday && user.currentStreak > 0) {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { currentStreak: 0 },
-    });
-  }
 }

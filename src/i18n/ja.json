@@ -1,0 +1,425 @@
+{
+  "nav": {
+    "today": "今日",
+    "history": "履歴",
+    "profile": "プロフィール",
+    "shop": "ショップ",
+    "settings": "設定",
+    "signOut": "ログアウト"
+  },
+  "today": {
+    "loading": "今日の問題を読み込み中...",
+    "noAttempts": "まだ挑戦していません",
+    "attempts": "{count}回の挑戦",
+    "attempts_plural": "{count}回の挑戦",
+    "runCode": "コードを実行",
+    "submit": "提出",
+    "running": "実行中...",
+    "trialRunNote": "試し実行 — 提出にはカウントされません",
+    "reset": "リセット",
+    "alreadySolved": "今日はすでに解答済みです！",
+    "normalMode": "通常モード — 星は少なめ",
+    "hardMode": "ハードモード — 貼り付け無効",
+    "noProblemToday": "休息日！",
+    "noProblemDesc": "今日は予定された問題がありません。ひと息つきましょう — その価値はあります。",
+    "bonusStars": "+{count} 星",
+    "bonusDesc": "間が空いてごめんなさい — 続けられるようにボーナスをどうぞ！",
+    "bonusAlreadyGiven": "今日のボーナス星はすでに受け取り済みです。",
+    "comeBackTomorrow": "明日また新しい問題に挑戦しましょう。",
+    "pasteAllowed": "通常モード — 貼り付け可能、星は少なめ",
+    "makeupMode": "補習モード — 通常ルール適用",
+    "solved": "今日の問題を解きました！",
+    "streakDays": "{count}日連続",
+    "hardModeGate": {
+      "title": "ハードモード有効",
+      "rulesTitle": "ルール",
+      "rules": {
+        "timer": "開始をクリックした瞬間にタイマーが始まります — 問題を読む時間も含まれます。",
+        "noPaste": "コードエディターでは貼り付けが無効です。",
+        "stars": "解くとより多くの星を獲得できますが、時間切れになると星が2つ減ります。",
+        "locked": "開始後はモードを変更できません。"
+      },
+      "changeMode": "モードを変更",
+      "startTimer": "タイマー開始"
+    }
+  },
+  "problem": {
+    "examples": "例",
+    "constraints": "制約",
+    "input": "入力",
+    "output": "出力",
+    "explanation": "説明",
+    "hints": "ヒント",
+    "costsStars": "星が必要",
+    "unlocked": "解除済み"
+  },
+  "hints": {
+    "tier1": "データ構造",
+    "tier2": "アルゴリズム名",
+    "tier3": "疑似コード",
+    "tier4": "完全な解説"
+  },
+  "testResults": {
+    "passed": "合格",
+    "expected": "期待値",
+    "yourOutput": "あなたの出力",
+    "error": "エラー",
+    "empty": "空"
+  },
+  "success": {
+    "allTestsPassed": "すべてのテストに合格しました！",
+    "newRecord": "🔥 自己ベスト更新！",
+    "streak": "連続記録",
+    "starsEarned": "獲得した星",
+    "cleanSolve": "クリーン解答",
+    "hardMode": "ハードモード",
+    "timeExpired": "時間切れ",
+    "continue": "続ける →"
+  },
+  "makeup": {
+    "title": "補習タスク",
+    "desc": "見逃した問題に追いつきましょう。",
+    "loading": "補習問題を読み込み中...",
+    "firstReward": "今日最初の補習解答では星を獲得できます（挑戦コスト差し引き後）。それ以降の補習は星のみ消費します。",
+    "rewardGiven": "今日の補習スター報酬はすでに受け取り済みです。追加の補習は報酬なしで星のみ消費します。",
+    "allCaughtUp": "すべて追いつきました！",
+    "noPastProblems": "見逃した問題はありません。明日また来てください。",
+    "completed": "完了",
+    "yesterday": "昨日",
+    "daysAgo": "{count}日前",
+    "toAttempt": "挑戦する",
+    "noRewardToday": "今日の報酬なし",
+    "start": "開始",
+    "needStars": "⭐ が必要",
+    "done": "完了",
+    "back": "← 今日へ戻る",
+    "backShort": "← 戻る"
+  },
+  "history": {
+    "title": "履歴",
+    "desc": "過去の解答です。",
+    "total": "合計",
+    "clean": "クリーン",
+    "hardMode": "ハードモード",
+    "usedHints": "ヒント使用",
+    "all": "すべて",
+    "noSolves": "解答が見つかりません。",
+    "clearFilter": "フィルターをクリア",
+    "solves": "{count}問解答",
+    "solves_plural": "{count}問解答",
+    "today": "今日",
+    "yesterday": "昨日",
+    "daysAgo": "{count}日前"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "desc": "統計と進捗です。",
+    "streak": "連続記録",
+    "best": "最高",
+    "stars": "星",
+    "days": "日",
+    "totalSolved": "解答数",
+    "cleanSolves": "クリーン解答",
+    "avgAttempts": "平均挑戦回数",
+    "cleanRate": "クリーン解答率",
+    "cleanRateDesc": "合計{total}問中{clean}問がクリーン",
+    "last30Days": "直近30日",
+    "solved": "解答済み",
+    "makeUp": "補習",
+    "missed": "未解答",
+    "byTopic": "トピック別",
+    "byDifficulty": "難易度別",
+    "normalMode": "通常モード",
+    "hardMode": "ハードモード"
+  },
+  "settings": {
+    "title": "設定",
+    "desc": "体験をカスタマイズします。",
+    "preferredDifficulty": "希望難易度",
+    "preferredDifficultyDesc": "希望レベルの問題が予定されていない場合、最も近い難易度の問題を割り当てます。",
+    "any": "指定なし",
+    "challengeMode": "チャレンジモード",
+    "challengeModeDesc": "問題を開始するとモードはロックされます。毎日リセットされます。",
+    "normal": "通常",
+    "hard": "ハード",
+    "pasteAllowed": "貼り付け可能",
+    "noTimer": "タイマーなし",
+    "cleanSolveStars": "クリーン解答 +3 星",
+    "hintSolveStars": "ヒント使用解答 +1 星",
+    "noPaste": "貼り付け不可",
+    "timerActive": "タイマー有効",
+    "hardCleanStars": "ハードのクリーン解答 +8 星",
+    "hardHintStars": "ハードのヒント使用解答 +3 星",
+    "timeExpiredPenalty": "時間切れで −2 星",
+    "timeLimits": "ハードモード時間制限",
+    "easy": "易しい",
+    "medium": "普通",
+    "appearance": "外観",
+    "appearanceDesc": "好みのカラーテーマを選択してください。",
+    "darkTheme": "ダーク",
+    "lightTheme": "ライト",
+    "language": "言語",
+    "languageDesc": "使用する表示言語を選択してください。",
+    "saved": "保存済み",
+    "difficultyNotes": {
+      "any": "毎日ランダムな問題が出題されます。",
+      "specific": "利用可能な場合は{difficulty}の問題が出題されます。予定がない場合は、最も近い難易度の問題が出題されます。",
+      "easy": "易しい",
+      "medium": "普通",
+      "hard": "難しい"
+    }
+  },
+  "auth": {
+    "signInToContinue": "続けるにはログインしてください",
+    "noAccountNeeded": "アカウント不要 — ログインして始めましょう。",
+    "tagline": "毎日、腕を磨こう。",
+    "continueWithGoogle": "Googleで続ける",
+    "continueWithGithub": "GitHubで続ける"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "問題が発生しました。",
+    "noScheduled": "今日は予定された問題がありません。",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる"
+  },
+  "streak": {
+    "day": "日",
+    "days": "日"
+  },
+  "help": {
+    "buttonTitle": "ヘルプ & ガイド",
+    "title": "GrinDevの使い方",
+    "subtitle": "知っておきたいこと全部",
+    "previous": "前へ",
+    "next": "次へ",
+    "tipPrefix": "ヒント: ショートカット",
+    "tipSuffix": "でこれを開けます",
+    "gotIt": "了解",
+    "sections": {
+      "dailyProblems": {
+        "title": "毎日の問題",
+        "items": [
+          {
+            "label": "1日1問",
+            "desc": "毎日新しいDSA問題が予定されます。午前0時前に解いて連続記録を保ちましょう。"
+          },
+          {
+            "label": "希望難易度",
+            "desc": "設定で希望難易度を選べます。そのレベルがない場合は、最も近い問題を選びます。"
+          },
+          {
+            "label": "解答済み？",
+            "desc": "今日の問題を解くと、補習タスクセクションが表示されます。"
+          }
+        ]
+      },
+      "streaks": {
+        "title": "連続記録",
+        "items": [
+          {
+            "label": "継続する",
+            "desc": "連続記録を維持するには、1日少なくとも1問解きましょう。1日逃すと0に戻ります。"
+          },
+          {
+            "label": "連続記録カウンター",
+            "desc": "右上に表示されます。最長連続記録はプロフィールページで確認できます。"
+          }
+        ]
+      },
+      "stars": {
+        "title": "星",
+        "items": [
+          {
+            "label": "星を獲得",
+            "desc": "通常モード: クリーン解答 +3、ヒント使用 +1。ハードモード: クリーン解答 +8、ヒント使用 +3。"
+          },
+          {
+            "label": "星を使う",
+            "desc": "ヒント解除（1–15 ⭐）や補習タスクの支払い（どれだけ前かにより5–25 ⭐）に使えます。"
+          },
+          {
+            "label": "ボーナス星",
+            "desc": "予定された問題がない日は、補償としてボーナス星を受け取ります。"
+          }
+        ]
+      },
+      "hints": {
+        "title": "ヒント",
+        "items": [
+          {
+            "label": "ティア1 — 1 ⭐",
+            "desc": "適切なデータ構造への小さな手がかり。"
+          },
+          {
+            "label": "ティア2 — 3 ⭐",
+            "desc": "アルゴリズムまたはパターンの名前。"
+          },
+          {
+            "label": "ティア3 — 7 ⭐",
+            "desc": "ステップごとの疑似コード。"
+          },
+          {
+            "label": "ティア4 — 15 ⭐",
+            "desc": "完全に動く解答。連続記録は維持されますが、クリーン解答バッジは付きません。"
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "チャレンジモード",
+        "items": [
+          {
+            "label": "通常モード",
+            "desc": "貼り付け可能。タイマーなし。星の報酬は少なめです。"
+          },
+          {
+            "label": "ハードモード",
+            "desc": "貼り付け無効。タイマーが作動します（易しい15分、普通30分、難しい45分）。報酬は高いですが、時間切れで−2⭐です。"
+          },
+          {
+            "label": "モードロック",
+            "desc": "入力を始めるとモードがロックされます。開始前に設定で変更してください。"
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "補習タスク",
+        "items": [
+          {
+            "label": "見逃した日を取り戻す",
+            "desc": "今日の問題を解いたあと、過去に見逃した問題に挑戦できます。"
+          },
+          {
+            "label": "星コスト",
+            "desc": "補習には星が必要です: 昨日は5⭐、古い問題は最大25⭐。"
+          },
+          {
+            "label": "1日1回の報酬",
+            "desc": "今日最初の補習解答だけ星を獲得できます。追加の補習は星のみ消費し、報酬はありません。"
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "コードエディター",
+        "items": [
+          {
+            "label": "ゼロから書く",
+            "desc": "ハードモードでは貼り付けが無効です — 解答を一文字ずつ自分で入力する必要があります。"
+          },
+          {
+            "label": "コードを実行",
+            "desc": "隠しテストケースでコードを実行します。失敗すると期待値とあなたの出力が表示されます。"
+          },
+          {
+            "label": "リセット",
+            "desc": "エディターをスターターテンプレートに戻します。確認が必要です。"
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "スターショップ",
+    "desc": "星を使ってパワーアップを購入できます。",
+    "available": "利用可能",
+    "buy": "購入",
+    "buying": "購入中...",
+    "confirmLabel": "確認",
+    "needMoreStars": "⭐ が足りません",
+    "items": {
+      "streakFreeze": {
+        "title": "連続記録フリーズ",
+        "desc": "1日見逃しても連続記録を守ります。1日休んでも記録は維持されます。",
+        "stock": "{count}個のフリーズを所持"
+      },
+      "problemSkip": {
+        "title": "問題スキップ",
+        "desc": "今日の問題の気分じゃない？スキップして全問題バンクからランダムな問題を受け取りましょう。",
+        "stock": "1回限り"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "連続記録フリーズを購入",
+        "message": "{cost}⭐で連続記録フリーズを購入しますか？次に1日見逃したとき自動で有効になります。"
+      },
+      "problemSkip": {
+        "title": "今日の問題をスキップ",
+        "message": "{cost}⭐を使って、今日の予定問題の代わりにランダムな問題を受け取りますか？"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "連続記録フリーズを購入しました！現在{count}個所持しています。",
+      "problemSkipped": "問題をスキップしました！今日ページで新しい問題を確認してください。"
+    },
+    "comingSoon": {
+      "title": "近日公開",
+      "desc": "星を獲得・使用する新しい方法が登場予定です — スターパック、サブスクリプション、限定機能など。"
+    },
+    "transactions": {
+      "title": "最近の取引",
+      "reasons": {
+        "solveCleanNormal": "クリーン解答（通常）",
+        "solveCleanHard": "クリーン解答（ハード）",
+        "solveHintsNormal": "ヒント使用解答",
+        "solveHintsHard": "ハードでヒント使用解答",
+        "hintPurchase": "ヒント解除",
+        "makeupCost": "補習挑戦",
+        "makeupReward": "補習報酬",
+        "streakFreezePurchase": "連続記録フリーズ購入",
+        "problemSkip": "問題スキップ",
+        "dailyLoginBonus": "デイリーログインボーナス",
+        "noProblemBonus": "問題なし日のボーナス",
+        "streakMilestone": "連続記録マイルストーンボーナス",
+        "firstSolveBonus": "初回解答ボーナス",
+        "adminAdjustment": "管理者調整"
+      }
+    },
+    "date": {
+      "today": "今日",
+      "yesterday": "昨日",
+      "daysAgo": "{count}日前"
+    }
+  },
+  "ai": {
+    "explain": "問題を説明",
+    "thinking": "考え中...",
+    "title": "AI解説",
+    "errorFallback": "解説を読み込めませんでした。もう一度お試しください。",
+    "poweredBy": "Powered by {mdodel}",
+    "hintTiersAvailable": "ステップごとのガイドとして、下のヒント段階も引き続き利用できます。"
+  },
+  "admin": {
+    "config": {
+      "title": "ゲーム設定",
+      "desc": "星の報酬と時間制限。",
+      "saving": "保存中...",
+      "saved": "保存しました！",
+      "timeLimits": {
+        "title": "ハードモード時間制限",
+        "desc": "ハードチャレンジモードでの難易度別秒数。",
+        "min": "分",
+        "sec": "秒",
+        "total": "= 合計{seconds}秒"
+      },
+      "starRewards": {
+        "title": "星の報酬",
+        "desc": "解答タイプごとに付与される星です。負の値は星を差し引きます。",
+        "type": "タイプ",
+        "cleanSolve": "✓ クリーン解答",
+        "withHints": "💡 ヒント使用"
+      },
+      "modes": {
+        "normal": "🛡 通常モード",
+        "hard": "⚔ ハードチャレンジモード"
+      },
+      "timeExpiredPenalty": {
+        "title": "時間切れペナルティ（ハードモード）",
+        "desc": "ハードモードのタイマーが切れたときに差し引かれる星"
+      }
+    }
+  }
+}

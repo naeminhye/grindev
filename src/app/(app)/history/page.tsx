@@ -28,7 +28,7 @@ type SolveRecord = {
 type Filter = "ALL" | "CLEAN" | "HARD" | "HINTS";
 
 export default function HistoryPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const [solves, setSolves] = useState<SolveRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,10 +77,10 @@ export default function HistoryPage() {
     <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-6 md:space-y-8 w-full">
       <div>
         <h1 className="font-heading text-xl md:text-2xl font-bold tracking-tight">
-          History
+          {t("history.title")}
         </h1>
         <p className="text-sm text-zinc-500 font-mono mt-1">
-          Your past solves.
+          {t("history.desc")}
         </p>
       </div>
 
@@ -88,25 +88,25 @@ export default function HistoryPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {[
           {
-            label: "Total",
+            label: t("history.total"),
             value: stats.total,
             icon: "ri-code-s-slash-line",
             color: "text-zinc-300",
           },
           {
-            label: "Clean",
+            label: t("history.clean"),
             value: stats.clean,
             icon: "ri-shield-star-line",
             color: "text-lime-400",
           },
           {
-            label: "Hard mode",
+            label: t("history.hardMode"),
             value: stats.hard,
             icon: "ri-sword-line",
             color: "text-orange-400",
           },
           {
-            label: "Used hints",
+            label: t("history.usedHints"),
             value: stats.withHints,
             icon: "ri-lightbulb-line",
             color: "text-yellow-400",
@@ -148,13 +148,13 @@ export default function HistoryPage() {
             {f === "ALL" && (
               <>
                 <i className="ri-list-check mr-1.5" />
-                All
+                {t("history.all")}
               </>
             )}
             {f === "CLEAN" && (
               <>
                 <i className="ri-shield-star-line mr-1.5" />
-                Clean
+                {t("history.clean")}
               </>
             )}
             {f === "HARD" && (
@@ -172,7 +172,9 @@ export default function HistoryPage() {
           </button>
         ))}
         <span className="ml-auto text-xs font-mono text-zinc-600 shrink-0">
-          {filtered.length} solve{filtered.length !== 1 ? "s" : ""}
+          {filtered.length !== 1
+            ? t("history.solves_plural", { count: filtered.length })
+            : t("history.solves", { count: filtered.length })}
         </span>
       </div>
 
@@ -180,13 +182,15 @@ export default function HistoryPage() {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 space-y-3 text-center">
           <i className="ri-inbox-line text-4xl text-zinc-700" />
-          <p className="font-mono text-sm text-zinc-500">No solves found.</p>
+          <p className="font-mono text-sm text-zinc-500">
+            {t("history.noSolves")}
+          </p>
           {filter !== "ALL" && (
             <button
               onClick={() => setFilter("ALL")}
               className="text-xs font-mono text-lime-400 hover:underline"
             >
-              Clear filter
+              {t("history.clearFilter")}
             </button>
           )}
         </div>
@@ -230,7 +234,7 @@ export default function HistoryPage() {
                   </div>
 
                   <span className="text-xs font-mono text-zinc-600 shrink-0">
-                    {formatDate(solve.solvedAt)}
+                    {formatDate(solve.solvedAt, t, locale)}
                   </span>
                   <i
                     className={cn(
@@ -285,13 +289,34 @@ export default function HistoryPage() {
   );
 }
 
-function formatDate(iso: string): string {
+function formatDate(
+  iso: string,
+  t: (key: string) => string,
+  locale: string,
+): string {
   const date = new Date(iso);
+
   const diffDays = Math.floor(
     (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+  if (diffDays === 0) return t("shop.date.today");
+  if (diffDays === 1) return t("shop.date.yesterday");
+
+  if (diffDays < 7) {
+    return t("shop.date.daysAgo").replace("{count}", String(diffDays));
+  }
+
+  const localeMap: Record<string, string> = {
+    en: "en-US",
+    vi: "vi-VN",
+    ko: "ko-KR",
+    ja: "ja-JP",
+    zh: "zh-CN",
+  };
+
+  return date.toLocaleDateString(localeMap[locale] ?? "en-US", {
+    month: "short",
+    day: "numeric",
+  });
 }

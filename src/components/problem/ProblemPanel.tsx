@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { HINT_TIERS } from "@/lib/hints";
 import { ProblemMarkdownSection } from "@/components/problem/ProblemMarkdownSection";
 import type { PublicProblem, ProblemExample } from "@/types";
+import { AIExplain } from "@/components/problem/AIExplain";
 
 interface ProblemPanelProps {
   problem: PublicProblem;
@@ -215,6 +216,8 @@ export function ProblemPanel({
             </div>
           );
         })}
+        <div className="border-t border-border my-3" />
+        <AIExplain problem={problem} />
       </div>
     </aside>
   );
