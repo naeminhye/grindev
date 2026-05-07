@@ -1,4 +1,80 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "Sign in",
+      "startFree": "Start Free →",
+      "startFreeShort": "Start →"
+    },
+    "hero": {
+      "label": "Code · Daily · No Excuses",
+      "titleLine1": "Sharpen",
+      "titleLine2": "Your Edge.",
+      "subtitleLine1": "One DSA problem a day. No copy-paste. No Googling.",
+      "subtitleLine2": "Hints cost stars — earn them back by solving clean.",
+      "cta": "Start Today's Problem"
+    },
+    "features": {
+      "dailyStreaks": "Daily Streaks",
+      "noPaste": "No Paste",
+      "hintEconomy": "Hint Economy",
+      "hardMode": "Hard Mode",
+      "makeUpTasks": "Make-Up Tasks"
+    },
+    "stats": {
+      "problems": "Problems",
+      "hintTiers": "Hint tiers",
+      "streakPotential": "Streak potential"
+    },
+    "howItWorks": {
+      "kicker": "How it works",
+      "title": "Three steps to getting sharper.",
+      "steps": {
+        "dailyProblem": {
+          "title": "Get today's problem",
+          "desc": "One DSA problem every day. Difficulty matches your preference. Miss a day, and your streak resets."
+        },
+        "solveScratch": {
+          "title": "Solve it from scratch",
+          "desc": "The editor blocks paste in Hard mode. Type every character. That's where the learning is."
+        },
+        "earnBadge": {
+          "title": "Earn your badge",
+          "desc": "Clean solve with no hints earns stars. Stars unlock hints on harder days. A neat little brain loop."
+        }
+      }
+    },
+    "hints": {
+      "kicker": "Hint Economy",
+      "title": "Stuck? It'll cost you.",
+      "tier": "Tier",
+      "items": {
+        "tier1": {
+          "title": "Data Structure",
+          "desc": "A nudge toward the right data structure."
+        },
+        "tier2": {
+          "title": "Algorithm Name",
+          "desc": "The pattern or algorithm that solves this."
+        },
+        "tier3": {
+          "title": "Pseudocode",
+          "desc": "Step-by-step logic in plain English."
+        },
+        "tier4": {
+          "title": "Full Walkthrough",
+          "desc": "Complete explanation. Streak survives."
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "Today's problem is",
+      "titleHighlight": "waiting.",
+      "cta": "Start Free",
+      "startNow": "Start Now — It's Free →",
+      "noCreditCard": "No credit card. No excuses.",
+      "copyright": "© 2026 GrinDev. Built for devs who want to get better."
+    }
+  },
   "nav": {
     "today": "Today",
     "history": "History",

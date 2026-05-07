@@ -1,4 +1,80 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "로그인",
+      "startFree": "무료로 시작하기 →",
+      "startFreeShort": "시작 →"
+    },
+    "hero": {
+      "label": "코딩 · 매일 · 변명 없이",
+      "titleLine1": "실력을",
+      "titleLine2": "날카롭게.",
+      "subtitleLine1": "하루에 DSA 문제 하나. 복사-붙여넣기 금지. 구글링 금지.",
+      "subtitleLine2": "힌트는 별이 필요해요. 깔끔하게 풀고 다시 획득하세요.",
+      "cta": "오늘의 문제 시작하기"
+    },
+    "features": {
+      "dailyStreaks": "일일 연속 기록",
+      "noPaste": "붙여넣기 금지",
+      "hintEconomy": "힌트 시스템",
+      "hardMode": "하드 모드",
+      "makeUpTasks": "보충 문제"
+    },
+    "stats": {
+      "problems": "문제",
+      "hintTiers": "힌트 단계",
+      "streakPotential": "연속 기록 가능성"
+    },
+    "howItWorks": {
+      "kicker": "작동 방식",
+      "title": "세 단계로 더 날카롭게.",
+      "steps": {
+        "dailyProblem": {
+          "title": "오늘의 문제 받기",
+          "desc": "매일 DSA 문제가 하나씩 제공됩니다. 난이도는 설정한 선호도에 맞춰집니다. 하루를 놓치면 연속 기록이 초기화됩니다."
+        },
+        "solveScratch": {
+          "title": "처음부터 직접 풀기",
+          "desc": "하드 모드에서는 에디터가 붙여넣기를 막습니다. 모든 글자를 직접 입력해야 해요. 진짜 학습은 거기서 시작됩니다."
+        },
+        "earnBadge": {
+          "title": "배지 획득하기",
+          "desc": "힌트 없이 깔끔하게 풀면 별을 얻습니다. 별은 어려운 날 힌트를 여는 데 사용할 수 있어요. 작은 두뇌 루프입니다."
+        }
+      }
+    },
+    "hints": {
+      "kicker": "힌트 시스템",
+      "title": "막혔나요? 별이 필요합니다.",
+      "tier": "단계",
+      "items": {
+        "tier1": {
+          "title": "자료 구조",
+          "desc": "적절한 자료 구조를 향한 작은 힌트입니다."
+        },
+        "tier2": {
+          "title": "알고리즘 이름",
+          "desc": "이 문제를 해결하는 패턴이나 알고리즘을 알려줍니다."
+        },
+        "tier3": {
+          "title": "의사 코드",
+          "desc": "단계별 로직을 쉬운 설명으로 보여줍니다."
+        },
+        "tier4": {
+          "title": "전체 풀이",
+          "desc": "완전한 설명을 제공합니다. 연속 기록은 유지됩니다."
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "오늘의 문제가",
+      "titleHighlight": "기다리고 있어요.",
+      "cta": "무료로 시작하기",
+      "startNow": "지금 시작하기 — 무료입니다 →",
+      "noCreditCard": "신용카드 필요 없음. 변명도 없음.",
+      "copyright": "© 2026 GrinDev. 더 나아지고 싶은 개발자를 위해 만들었습니다."
+    }
+  },
   "nav": {
     "today": "오늘",
     "history": "기록",
