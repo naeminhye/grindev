@@ -460,7 +460,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
               {form.examples.map((example, index) => (
                 <div
                   key={index}
-                  className="p-4 bg-zinc-900 border border-border rounded-md space-y-3"
+                  className="p-4 bg-[hsl(var(--surface))] border border-border rounded-md space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
@@ -551,7 +551,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
           {/* Markdown Preview */}
           <aside className="xl:sticky xl:top-6 min-w-0">
             <div className="border border-border rounded-md bg-zinc-950 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-zinc-900">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-[hsl(var(--surface))]">
                 <div>
                   <h2 className="text-xs font-mono text-zinc-300 uppercase tracking-wider">
                     Markdown Preview
@@ -635,7 +635,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
           {form.testCases.map((tc, i) => (
             <div
               key={i}
-              className="p-4 bg-zinc-900 border border-border rounded-md space-y-3"
+              className="p-4 bg-[hsl(var(--surface))] border border-border rounded-md space-y-3"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
@@ -684,7 +684,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
           {form.hints.map((hint) => (
             <div
               key={hint.tier}
-              className="p-4 bg-zinc-900 border border-border rounded-md space-y-3"
+              className="p-4 bg-[hsl(var(--surface))] border border-border rounded-md space-y-3"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -706,7 +706,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
                     onChange={(e) =>
                       setHint(hint.tier, "cost", Number(e.target.value))
                     }
-                    className="w-16 px-2 py-1 bg-zinc-800 border border-zinc-700 rounded text-xs font-mono text-zinc-300 text-center"
+                    className="w-16 px-2 py-1 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded text-xs font-mono text-zinc-300 text-center"
                     min={1}
                   />
                   <span className="text-xs font-mono text-yellow-400">⭐</span>
@@ -760,7 +760,7 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
 }
 
 const inputCls =
-  "w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 transition-colors";
+  "w-full px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-sm font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 transition-colors";
 
 function Field({
   label,
@@ -796,12 +796,12 @@ function ProblemMarkdownPreview({
       className="prose prose-invert prose-sm max-w-none font-mono
         prose-headings:font-heading prose-headings:tracking-tight
         prose-p:text-zinc-300 prose-li:text-zinc-300
-        prose-code:bg-zinc-800 prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-        prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-border prose-pre:text-zinc-200
+        prose-code:bg-[hsl(var(--surface-raised))] prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+        prose-pre:bg-[hsl(var(--surface))] prose-pre:border prose-pre:border-border prose-pre:text-zinc-200
         prose-strong:text-zinc-100
         prose-a:text-lime-400
         prose-table:border prose-table:border-border
-        prose-th:border prose-th:border-border prose-th:bg-zinc-900 prose-th:px-3 prose-th:py-2
+        prose-th:border prose-th:border-border prose-th:bg-[hsl(var(--surface))] prose-th:px-3 prose-th:py-2
         prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2"
     >
       {description ? (

@@ -30,7 +30,7 @@ export function ConfirmDialog({
       />
 
       {/* Dialog */}
-      <div className="relative bg-zinc-900 border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
+      <div className="relative bg-[hsl(var(--surface))] border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
         <div
           className={cn(
             "h-0.5 w-full",

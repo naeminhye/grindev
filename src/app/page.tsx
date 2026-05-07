@@ -144,7 +144,7 @@ export default async function LandingPage() {
             ].map((step) => (
               <div
                 key={step.num}
-                className="relative p-6 bg-zinc-900 border border-border rounded-md overflow-hidden group hover:border-zinc-600 transition-colors"
+                className="relative p-6 bg-[hsl(var(--surface))] border border-border rounded-md overflow-hidden group hover:border-zinc-600 transition-colors"
               >
                 <div className="absolute top-3 right-4 font-heading font-bold text-6xl text-zinc-800 leading-none select-none">
                   {step.num}
@@ -165,7 +165,7 @@ export default async function LandingPage() {
       </div>
 
       {/* Hint tiers */}
-      <div className="relative z-10 border-t border-border bg-zinc-900/50 px-6 md:px-10 py-16 md:py-20">
+      <div className="relative z-10 border-t border-border bg-[hsl(var(--surface))]/50 px-6 md:px-10 py-16 md:py-20">
         <div className="max-w-4xl mx-auto space-y-10">
           <div className="text-center space-y-2">
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-lime-400">
@@ -205,7 +205,7 @@ export default async function LandingPage() {
             ].map((h) => (
               <div
                 key={h.tier}
-                className="p-4 bg-zinc-900 border border-border rounded-md space-y-3 hover:border-lime-500/30 transition-colors group"
+                className="p-4 bg-[hsl(var(--surface))] border border-border rounded-md space-y-3 hover:border-lime-500/30 transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-zinc-600 uppercase tracking-widest">

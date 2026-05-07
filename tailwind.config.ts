@@ -10,9 +10,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["var(--font-geist-mono)", "monospace"],
+        heading: ['"Google Sans Code"', "monospace"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
-        sans: ["var(--font-jetbrains-mono)", "monospace"], // override sans → JetBrains
+        sans: ["var(--font-jetbrains-mono)", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

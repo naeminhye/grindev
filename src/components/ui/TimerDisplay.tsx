@@ -24,14 +24,14 @@ export function TimerDisplay({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-3 py-1.5 rounded-md border font-mono text-sm transition-colors",
+        "h-8 flex items-center gap-2 px-3 rounded-md border font-mono text-sm transition-colors",
         isExpired
           ? "bg-red-500/10 border-red-500/30 text-red-400"
           : isCritical
             ? "bg-red-500/10 border-red-500/30 text-red-400 animate-pulse"
             : isWarning
               ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
-              : "bg-zinc-800 border-zinc-700 text-zinc-300",
+              : "bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-300",
         className,
       )}
     >

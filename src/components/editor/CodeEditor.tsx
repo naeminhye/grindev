@@ -3,6 +3,7 @@
 import { useRef, useCallback, useEffect } from "react";
 import Editor, { type OnMount, type Monaco } from "@monaco-editor/react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme";
 
 interface CodeEditorProps {
   value: string;
@@ -21,6 +22,8 @@ export function CodeEditor({
   pasteBlocked = true,
   className,
 }: CodeEditorProps) {
+  const { theme } = useTheme();
+
   const editorRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -117,13 +120,13 @@ export function CodeEditor({
       )}
     >
       <Editor
+        theme={theme === "light" ? "vs" : "vs-dark"}
         height="100%"
         width="100%"
         language={language}
         value={value}
         onChange={(v) => onChange(v ?? "")}
         onMount={handleMount}
-        theme="vs-dark"
         options={{
           automaticLayout: true,
           fontFamily: '"JetBrains Mono", monospace',

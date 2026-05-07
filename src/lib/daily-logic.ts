@@ -2,6 +2,11 @@ import type { Difficulty, PreferredDifficulty } from "@prisma/client";
 
 const DIFFICULTY_ORDER: Difficulty[] = ["EASY", "MEDIUM", "HARD"];
 
+type Translate = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
 /**
  * Given a user's preferred difficulty and the available difficulties for today,
  * returns the best matching difficulty.
@@ -41,11 +46,20 @@ export function pickBestDifficulty(
 }
 
 /**
- * Returns the note shown in settings when user changes preferred difficulty.
+ * Returns the localized note shown in settings
+ * when user changes preferred difficulty.
  */
-export function getDifficultyNote(preferred: PreferredDifficulty): string {
+export function getDifficultyNote(
+  preferred: PreferredDifficulty,
+  t: Translate,
+): string {
   if (preferred === "ANY") {
-    return "You'll get a random problem each day.";
+    return t("settings.difficultyNotes.any");
   }
-  return `You'll get ${preferred.charAt(0) + preferred.slice(1).toLowerCase()} problems when available. If none are scheduled, you'll get the closest difficulty instead.`;
+
+  const difficultyKey = preferred.toLowerCase();
+
+  return t("settings.difficultyNotes.specific", {
+    difficulty: t(`settings.difficultyNotes.${difficultyKey}`),
+  });
 }
