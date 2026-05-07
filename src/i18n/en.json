@@ -1,0 +1,373 @@
+{
+  "nav": {
+    "today": "Today",
+    "history": "History",
+    "profile": "Profile",
+    "shop": "Shop",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "today": {
+    "loading": "Loading today's problem...",
+    "noAttempts": "No attempts",
+    "attempts": "{count} attempt",
+    "attempts_plural": "{count} attempts",
+    "runCode": "Run Code",
+    "running": "Running...",
+    "reset": "Reset",
+    "alreadySolved": "Already solved today!",
+    "normalMode": "Normal mode — fewer stars",
+    "hardMode": "Hard mode — paste disabled",
+    "noProblemToday": "Rest day!",
+    "noProblemDesc": "No problem is scheduled for today. Take a breath — you've earned it.",
+    "bonusStars": "+{count} stars",
+    "bonusDesc": "Sorry for the gap — here's a bonus to keep you going!",
+    "bonusAlreadyGiven": "You already received your bonus stars for today.",
+    "comeBackTomorrow": "Come back tomorrow for a new problem.",
+    "pasteAllowed": "Normal mode — paste allowed, fewer stars",
+    "makeupMode": "Make-up mode — Normal rules apply",
+    "solved": "Today's problem solved!",
+    "streakDays": "{count} day streak"
+  },
+  "problem": {
+    "examples": "Examples",
+    "constraints": "Constraints",
+    "input": "Input",
+    "output": "Output",
+    "explanation": "Explanation",
+    "hints": "Hints",
+    "costsStars": "costs stars",
+    "unlocked": "unlocked"
+  },
+  "hints": {
+    "tier1": "Data Structure",
+    "tier2": "Algorithm Name",
+    "tier3": "Pseudocode",
+    "tier4": "Full Walkthrough"
+  },
+  "testResults": {
+    "passed": "Passed",
+    "expected": "Expected",
+    "yourOutput": "Your output",
+    "error": "Error",
+    "empty": "empty"
+  },
+  "success": {
+    "allTestsPassed": "All tests passed!",
+    "newRecord": "🔥 New personal record!",
+    "streak": "Streak",
+    "starsEarned": "Stars earned",
+    "cleanSolve": "Clean solve",
+    "hardMode": "Hard mode",
+    "timeExpired": "Time expired",
+    "continue": "Continue →"
+  },
+  "makeup": {
+    "title": "Make-Up Tasks",
+    "desc": "Catch up on missed problems.",
+    "loading": "Loading make-up problem...",
+    "firstReward": "First make-up solve today earns stars (minus the attempt cost). After that, additional make-ups only cost stars.",
+    "rewardGiven": "You've already received your makeup star reward today. Additional make-ups cost stars with no reward.",
+    "allCaughtUp": "All caught up!",
+    "noPastProblems": "No missed problems. Come back tomorrow.",
+    "completed": "Completed",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count} days ago",
+    "toAttempt": "to attempt",
+    "noRewardToday": "No reward today",
+    "start": "Start",
+    "needStars": "Need ⭐",
+    "done": "Done",
+    "back": "← Back to today",
+    "backShort": "← Back"
+  },
+  "history": {
+    "title": "History",
+    "desc": "Your past solves.",
+    "total": "Total",
+    "clean": "Clean",
+    "hardMode": "Hard mode",
+    "usedHints": "Used hints",
+    "all": "All",
+    "noSolves": "No solves found.",
+    "clearFilter": "Clear filter",
+    "solves": "{count} solve",
+    "solves_plural": "{count} solves",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count}d ago"
+  },
+  "profile": {
+    "title": "Profile",
+    "desc": "Your stats and progress.",
+    "streak": "Streak",
+    "best": "Best",
+    "stars": "Stars",
+    "days": "days",
+    "totalSolved": "Total solved",
+    "cleanSolves": "Clean solves",
+    "avgAttempts": "Avg attempts",
+    "cleanRate": "Clean solve rate",
+    "cleanRateDesc": "{clean} clean out of {total} total",
+    "last30Days": "Last 30 days",
+    "solved": "Solved",
+    "makeUp": "Make-up",
+    "missed": "Missed",
+    "byTopic": "By topic",
+    "byDifficulty": "By difficulty",
+    "normalMode": "Normal mode",
+    "hardMode": "Hard mode"
+  },
+  "settings": {
+    "title": "Settings",
+    "desc": "Configure your experience.",
+    "preferredDifficulty": "Preferred Difficulty",
+    "preferredDifficultyDesc": "We'll assign you the closest available problem if your preferred level isn't scheduled.",
+    "any": "Any",
+    "challengeMode": "Challenge Mode",
+    "challengeModeDesc": "Mode is locked once you start a problem. Resets each day.",
+    "normal": "Normal",
+    "hard": "Hard",
+    "pasteAllowed": "Paste allowed",
+    "noTimer": "No timer",
+    "cleanSolveStars": "+3 stars clean solve",
+    "hintSolveStars": "+1 star hint solve",
+    "noPaste": "No paste",
+    "timerActive": "Timer active",
+    "hardCleanStars": "+8 stars clean solve",
+    "hardHintStars": "+3 stars hint solve",
+    "timeExpiredPenalty": "−2 stars if time expires",
+    "timeLimits": "Hard mode time limits",
+    "easy": "Easy",
+    "medium": "Medium",
+    "appearance": "Appearance",
+    "appearanceDesc": "Choose your preferred color theme.",
+    "darkTheme": "Dark",
+    "lightTheme": "Light",
+    "language": "Language",
+    "languageDesc": "Choose your preferred interface language.",
+    "saved": "Saved",
+    "difficultyNotes": {
+      "any": "You'll get a random problem each day.",
+      "specific": "You'll get {difficulty} problems when available. If none are scheduled, you'll get the closest difficulty instead.",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    }
+  },
+  "auth": {
+    "signInToContinue": "Sign in to continue",
+    "noAccountNeeded": "No account needed — sign in to start.",
+    "tagline": "Sharpen your edge. Daily.",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGithub": "Continue with GitHub"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "noScheduled": "No problem scheduled for today.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close"
+  },
+  "streak": {
+    "day": "day",
+    "days": "days"
+  },
+  "help": {
+    "buttonTitle": "Help & Instructions",
+    "title": "How to use GrinDev",
+    "subtitle": "Everything you need to know",
+    "previous": "Previous",
+    "next": "Next",
+    "tipPrefix": "Tip: keyboard shortcut",
+    "tipSuffix": "opens this",
+    "gotIt": "Got it",
+    "sections": {
+      "dailyProblems": {
+        "title": "Daily Problems",
+        "items": [
+          {
+            "label": "One problem per day",
+            "desc": "A new DSA problem is scheduled every day. Solve it before midnight to keep your streak."
+          },
+          {
+            "label": "Preferred difficulty",
+            "desc": "Set your preferred difficulty in Settings. We pick the closest available if your level isn't scheduled."
+          },
+          {
+            "label": "Already solved?",
+            "desc": "Once you solve today's problem, you'll see the Make-Up Tasks section."
+          }
+        ]
+      },
+      "streaks": {
+        "title": "Streaks",
+        "items": [
+          {
+            "label": "Keep it alive",
+            "desc": "Solve at least one problem per day to maintain your streak. Miss a day and it resets to 0."
+          },
+          {
+            "label": "Streak counter",
+            "desc": "Shown in the top-right corner. Your longest streak is tracked on your Profile page."
+          }
+        ]
+      },
+      "stars": {
+        "title": "Stars",
+        "items": [
+          {
+            "label": "Earning stars",
+            "desc": "Normal mode: +3 clean solve, +1 with hints. Hard mode: +8 clean, +3 with hints."
+          },
+          {
+            "label": "Spending stars",
+            "desc": "Unlock hints (1–15 ⭐) and pay for Make-Up Tasks (5–25 ⭐ depending on how far back)."
+          },
+          {
+            "label": "Bonus stars",
+            "desc": "On days with no scheduled problem, you'll receive bonus stars as compensation."
+          }
+        ]
+      },
+      "hints": {
+        "title": "Hints",
+        "items": [
+          {
+            "label": "Tier 1 — 1 ⭐",
+            "desc": "A nudge toward the right data structure."
+          },
+          {
+            "label": "Tier 2 — 3 ⭐",
+            "desc": "The name of the algorithm or pattern."
+          },
+          {
+            "label": "Tier 3 — 7 ⭐",
+            "desc": "Step-by-step pseudocode."
+          },
+          {
+            "label": "Tier 4 — 15 ⭐",
+            "desc": "Full working solution. Streak stays alive, but no clean solve badge."
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "Challenge Modes",
+        "items": [
+          {
+            "label": "Normal mode",
+            "desc": "Paste is allowed. No timer. Fewer stars rewarded."
+          },
+          {
+            "label": "Hard mode",
+            "desc": "Paste disabled. Timer counts down (Easy 15min, Medium 30min, Hard 45min). Higher rewards, but −2⭐ if time expires."
+          },
+          {
+            "label": "Mode lock",
+            "desc": "Mode is locked once you start typing. Change it in Settings before beginning."
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "Make-Up Tasks",
+        "items": [
+          {
+            "label": "Catch up on missed days",
+            "desc": "After solving today's problem, you can attempt problems from previous days you missed."
+          },
+          {
+            "label": "Star cost",
+            "desc": "Make-ups cost stars: 5⭐ yesterday, up to 25⭐ for older days."
+          },
+          {
+            "label": "One reward per day",
+            "desc": "Only the first make-up solve today earns stars. Additional make-ups only cost stars, no reward."
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "Code Editor",
+        "items": [
+          {
+            "label": "Write from scratch",
+            "desc": "In Hard mode, paste is disabled — you must type your solution character by character."
+          },
+          {
+            "label": "Run Code",
+            "desc": "Runs your code against hidden test cases. Results show expected vs your output on failure."
+          },
+          {
+            "label": "Reset",
+            "desc": "Resets the editor back to the starter template. Requires confirmation."
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "Star Shop",
+    "desc": "Spend stars on power-ups.",
+    "available": "Available",
+    "buy": "Buy",
+    "buying": "Buying...",
+    "confirmLabel": "Confirm",
+    "needMoreStars": "Need more ⭐",
+    "items": {
+      "streakFreeze": {
+        "title": "Streak Freeze",
+        "desc": "Protect your streak for one missed day. Your streak stays intact even if you skip a day.",
+        "stock": "You have {count} freeze(s)"
+      },
+      "problemSkip": {
+        "title": "Problem Skip",
+        "desc": "Not feeling today's problem? Skip it and get a random problem from the full problem bank instead.",
+        "stock": "One-time use"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "Buy Streak Freeze",
+        "message": "Spend {cost}⭐ for a streak freeze? It will activate automatically the next time you miss a day."
+      },
+      "problemSkip": {
+        "title": "Skip Today's Problem",
+        "message": "Spend {cost}⭐ to get a random problem instead of today's scheduled one?"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "Streak freeze purchased! You now have {count} freeze(s).",
+      "problemSkipped": "Problem skipped! Check Today for your new problem."
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "desc": "More ways to earn and spend stars are coming — including star packs, subscriptions, and exclusive features."
+    },
+    "transactions": {
+      "title": "Recent transactions",
+      "reasons": {
+        "solveCleanNormal": "Clean solve (Normal)",
+        "solveCleanHard": "Clean solve (Hard)",
+        "solveHintsNormal": "Solve with hints",
+        "solveHintsHard": "Hard solve with hints",
+        "hintPurchase": "Hint unlocked",
+        "makeupCost": "Make-up attempt",
+        "makeupReward": "Make-up reward",
+        "streakFreezePurchase": "Streak freeze purchased",
+        "problemSkip": "Problem skip",
+        "dailyLoginBonus": "Daily login bonus",
+        "noProblemBonus": "No problem day bonus",
+        "streakMilestone": "Streak milestone bonus",
+        "firstSolveBonus": "First solve bonus",
+        "adminAdjustment": "Admin adjustment"
+      }
+    },
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{count}d ago"
+    }
+  }
+}

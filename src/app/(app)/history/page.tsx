@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { cn } from "@/lib/utils";
 import type { Difficulty } from "@prisma/client";
+import { useI18n } from "@/lib/i18n";
 
 type SolveRecord = {
   id: string;
@@ -27,6 +28,8 @@ type SolveRecord = {
 type Filter = "ALL" | "CLEAN" | "HARD" | "HINTS";
 
 export default function HistoryPage() {
+  const { t } = useI18n();
+
   const [solves, setSolves] = useState<SolveRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("ALL");
@@ -111,7 +114,7 @@ export default function HistoryPage() {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-zinc-900 border border-border rounded-md p-3 md:p-4 space-y-1"
+            className="bg-[hsl(var(--surface))] border border-border rounded-md p-3 md:p-4 space-y-1"
           >
             <div className="flex items-center gap-1.5">
               <i className={cn(s.icon, s.color, "text-sm")} />
@@ -139,7 +142,7 @@ export default function HistoryPage() {
               "px-3 py-1.5 rounded text-xs font-mono uppercase tracking-wider transition-colors shrink-0",
               filter === f
                 ? "bg-lime-400 text-zinc-950 font-bold"
-                : "bg-zinc-900 border border-border text-zinc-400 hover:text-foreground",
+                : "bg-[hsl(var(--surface))] border border-border text-zinc-400 hover:text-foreground",
             )}
           >
             {f === "ALL" && (
@@ -163,7 +166,7 @@ export default function HistoryPage() {
             {f === "HINTS" && (
               <>
                 <i className="ri-lightbulb-line mr-1.5" />
-                Hints
+                {t("problem.hints")}
               </>
             )}
           </button>
@@ -194,11 +197,11 @@ export default function HistoryPage() {
             return (
               <div
                 key={solve.id}
-                className="border border-border rounded-md overflow-hidden bg-zinc-900"
+                className="border border-border rounded-md overflow-hidden bg-[hsl(var(--surface))]"
               >
                 <button
                   onClick={() => setExpanded(isExpanded ? null : solve.id)}
-                  className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 hover:bg-zinc-800/50 transition-colors text-left"
+                  className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 hover:bg-[hsl(var(--surface-raised))]/50 transition-colors text-left"
                 >
                   <div
                     className={cn(

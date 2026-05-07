@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkAndResetStreak, getTodayUTC } from "@/lib/streak";
+import { checkAndResetStreak, getTodayInTz } from "@/lib/streak";
 import { getMakeupDates, getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getAuthUserId } from "@/lib/auth-helper";
 import { pickBestDifficulty } from "@/lib/daily-logic";
@@ -12,7 +12,7 @@ import { parseProblemExamples } from "@/lib/problem-utils";
 const NO_PROBLEM_BONUS_KEY = "NO_PROBLEM_BONUS_STARS";
 const DEFAULT_BONUS = 5;
 
-export async function GET() {
+export async function GET(req: Request) {
   const { userId, error } = await getAuthUserId();
   if (error) return error;
 
@@ -24,7 +24,8 @@ export async function GET() {
 
   await checkAndResetStreak(userId);
 
-  const today = getTodayUTC();
+  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const today = getTodayInTz(timeZone);
 
   // Daily login bonus
   const loginBonus = await checkDailyLoginBonus(userId, today);
@@ -167,6 +168,16 @@ export async function GET() {
 
   const freshUser = await prisma.user.findUnique({ where: { id: userId } });
 
+  const [skipPurchases, skipUsed] = await Promise.all([
+    prisma.starTransaction.count({
+      where: { userId, reason: "PROBLEM_SKIP" },
+    }),
+    prisma.starTransaction.count({
+      where: { userId, reason: "PROBLEM_SKIP_USED" },
+    }),
+  ]);
+  const skipCount = Math.max(0, skipPurchases - skipUsed);
+
   const response: DailyResponse = {
     problem: {
       id: problem.id,
@@ -194,6 +205,7 @@ export async function GET() {
       lastSolvedAt: freshUser?.lastSolvedAt?.toISOString() ?? null,
       streakFreezeCount: freshUser?.streakFreezeCount ?? 0,
     },
+    skipCount,
   };
 
   return NextResponse.json(response);

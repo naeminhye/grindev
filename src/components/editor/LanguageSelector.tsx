@@ -39,8 +39,8 @@ export function LanguageSelector({
         className={cn(
           "flex items-center gap-2 px-3 py-1.5 rounded border text-xs font-mono transition-colors",
           disabled
-            ? "bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed"
-            : "bg-zinc-800 border-zinc-700 text-zinc-300 hover:border-zinc-500",
+            ? "bg-[hsl(var(--surface))] border-zinc-800 text-zinc-600 cursor-not-allowed"
+            : "bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-300 hover:border-zinc-500",
         )}
       >
         <i className="ri-code-s-slash-line text-lime-400" />
@@ -56,7 +56,7 @@ export function LanguageSelector({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 bg-zinc-900 border border-zinc-700 rounded-md shadow-xl overflow-hidden min-w-[140px]">
+        <div className="absolute right-0 top-full mt-1 z-50 bg-[hsl(var(--surface))] border border-zinc-700 rounded-md shadow-xl overflow-hidden min-w-[140px]">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.id}
@@ -68,7 +68,7 @@ export function LanguageSelector({
                 "w-full flex items-center gap-2 px-3 py-2 text-xs font-mono text-left transition-colors",
                 lang.id === value
                   ? "bg-lime-400/10 text-lime-400"
-                  : "text-zinc-300 hover:bg-zinc-800",
+                  : "text-zinc-300 hover:bg-[hsl(var(--surface-raised))]",
               )}
             >
               {lang.id === value && (

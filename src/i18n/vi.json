@@ -1,0 +1,373 @@
+{
+  "nav": {
+    "today": "Hôm nay",
+    "history": "Lịch sử",
+    "profile": "Hồ sơ",
+    "shop": "Cửa hàng",
+    "settings": "Cài đặt",
+    "signOut": "Đăng xuất"
+  },
+  "today": {
+    "loading": "Đang tải bài tập hôm nay...",
+    "noAttempts": "Chưa thử lần nào",
+    "attempts": "{count} lần thử",
+    "attempts_plural": "{count} lần thử",
+    "runCode": "Chạy code",
+    "running": "Đang chạy...",
+    "reset": "Đặt lại",
+    "alreadySolved": "Đã giải hôm nay!",
+    "normalMode": "Chế độ thường — ít sao hơn",
+    "hardMode": "Chế độ khó — tắt dán",
+    "noProblemToday": "Ngày nghỉ!",
+    "noProblemDesc": "Hôm nay không có bài tập. Hãy nghỉ ngơi — bạn xứng đáng được nghỉ.",
+    "bonusStars": "+{count} sao",
+    "bonusDesc": "Xin lỗi vì khoảng trống — đây là phần thưởng để bạn tiếp tục!",
+    "bonusAlreadyGiven": "Bạn đã nhận sao thưởng hôm nay rồi.",
+    "comeBackTomorrow": "Quay lại vào ngày mai để có bài tập mới.",
+    "pasteAllowed": "Chế độ thường — cho phép dán, ít sao hơn",
+    "makeupMode": "Chế độ bù bài — áp dụng quy tắc thường",
+    "solved": "Đã giải xong bài hôm nay!",
+    "streakDays": "Chuỗi {count} ngày"
+  },
+  "problem": {
+    "examples": "Ví dụ",
+    "constraints": "Ràng buộc",
+    "input": "Đầu vào",
+    "output": "Đầu ra",
+    "explanation": "Giải thích",
+    "hints": "Gợi ý",
+    "costsStars": "tốn sao",
+    "unlocked": "đã mở"
+  },
+  "hints": {
+    "tier1": "Cấu trúc dữ liệu",
+    "tier2": "Tên thuật toán",
+    "tier3": "Mã giả",
+    "tier4": "Hướng dẫn đầy đủ"
+  },
+  "testResults": {
+    "passed": "Đúng",
+    "expected": "Kết quả mong đợi",
+    "yourOutput": "Kết quả của bạn",
+    "error": "Lỗi",
+    "empty": "trống"
+  },
+  "success": {
+    "allTestsPassed": "Tất cả bài kiểm tra đều đúng!",
+    "newRecord": "🔥 Kỷ lục cá nhân mới!",
+    "streak": "Chuỗi ngày",
+    "starsEarned": "Sao nhận được",
+    "cleanSolve": "Giải sạch",
+    "hardMode": "Chế độ khó",
+    "timeExpired": "Hết giờ",
+    "continue": "Tiếp tục →"
+  },
+  "makeup": {
+    "title": "Bù bài",
+    "desc": "Hoàn thành các bài đã bỏ lỡ.",
+    "loading": "Đang tải bài bù...",
+    "firstReward": "Lần bù đầu tiên hôm nay sẽ nhận sao (trừ chi phí thử). Các lần tiếp theo chỉ tốn sao.",
+    "rewardGiven": "Bạn đã nhận thưởng bù bài hôm nay rồi. Các bài tiếp theo chỉ tốn sao, không có thưởng.",
+    "allCaughtUp": "Đã bù xong tất cả!",
+    "noPastProblems": "Không có bài bỏ lỡ. Quay lại vào ngày mai.",
+    "completed": "Đã hoàn thành",
+    "yesterday": "Hôm qua",
+    "daysAgo": "{count} ngày trước",
+    "toAttempt": "để thử",
+    "noRewardToday": "Không có thưởng hôm nay",
+    "start": "Bắt đầu",
+    "needStars": "Cần thêm ⭐",
+    "done": "Xong",
+    "back": "← Về hôm nay",
+    "backShort": "← Quay lại"
+  },
+  "history": {
+    "title": "Lịch sử",
+    "desc": "Các bài đã giải của bạn.",
+    "total": "Tổng cộng",
+    "clean": "Sạch",
+    "hardMode": "Chế độ khó",
+    "usedHints": "Dùng gợi ý",
+    "all": "Tất cả",
+    "noSolves": "Không tìm thấy kết quả.",
+    "clearFilter": "Xóa bộ lọc",
+    "solves": "{count} bài",
+    "solves_plural": "{count} bài",
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "daysAgo": "{count} ngày trước"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "desc": "Thống kê và tiến độ của bạn.",
+    "streak": "Chuỗi ngày",
+    "best": "Cao nhất",
+    "stars": "Sao",
+    "days": "ngày",
+    "totalSolved": "Đã giải",
+    "cleanSolves": "Giải sạch",
+    "avgAttempts": "Số lần thử TB",
+    "cleanRate": "Tỉ lệ giải sạch",
+    "cleanRateDesc": "{clean} sạch trên {total} tổng",
+    "last30Days": "30 ngày gần đây",
+    "solved": "Đã giải",
+    "makeUp": "Bù bài",
+    "missed": "Bỏ lỡ",
+    "byTopic": "Theo chủ đề",
+    "byDifficulty": "Theo độ khó",
+    "normalMode": "Chế độ thường",
+    "hardMode": "Chế độ khó"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "desc": "Tùy chỉnh trải nghiệm của bạn.",
+    "preferredDifficulty": "Độ khó ưa thích",
+    "preferredDifficultyDesc": "Chúng tôi sẽ giao bài gần nhất nếu cấp độ bạn chọn không có trong ngày đó.",
+    "any": "Bất kỳ",
+    "challengeMode": "Chế độ thử thách",
+    "challengeModeDesc": "Chế độ bị khóa sau khi bắt đầu bài. Đặt lại mỗi ngày.",
+    "normal": "Thường",
+    "hard": "Khó",
+    "pasteAllowed": "Cho phép dán",
+    "noTimer": "Không có bộ đếm giờ",
+    "cleanSolveStars": "+3 sao giải sạch",
+    "hintSolveStars": "+1 sao dùng gợi ý",
+    "noPaste": "Không cho dán",
+    "timerActive": "Bộ đếm giờ hoạt động",
+    "hardCleanStars": "+8 sao giải sạch",
+    "hardHintStars": "+3 sao dùng gợi ý",
+    "timeExpiredPenalty": "−2 sao nếu hết giờ",
+    "timeLimits": "Giới hạn thời gian chế độ khó",
+    "easy": "Dễ",
+    "medium": "Trung bình",
+    "appearance": "Giao diện",
+    "appearanceDesc": "Chọn chủ đề màu sắc bạn thích.",
+    "darkTheme": "Tối",
+    "lightTheme": "Sáng",
+    "language": "Ngôn ngữ",
+    "languageDesc": "Chọn ngôn ngữ giao diện bạn muốn.",
+    "saved": "Đã lưu",
+    "difficultyNotes": {
+      "any": "Bạn sẽ nhận một bài ngẫu nhiên mỗi ngày.",
+      "specific": "Bạn sẽ nhận bài độ khó {difficulty} khi có sẵn. Nếu hôm đó không có bài phù hợp, bạn sẽ nhận bài có độ khó gần nhất.",
+      "easy": "Dễ",
+      "medium": "Trung bình",
+      "hard": "Khó"
+    }
+  },
+  "auth": {
+    "signInToContinue": "Đăng nhập để tiếp tục",
+    "noAccountNeeded": "Không cần tài khoản — đăng nhập để bắt đầu.",
+    "tagline": "Mài sắc kỹ năng. Mỗi ngày.",
+    "continueWithGoogle": "Tiếp tục với Google",
+    "continueWithGithub": "Tiếp tục với GitHub"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Có lỗi xảy ra.",
+    "noScheduled": "Hôm nay không có bài tập.",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "close": "Đóng"
+  },
+  "streak": {
+    "day": "ngày",
+    "days": "ngày"
+  },
+  "help": {
+    "buttonTitle": "Trợ giúp & hướng dẫn",
+    "title": "Cách dùng GrinDev",
+    "subtitle": "Những điều bạn cần biết",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "tipPrefix": "Mẹo: phím tắt",
+    "tipSuffix": "sẽ mở bảng này",
+    "gotIt": "Đã hiểu",
+    "sections": {
+      "dailyProblems": {
+        "title": "Bài tập hằng ngày",
+        "items": [
+          {
+            "label": "Mỗi ngày một bài",
+            "desc": "Mỗi ngày sẽ có một bài DSA mới được lên lịch. Hãy giải trước nửa đêm để giữ chuỗi ngày."
+          },
+          {
+            "label": "Độ khó ưa thích",
+            "desc": "Đặt độ khó ưa thích trong Cài đặt. Nếu hôm đó không có đúng cấp độ bạn chọn, hệ thống sẽ chọn bài gần nhất."
+          },
+          {
+            "label": "Đã giải xong?",
+            "desc": "Sau khi giải xong bài hôm nay, bạn sẽ thấy phần Bù bài."
+          }
+        ]
+      },
+      "streaks": {
+        "title": "Chuỗi ngày",
+        "items": [
+          {
+            "label": "Giữ chuỗi",
+            "desc": "Giải ít nhất một bài mỗi ngày để duy trì chuỗi. Nếu bỏ lỡ một ngày, chuỗi sẽ về 0."
+          },
+          {
+            "label": "Bộ đếm chuỗi",
+            "desc": "Hiển thị ở góc trên bên phải. Chuỗi dài nhất của bạn được lưu trên trang Hồ sơ."
+          }
+        ]
+      },
+      "stars": {
+        "title": "Sao",
+        "items": [
+          {
+            "label": "Nhận sao",
+            "desc": "Chế độ thường: +3 sao nếu giải sạch, +1 sao nếu dùng gợi ý. Chế độ khó: +8 sao nếu giải sạch, +3 sao nếu dùng gợi ý."
+          },
+          {
+            "label": "Dùng sao",
+            "desc": "Dùng sao để mở gợi ý (1–15 ⭐) và trả phí cho Bù bài (5–25 ⭐ tùy bài cũ bao lâu)."
+          },
+          {
+            "label": "Sao thưởng",
+            "desc": "Vào những ngày không có bài được lên lịch, bạn sẽ nhận sao thưởng bù."
+          }
+        ]
+      },
+      "hints": {
+        "title": "Gợi ý",
+        "items": [
+          {
+            "label": "Cấp 1 — 1 ⭐",
+            "desc": "Gợi nhẹ về cấu trúc dữ liệu phù hợp."
+          },
+          {
+            "label": "Cấp 2 — 3 ⭐",
+            "desc": "Tên thuật toán hoặc pattern cần dùng."
+          },
+          {
+            "label": "Cấp 3 — 7 ⭐",
+            "desc": "Mã giả từng bước."
+          },
+          {
+            "label": "Cấp 4 — 15 ⭐",
+            "desc": "Lời giải đầy đủ. Chuỗi ngày vẫn được giữ, nhưng không nhận huy hiệu giải sạch."
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "Chế độ thử thách",
+        "items": [
+          {
+            "label": "Chế độ thường",
+            "desc": "Cho phép dán code. Không có bộ đếm giờ. Sao thưởng ít hơn."
+          },
+          {
+            "label": "Chế độ khó",
+            "desc": "Không cho dán code. Có bộ đếm giờ (Dễ 15 phút, Trung bình 30 phút, Khó 45 phút). Thưởng cao hơn, nhưng bị trừ −2⭐ nếu hết giờ."
+          },
+          {
+            "label": "Khóa chế độ",
+            "desc": "Chế độ sẽ bị khóa khi bạn bắt đầu gõ. Hãy đổi trong Cài đặt trước khi làm bài."
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "Bù bài",
+        "items": [
+          {
+            "label": "Bù các ngày đã lỡ",
+            "desc": "Sau khi giải xong bài hôm nay, bạn có thể làm lại các bài từ những ngày trước đã bỏ lỡ."
+          },
+          {
+            "label": "Chi phí sao",
+            "desc": "Bù bài sẽ tốn sao: 5⭐ cho hôm qua, tối đa 25⭐ cho các bài cũ hơn."
+          },
+          {
+            "label": "Một lần thưởng mỗi ngày",
+            "desc": "Chỉ bài bù đầu tiên trong ngày mới nhận sao thưởng. Các bài bù sau chỉ tốn sao và không có thưởng."
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "Trình viết code",
+        "items": [
+          {
+            "label": "Viết từ đầu",
+            "desc": "Ở chế độ khó, thao tác dán bị tắt — bạn phải tự gõ lời giải từng ký tự."
+          },
+          {
+            "label": "Chạy code",
+            "desc": "Chạy code của bạn với các test case ẩn. Nếu sai, kết quả sẽ hiển thị expected và output của bạn."
+          },
+          {
+            "label": "Đặt lại",
+            "desc": "Đưa editor về template ban đầu. Thao tác này cần xác nhận."
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "Cửa hàng sao",
+    "desc": "Dùng sao để mua các vật phẩm hỗ trợ.",
+    "available": "Hiện có",
+    "buy": "Mua",
+    "buying": "Đang mua...",
+    "confirmLabel": "Xác nhận",
+    "needMoreStars": "Cần thêm ⭐",
+    "items": {
+      "streakFreeze": {
+        "title": "Đóng băng chuỗi ngày",
+        "desc": "Bảo vệ chuỗi ngày của bạn khi bỏ lỡ một ngày. Chuỗi vẫn được giữ nguyên dù bạn nghỉ một ngày.",
+        "stock": "Bạn có {count} lượt đóng băng"
+      },
+      "problemSkip": {
+        "title": "Bỏ qua bài",
+        "desc": "Không muốn làm bài hôm nay? Bỏ qua và nhận một bài ngẫu nhiên từ toàn bộ ngân hàng bài tập.",
+        "stock": "Dùng một lần"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "Mua Đóng băng chuỗi ngày",
+        "message": "Dùng {cost}⭐ để mua một lượt đóng băng chuỗi ngày? Lượt này sẽ tự động kích hoạt vào lần tiếp theo bạn bỏ lỡ một ngày."
+      },
+      "problemSkip": {
+        "title": "Bỏ qua bài hôm nay",
+        "message": "Dùng {cost}⭐ để nhận một bài ngẫu nhiên thay cho bài được lên lịch hôm nay?"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "Đã mua đóng băng chuỗi ngày! Hiện bạn có {count} lượt đóng băng.",
+      "problemSkipped": "Đã bỏ qua bài! Hãy vào trang Hôm nay để xem bài mới."
+    },
+    "comingSoon": {
+      "title": "Sắp ra mắt",
+      "desc": "Sẽ có thêm nhiều cách để nhận và dùng sao — bao gồm gói sao, gói đăng ký và các tính năng độc quyền."
+    },
+    "transactions": {
+      "title": "Giao dịch gần đây",
+      "reasons": {
+        "solveCleanNormal": "Giải sạch (Thường)",
+        "solveCleanHard": "Giải sạch (Khó)",
+        "solveHintsNormal": "Giải bài có dùng gợi ý",
+        "solveHintsHard": "Giải bài khó có dùng gợi ý",
+        "hintPurchase": "Đã mở gợi ý",
+        "makeupCost": "Lượt bù bài",
+        "makeupReward": "Thưởng bù bài",
+        "streakFreezePurchase": "Đã mua đóng băng chuỗi ngày",
+        "problemSkip": "Bỏ qua bài",
+        "dailyLoginBonus": "Thưởng đăng nhập hằng ngày",
+        "noProblemBonus": "Thưởng ngày không có bài",
+        "streakMilestone": "Thưởng mốc chuỗi ngày",
+        "firstSolveBonus": "Thưởng lần giải đầu tiên",
+        "adminAdjustment": "Điều chỉnh từ admin"
+      }
+    },
+    "date": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "daysAgo": "{count} ngày trước"
+    }
+  }
+}

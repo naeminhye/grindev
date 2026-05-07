@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { TopicTagInput } from "@/components/admin/TopicTagInput";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { AlertDialog } from "@/components/ui/AlertDialog";
+import { useI18n } from "@/lib/i18n";
 
 type Problem = {
   id: string;
@@ -40,6 +41,8 @@ const DIFF_CONFIG = {
 };
 
 export default function AdminDashboard() {
+  const { t } = useI18n();
+
   const [problems, setProblems] = useState<Problem[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -182,14 +185,14 @@ export default function AdminDashboard() {
       <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
         <Link
           href={`/admin/problems/${p.id}/edit`}
-          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-[hsl(var(--surface-raised))] rounded transition-colors"
           title="Edit"
         >
           <i className="ri-edit-line text-sm" />
         </Link>
         <Link
           href={`/admin/schedule?highlight=${p.id}`}
-          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded transition-colors"
+          className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-[hsl(var(--surface-raised))] rounded transition-colors"
           title="Schedule"
         >
           <i className="ri-calendar-line text-sm" />
@@ -291,7 +294,7 @@ export default function AdminDashboard() {
           ].map((s) => (
             <div
               key={s.label}
-              className="bg-zinc-900 border border-border rounded-md p-4 space-y-1"
+              className="bg-[hsl(var(--surface))] border border-border rounded-md p-4 space-y-1"
             >
               <div className="flex items-center gap-1.5">
                 <i className={`${s.icon} ${s.color} text-sm`} />
@@ -308,7 +311,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Filters */}
-      <div className="space-y-3 p-4 bg-zinc-900 border border-border rounded-md">
+      <div className="space-y-3 p-4 bg-[hsl(var(--surface))] border border-border rounded-md">
         <div className="flex items-center gap-2">
           <i className="ri-filter-3-line text-zinc-500 text-sm" />
           <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">
@@ -322,13 +325,13 @@ export default function AdminDashboard() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name..."
-              className="w-full pl-8 pr-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 transition-colors"
+              className="w-full pl-8 pr-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50 transition-colors"
             />
           </div>
           <select
             value={diffFilter}
             onChange={(e) => setDiffFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
+            className="w-full px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
           >
             <option value="">All difficulties</option>
             <option value="EASY">Easy</option>
@@ -338,7 +341,7 @@ export default function AdminDashboard() {
           <select
             value={scheduledFilter}
             onChange={(e) => setScheduledFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
+            className="w-full px-3 py-2 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded-md text-xs font-mono text-zinc-200 focus:outline-none focus:border-lime-500/50"
           >
             <option value="all">All (scheduled + not)</option>
             <option value="scheduled">Scheduled only</option>
@@ -373,7 +376,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <span className="text-xs font-mono text-zinc-500">
           {loading
-            ? "Loading..."
+            ? t("common.loading")
             : `${sorted.length} problem${sorted.length !== 1 ? "s" : ""}`}
         </span>
         <div className="flex items-center gap-3">
@@ -427,7 +430,7 @@ export default function AdminDashboard() {
           {sorted.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-3 p-3 md:p-4 bg-zinc-900 border border-border rounded-md hover:border-zinc-600 transition-colors group"
+              className="flex items-center gap-3 p-3 md:p-4 bg-[hsl(var(--surface))] border border-border rounded-md hover:border-zinc-600 transition-colors group"
             >
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -483,7 +486,7 @@ export default function AdminDashboard() {
           {sorted.map((p) => (
             <div
               key={p.id}
-              className="bg-zinc-900 border border-border rounded-md p-4 space-y-3 hover:border-zinc-600 transition-colors group flex flex-col"
+              className="bg-[hsl(var(--surface))] border border-border rounded-md p-4 space-y-3 hover:border-zinc-600 transition-colors group flex flex-col"
             >
               <div className="space-y-2 flex-1">
                 <div className="flex items-start justify-between gap-2">
@@ -503,7 +506,7 @@ export default function AdminDashboard() {
                   {p.topics.slice(0, 4).map((t) => (
                     <span
                       key={t}
-                      className="text-[10px] font-mono text-zinc-600 bg-zinc-800 px-1.5 py-0.5 rounded"
+                      className="text-[10px] font-mono text-zinc-600 bg-[hsl(var(--surface-raised))] px-1.5 py-0.5 rounded"
                     >
                       {t.replace(/_/g, " ").toLowerCase()}
                     </span>

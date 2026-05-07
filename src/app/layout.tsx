@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "remixicon/fonts/remixicon.css";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";
-
-const geistMonoHeading = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-heading",
-});
+import { ThemeProvider } from "@/lib/theme";
+import { I18nProvider } from "@/lib/i18n";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -32,12 +29,28 @@ export default function RootLayout({
       className={cn(
         "h-full dark antialiased",
         jetbrainsMono.variable,
-        geistMonoHeading.variable,
         "font-mono",
       )}
+      suppressHydrationWarning
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <ThemeProvider>
+            <I18nProvider>{children}</I18nProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

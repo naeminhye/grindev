@@ -42,13 +42,13 @@ export function AlertDialog({
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-900 border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
+      <div className="relative bg-[hsl(var(--surface))] border border-border rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
         <div className={cn("h-0.5 w-full", config.bar)} />
         <div className="p-6 space-y-4">
           <div className="flex items-start gap-3">
             <div
               className={cn(
-                "w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-zinc-800",
+                "w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-[hsl(var(--surface-raised))]",
               )}
             >
               <i className={cn(config.icon, config.color, "text-base")} />

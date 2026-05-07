@@ -41,10 +41,7 @@ export async function POST(req: Request) {
     .safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: parsed.error.flatten().fieldErrors },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
   const { date, difficulty, problemId } = parsed.data;
@@ -55,7 +52,6 @@ export async function POST(req: Request) {
   if (!problem)
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
 
-  // Verify difficulty matches
   if (problem.difficulty !== difficulty) {
     return NextResponse.json(
       {
@@ -65,11 +61,20 @@ export async function POST(req: Request) {
     );
   }
 
+  // Check if this problem is already scheduled on a DIFFERENT date
+  const existingSlot = await prisma.dailyProblem.findFirst({
+    where: { problemId, NOT: { date } },
+  });
+
+  const warning = existingSlot
+    ? `This problem is already scheduled on ${existingSlot.date}. It will appear on both days.`
+    : null;
+
   const slot = await prisma.dailyProblem.upsert({
     where: { date_difficulty: { date, difficulty } },
     update: { problemId },
     create: { date, difficulty, problemId },
   });
 
-  return NextResponse.json({ slot }, { status: 201 });
+  return NextResponse.json({ slot, warning }, { status: 201 });
 }

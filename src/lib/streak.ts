@@ -1,6 +1,26 @@
-import { format, isYesterday, isToday } from "date-fns";
+import { isYesterday, isToday, parseISO } from "date-fns";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 import { prisma } from "./prisma";
-import { adjustStars } from "./stars";
+
+/**
+ * Get today's date string in the user's timezone.
+ * Falls back to UTC if no timezone provided.
+ */
+export function getTodayInTz(timeZone = "UTC"): string {
+  try {
+    return formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd");
+  } catch {
+    return formatInTimeZone(new Date(), "UTC", "yyyy-MM-dd");
+  }
+}
+
+/**
+ * Legacy — used by server-side routes that don't have user timezone.
+ * Use getTodayInTz() with the user's timezone when available.
+ */
+export function getTodayUTC(): string {
+  return formatInTimeZone(new Date(), "UTC", "yyyy-MM-dd");
+}
 
 export async function updateStreak(userId: string): Promise<{
   currentStreak: number;
@@ -23,7 +43,6 @@ export async function updateStreak(userId: string): Promise<{
 
   const newStreak =
     lastSolved && isYesterday(lastSolved) ? user.currentStreak + 1 : 1;
-
   const newLongest = Math.max(newStreak, user.longestStreak);
   const isNewRecord = newStreak > user.longestStreak;
 
@@ -47,33 +66,9 @@ export async function checkAndResetStreak(userId: string): Promise<void> {
   const missedYesterday = !isToday(lastSolved) && !isYesterday(lastSolved);
 
   if (missedYesterday && user.currentStreak > 0) {
-    // Use a freeze if available
-    if (user.streakFreezeCount > 0) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { streakFreezeCount: { decrement: 1 } },
-      });
-      // Log freeze usage (no star change — freeze was already paid for)
-      await prisma.starTransaction.create({
-        data: {
-          userId,
-          amount: 0,
-          reason: "STREAK_MILESTONE",
-          meta: { type: "freeze_used" },
-        },
-      });
-      // Don't reset streak
-      return;
-    }
-
-    // No freeze — reset streak
     await prisma.user.update({
       where: { id: userId },
       data: { currentStreak: 0 },
     });
   }
-}
-
-export function getTodayUTC(): string {
-  return format(new Date(), "yyyy-MM-dd");
 }

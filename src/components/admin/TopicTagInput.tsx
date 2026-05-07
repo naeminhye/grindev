@@ -92,7 +92,7 @@ export function TopicTagInput({ value, onChange }: TopicTagInputProps) {
       {/* Tag input box */}
       <div
         className={cn(
-          "flex flex-wrap gap-1.5 min-h-[42px] px-2.5 py-2 bg-zinc-800 border rounded-md cursor-text transition-colors",
+          "flex flex-wrap gap-1.5 min-h-[42px] px-2.5 py-2 bg-[hsl(var(--surface-raised))] border rounded-md cursor-text transition-colors",
           open ? "border-lime-500/50" : "border-zinc-700",
         )}
         onClick={() => {
@@ -137,7 +137,7 @@ export function TopicTagInput({ value, onChange }: TopicTagInputProps) {
 
       {/* Dropdown */}
       {open && filtered.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-zinc-900 border border-zinc-700 rounded-md shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-[hsl(var(--surface))] border border-zinc-700 rounded-md shadow-xl overflow-hidden max-h-48 overflow-y-auto">
           {filtered.map((topic) => (
             <button
               key={topic}
@@ -146,7 +146,7 @@ export function TopicTagInput({ value, onChange }: TopicTagInputProps) {
                 e.preventDefault();
                 add(topic);
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-mono text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-colors text-left"
+              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-mono text-zinc-300 hover:bg-[hsl(var(--surface-raised))] hover:text-zinc-100 transition-colors text-left"
             >
               <i className="ri-hashtag text-zinc-600" />
               {topic.replace(/_/g, " ")}
@@ -157,7 +157,7 @@ export function TopicTagInput({ value, onChange }: TopicTagInputProps) {
 
       {/* No results */}
       {open && query && filtered.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-zinc-900 border border-zinc-700 rounded-md p-3">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-[hsl(var(--surface))] border border-zinc-700 rounded-md p-3">
           <p className="text-xs font-mono text-zinc-600">No matching topics.</p>
         </div>
       )}
