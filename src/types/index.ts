@@ -54,6 +54,7 @@ export type SolveResponse = {
     longestStreak: number;
     isNewRecord: boolean;
   };
+  isTrialRun?: boolean;
 };
 
 export type HintResponse = {
@@ -81,6 +82,7 @@ export type DailyResponse = {
   loginBonus: number; // 0 if already received today
   userStats: UserStats;
   skipCount: number;
+  hardTimeLimits: { EASY: number; MEDIUM: number; HARD: number };
 };
 
 export type NoProblemResponse = {

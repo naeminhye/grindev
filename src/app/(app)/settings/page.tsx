@@ -9,7 +9,7 @@ import type { ChallengeMode } from "@/lib/challenge";
 
 type PreferredDifficulty = "ANY" | "EASY" | "MEDIUM" | "HARD";
 
-type Settings = {
+export type Settings = {
   challengeMode: ChallengeMode;
   preferredDifficulty: PreferredDifficulty;
 };
@@ -107,7 +107,17 @@ export default function SettingsPage() {
                       : t("settings.lightTheme")}
                   </span>
                 </div>
-                {theme === t_ && <i className="ri-check-line text-lime-400" />}
+
+                <div
+                  className={cn(
+                    "w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                    theme === t_
+                      ? "border-lime-400 bg-lime-400 text-zinc-950"
+                      : "border-zinc-700 text-transparent group-hover:border-zinc-500",
+                  )}
+                >
+                  <i className="ri-check-line text-sm" />
+                </div>
               </div>
             </button>
           ))}
@@ -124,34 +134,89 @@ export default function SettingsPage() {
             {t("settings.languageDesc")}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {(
             [
-              { id: "en", label: "English", flag: "🇺🇸" },
-              { id: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
-            ] as { id: Locale; label: string; flag: string }[]
-          ).map((lang) => (
-            <button
-              key={lang.id}
-              onClick={() => setLocale(lang.id)}
-              className={cn(
-                "p-4 rounded-md border text-left transition-all",
-                locale === lang.id
-                  ? "border-lime-500/50 bg-lime-500/5"
-                  : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{lang.flag}</span>
-                  <span className="font-mono text-sm">{lang.label}</span>
-                </div>
-                {locale === lang.id && (
-                  <i className="ri-check-line text-lime-400" />
+              {
+                id: "en",
+                label: "English",
+                nativeName: "English",
+                flag: "🇺🇸",
+              },
+              {
+                id: "vi",
+                label: "Vietnamese",
+                nativeName: "Tiếng Việt",
+                flag: "🇻🇳",
+              },
+              {
+                id: "ko",
+                label: "Korean",
+                nativeName: "한국어",
+                flag: "🇰🇷",
+              },
+              {
+                id: "ja",
+                label: "Japanese",
+                nativeName: "日本語",
+                flag: "🇯🇵",
+              },
+              {
+                id: "zh",
+                label: "Chinese",
+                nativeName: "中文",
+                flag: "🇨🇳",
+              },
+            ] as {
+              id: Locale;
+              label: string;
+              nativeName: string;
+              flag: string;
+            }[]
+          ).map((lang) => {
+            const active = locale === lang.id;
+
+            return (
+              <button
+                key={lang.id}
+                type="button"
+                onClick={() => setLocale(lang.id)}
+                className={cn(
+                  "group p-4 rounded-md border text-left transition-all",
+                  "bg-[hsl(var(--surface))] hover:border-zinc-600",
+                  active
+                    ? "border-lime-500/50 bg-lime-500/5 shadow-[0_0_0_1px_rgba(132,204,22,0.15)]"
+                    : "border-border",
                 )}
-              </div>
-            </button>
-          ))}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-2xl shrink-0">{lang.flag}</span>
+                    <div className="min-w-0">
+                      <div className="font-heading font-bold text-sm truncate">
+                        {lang.nativeName}
+                      </div>
+                      <div className="font-mono text-[11px] text-zinc-500 truncate">
+                        {lang.label} · {lang.id.toUpperCase()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className={cn(
+                      "w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                      active
+                        ? "border-lime-400 bg-lime-400 text-zinc-950"
+                        : "border-zinc-700 text-transparent group-hover:border-zinc-500",
+                    )}
+                  >
+                    <i className="ri-check-line text-sm" />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -172,7 +237,8 @@ export default function SettingsPage() {
                 key={d}
                 onClick={() => handlePreferredDifficultyChange(d)}
                 className={cn(
-                  "p-3 rounded-md border text-center transition-all",
+                  "flex items-center justify-between",
+                  "p-3 rounded-md border text-left transition-all",
                   settings.preferredDifficulty === d
                     ? "border-lime-500/50 bg-lime-500/5"
                     : "border-border bg-[hsl(var(--surface))] hover:border-zinc-600",
@@ -198,9 +264,16 @@ export default function SettingsPage() {
                         ? t("settings.medium")
                         : t("settings.hard")}
                 </div>
-                {settings.preferredDifficulty === d && (
-                  <i className="ri-check-line text-lime-400 text-xs" />
-                )}
+                <div
+                  className={cn(
+                    "w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                    settings.preferredDifficulty === d
+                      ? "border-lime-400 bg-lime-400 text-zinc-950"
+                      : "border-zinc-700 text-transparent group-hover:border-zinc-500",
+                  )}
+                >
+                  <i className="ri-check-line text-sm" />
+                </div>
               </button>
             ),
           )}
@@ -237,9 +310,16 @@ export default function SettingsPage() {
               <span className="font-heading font-bold text-sm">
                 {t("settings.normal")}
               </span>
-              {settings.challengeMode === "NORMAL" && (
-                <i className="ri-check-line text-lime-400" />
-              )}
+              <div
+                className={cn(
+                  "w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                  settings.challengeMode === "NORMAL"
+                    ? "border-lime-400 bg-lime-400 text-zinc-950"
+                    : "border-zinc-700 text-transparent group-hover:border-zinc-500",
+                )}
+              >
+                <i className="ri-check-line text-sm" />
+              </div>
             </div>
             <ul className="space-y-1.5 font-mono text-xs text-zinc-400">
               <li className="flex items-center gap-2">
@@ -274,9 +354,16 @@ export default function SettingsPage() {
               <span className="font-heading font-bold text-sm">
                 {t("settings.hard")}
               </span>
-              {settings.challengeMode === "HARD" && (
-                <i className="ri-check-line text-lime-400" />
-              )}
+              <div
+                className={cn(
+                  "w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                  settings.challengeMode === "HARD"
+                    ? "border-lime-400 bg-lime-400 text-zinc-950"
+                    : "border-zinc-700 text-transparent group-hover:border-zinc-500",
+                )}
+              >
+                <i className="ri-check-line text-sm" />
+              </div>
             </div>
             <ul className="space-y-1.5 font-mono text-xs text-zinc-400">
               <li className="flex items-center gap-2">

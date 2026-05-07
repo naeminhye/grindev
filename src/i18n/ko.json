@@ -1,0 +1,425 @@
+{
+  "nav": {
+    "today": "오늘",
+    "history": "기록",
+    "profile": "프로필",
+    "shop": "상점",
+    "settings": "설정",
+    "signOut": "로그아웃"
+  },
+  "today": {
+    "loading": "오늘의 문제를 불러오는 중...",
+    "noAttempts": "시도 없음",
+    "attempts": "{count}회 시도",
+    "attempts_plural": "{count}회 시도",
+    "runCode": "코드 실행",
+    "submit": "제출",
+    "running": "실행 중...",
+    "trialRunNote": "테스트 실행 — 제출로 계산되지 않음",
+    "reset": "초기화",
+    "alreadySolved": "오늘은 이미 해결했어요!",
+    "normalMode": "일반 모드 — 별 보상 적음",
+    "hardMode": "하드 모드 — 붙여넣기 비활성화",
+    "noProblemToday": "쉬는 날!",
+    "noProblemDesc": "오늘은 예정된 문제가 없습니다. 잠깐 쉬어가도 좋아요 — 충분히 그럴 자격이 있어요.",
+    "bonusStars": "+{count} 별",
+    "bonusDesc": "공백이 생겨 미안해요 — 계속 이어갈 수 있도록 보너스를 드려요!",
+    "bonusAlreadyGiven": "오늘의 보너스 별은 이미 받았어요.",
+    "comeBackTomorrow": "내일 새로운 문제로 다시 만나요.",
+    "pasteAllowed": "일반 모드 — 붙여넣기 가능, 별 보상 적음",
+    "makeupMode": "보충 모드 — 일반 규칙 적용",
+    "solved": "오늘의 문제 해결 완료!",
+    "streakDays": "{count}일 연속",
+    "hardModeGate": {
+      "title": "하드 모드 활성화",
+      "rulesTitle": "규칙",
+      "rules": {
+        "timer": "시작을 누르는 순간 타이머가 시작됩니다 — 문제를 읽는 시간도 포함됩니다.",
+        "noPaste": "코드 에디터에서 붙여넣기가 비활성화됩니다.",
+        "stars": "해결하면 더 많은 별을 받지만, 시간이 끝나면 별 2개가 차감됩니다.",
+        "locked": "시작한 뒤에는 모드를 변경할 수 없습니다."
+      },
+      "changeMode": "모드 변경",
+      "startTimer": "타이머 시작"
+    }
+  },
+  "problem": {
+    "examples": "예시",
+    "constraints": "제약 조건",
+    "input": "입력",
+    "output": "출력",
+    "explanation": "설명",
+    "hints": "힌트",
+    "costsStars": "별 필요",
+    "unlocked": "잠금 해제됨"
+  },
+  "hints": {
+    "tier1": "자료구조",
+    "tier2": "알고리즘 이름",
+    "tier3": "의사코드",
+    "tier4": "전체 풀이"
+  },
+  "testResults": {
+    "passed": "통과",
+    "expected": "예상 결과",
+    "yourOutput": "내 출력",
+    "error": "오류",
+    "empty": "비어 있음"
+  },
+  "success": {
+    "allTestsPassed": "모든 테스트를 통과했어요!",
+    "newRecord": "🔥 새로운 개인 기록!",
+    "streak": "연속 기록",
+    "starsEarned": "획득한 별",
+    "cleanSolve": "클린 풀이",
+    "hardMode": "하드 모드",
+    "timeExpired": "시간 초과",
+    "continue": "계속 →"
+  },
+  "makeup": {
+    "title": "보충 과제",
+    "desc": "놓친 문제를 따라잡아 보세요.",
+    "loading": "보충 문제를 불러오는 중...",
+    "firstReward": "오늘 첫 보충 풀이에는 별 보상이 지급됩니다(시도 비용 차감 후). 이후 보충 과제는 별만 소모됩니다.",
+    "rewardGiven": "오늘의 보충 별 보상은 이미 받았어요. 추가 보충 과제는 보상 없이 별만 소모됩니다.",
+    "allCaughtUp": "모두 따라잡았어요!",
+    "noPastProblems": "놓친 문제가 없습니다. 내일 다시 와 주세요.",
+    "completed": "완료",
+    "yesterday": "어제",
+    "daysAgo": "{count}일 전",
+    "toAttempt": "시도하기",
+    "noRewardToday": "오늘 보상 없음",
+    "start": "시작",
+    "needStars": "⭐ 필요",
+    "done": "완료",
+    "back": "← 오늘로 돌아가기",
+    "backShort": "← 뒤로"
+  },
+  "history": {
+    "title": "기록",
+    "desc": "지난 풀이 기록입니다.",
+    "total": "전체",
+    "clean": "클린",
+    "hardMode": "하드 모드",
+    "usedHints": "힌트 사용",
+    "all": "전체",
+    "noSolves": "풀이 기록을 찾을 수 없습니다.",
+    "clearFilter": "필터 지우기",
+    "solves": "{count}개 풀이",
+    "solves_plural": "{count}개 풀이",
+    "today": "오늘",
+    "yesterday": "어제",
+    "daysAgo": "{count}일 전"
+  },
+  "profile": {
+    "title": "프로필",
+    "desc": "통계와 진행 상황입니다.",
+    "streak": "연속 기록",
+    "best": "최고",
+    "stars": "별",
+    "days": "일",
+    "totalSolved": "총 해결",
+    "cleanSolves": "클린 풀이",
+    "avgAttempts": "평균 시도",
+    "cleanRate": "클린 풀이 비율",
+    "cleanRateDesc": "총 {total}개 중 {clean}개 클린",
+    "last30Days": "최근 30일",
+    "solved": "해결",
+    "makeUp": "보충",
+    "missed": "놓침",
+    "byTopic": "주제별",
+    "byDifficulty": "난이도별",
+    "normalMode": "일반 모드",
+    "hardMode": "하드 모드"
+  },
+  "settings": {
+    "title": "설정",
+    "desc": "사용 환경을 설정하세요.",
+    "preferredDifficulty": "선호 난이도",
+    "preferredDifficultyDesc": "선호한 난이도의 문제가 예정되어 있지 않으면 가장 가까운 난이도의 문제를 배정합니다.",
+    "any": "상관없음",
+    "challengeMode": "챌린지 모드",
+    "challengeModeDesc": "문제를 시작하면 모드가 잠깁니다. 매일 초기화됩니다.",
+    "normal": "일반",
+    "hard": "하드",
+    "pasteAllowed": "붙여넣기 허용",
+    "noTimer": "타이머 없음",
+    "cleanSolveStars": "클린 풀이 +3 별",
+    "hintSolveStars": "힌트 사용 풀이 +1 별",
+    "noPaste": "붙여넣기 불가",
+    "timerActive": "타이머 활성화",
+    "hardCleanStars": "하드 클린 풀이 +8 별",
+    "hardHintStars": "하드 힌트 풀이 +3 별",
+    "timeExpiredPenalty": "시간 초과 시 −2 별",
+    "timeLimits": "하드 모드 시간 제한",
+    "easy": "쉬움",
+    "medium": "보통",
+    "appearance": "화면 모드",
+    "appearanceDesc": "선호하는 색상 테마를 선택하세요.",
+    "darkTheme": "다크",
+    "lightTheme": "라이트",
+    "language": "언어",
+    "languageDesc": "사용할 인터페이스 언어를 선택하세요.",
+    "saved": "저장됨",
+    "difficultyNotes": {
+      "any": "매일 무작위 문제가 제공됩니다.",
+      "specific": "가능한 경우 {difficulty} 문제가 제공됩니다. 예정된 문제가 없으면 가장 가까운 난이도의 문제가 제공됩니다.",
+      "easy": "쉬움",
+      "medium": "보통",
+      "hard": "어려움"
+    }
+  },
+  "auth": {
+    "signInToContinue": "계속하려면 로그인하세요",
+    "noAccountNeeded": "계정이 필요 없어요 — 로그인하고 시작하세요.",
+    "tagline": "매일, 실력을 더 날카롭게.",
+    "continueWithGoogle": "Google로 계속하기",
+    "continueWithGithub": "GitHub로 계속하기"
+  },
+  "common": {
+    "loading": "불러오는 중...",
+    "error": "문제가 발생했습니다.",
+    "noScheduled": "오늘 예정된 문제가 없습니다.",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정",
+    "close": "닫기"
+  },
+  "streak": {
+    "day": "일",
+    "days": "일"
+  },
+  "help": {
+    "buttonTitle": "도움말 & 안내",
+    "title": "GrinDev 사용 방법",
+    "subtitle": "알아두면 좋은 모든 것",
+    "previous": "이전",
+    "next": "다음",
+    "tipPrefix": "팁: 단축키",
+    "tipSuffix": "를 누르면 이 창이 열립니다",
+    "gotIt": "알겠어요",
+    "sections": {
+      "dailyProblems": {
+        "title": "일일 문제",
+        "items": [
+          {
+            "label": "하루에 한 문제",
+            "desc": "매일 새로운 DSA 문제가 예정됩니다. 자정 전에 해결해 연속 기록을 유지하세요."
+          },
+          {
+            "label": "선호 난이도",
+            "desc": "설정에서 선호 난이도를 지정하세요. 해당 난이도가 없으면 가장 가까운 문제를 선택합니다."
+          },
+          {
+            "label": "이미 해결했나요?",
+            "desc": "오늘의 문제를 해결하면 보충 과제 섹션이 표시됩니다."
+          }
+        ]
+      },
+      "streaks": {
+        "title": "연속 기록",
+        "items": [
+          {
+            "label": "계속 이어가기",
+            "desc": "연속 기록을 유지하려면 하루에 최소 한 문제를 해결하세요. 하루를 놓치면 0으로 초기화됩니다."
+          },
+          {
+            "label": "연속 기록 카운터",
+            "desc": "오른쪽 상단에 표시됩니다. 가장 긴 연속 기록은 프로필 페이지에서 확인할 수 있습니다."
+          }
+        ]
+      },
+      "stars": {
+        "title": "별",
+        "items": [
+          {
+            "label": "별 얻기",
+            "desc": "일반 모드: 클린 풀이 +3, 힌트 사용 +1. 하드 모드: 클린 풀이 +8, 힌트 사용 +3."
+          },
+          {
+            "label": "별 사용하기",
+            "desc": "힌트 잠금 해제(1–15 ⭐)와 보충 과제 비용(얼마나 오래전 문제인지에 따라 5–25 ⭐)에 사용할 수 있습니다."
+          },
+          {
+            "label": "보너스 별",
+            "desc": "예정된 문제가 없는 날에는 보상으로 보너스 별을 받습니다."
+          }
+        ]
+      },
+      "hints": {
+        "title": "힌트",
+        "items": [
+          {
+            "label": "1단계 — 1 ⭐",
+            "desc": "알맞은 자료구조를 향한 작은 힌트."
+          },
+          {
+            "label": "2단계 — 3 ⭐",
+            "desc": "알고리즘 또는 패턴 이름."
+          },
+          {
+            "label": "3단계 — 7 ⭐",
+            "desc": "단계별 의사코드."
+          },
+          {
+            "label": "4단계 — 15 ⭐",
+            "desc": "전체 동작 풀이. 연속 기록은 유지되지만 클린 풀이 배지는 받을 수 없습니다."
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "챌린지 모드",
+        "items": [
+          {
+            "label": "일반 모드",
+            "desc": "붙여넣기가 허용됩니다. 타이머는 없습니다. 별 보상은 적습니다."
+          },
+          {
+            "label": "하드 모드",
+            "desc": "붙여넣기가 비활성화됩니다. 타이머가 작동합니다(쉬움 15분, 보통 30분, 어려움 45분). 보상은 더 높지만 시간 초과 시 −2⭐입니다."
+          },
+          {
+            "label": "모드 잠금",
+            "desc": "입력을 시작하면 모드가 잠깁니다. 시작 전에 설정에서 변경하세요."
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "보충 과제",
+        "items": [
+          {
+            "label": "놓친 날 따라잡기",
+            "desc": "오늘의 문제를 해결한 뒤, 이전에 놓친 문제를 시도할 수 있습니다."
+          },
+          {
+            "label": "별 비용",
+            "desc": "보충 과제는 별을 소모합니다: 어제 문제는 5⭐, 더 오래된 문제는 최대 25⭐."
+          },
+          {
+            "label": "하루 한 번 보상",
+            "desc": "오늘 첫 보충 풀이만 별 보상을 받습니다. 추가 보충 과제는 별만 소모되고 보상은 없습니다."
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "코드 에디터",
+        "items": [
+          {
+            "label": "처음부터 작성",
+            "desc": "하드 모드에서는 붙여넣기가 비활성화됩니다 — 풀이를 직접 한 글자씩 입력해야 합니다."
+          },
+          {
+            "label": "코드 실행",
+            "desc": "숨겨진 테스트 케이스로 코드를 실행합니다. 실패하면 예상 결과와 내 출력이 표시됩니다."
+          },
+          {
+            "label": "초기화",
+            "desc": "에디터를 시작 템플릿으로 되돌립니다. 확인이 필요합니다."
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "별 상점",
+    "desc": "별로 파워업을 구매하세요.",
+    "available": "구매 가능",
+    "buy": "구매",
+    "buying": "구매 중...",
+    "confirmLabel": "확인",
+    "needMoreStars": "⭐가 더 필요해요",
+    "items": {
+      "streakFreeze": {
+        "title": "연속 기록 보호권",
+        "desc": "하루를 놓쳐도 연속 기록을 보호합니다. 하루 쉬어도 기록이 유지됩니다.",
+        "stock": "보유 중: 보호권 {count}개"
+      },
+      "problemSkip": {
+        "title": "문제 스킵",
+        "desc": "오늘 문제가 끌리지 않나요? 스킵하고 전체 문제 은행에서 무작위 문제를 받아보세요.",
+        "stock": "일회용"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "연속 기록 보호권 구매",
+        "message": "{cost}⭐를 사용해 연속 기록 보호권을 구매할까요? 다음에 하루를 놓치면 자동으로 활성화됩니다."
+      },
+      "problemSkip": {
+        "title": "오늘 문제 스킵",
+        "message": "{cost}⭐를 사용해 오늘 예정된 문제 대신 무작위 문제를 받을까요?"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "연속 기록 보호권을 구매했어요! 현재 {count}개를 보유 중입니다.",
+      "problemSkipped": "문제를 스킵했어요! 오늘 페이지에서 새 문제를 확인하세요."
+    },
+    "comingSoon": {
+      "title": "곧 공개됩니다",
+      "desc": "별을 얻고 사용할 더 많은 방법이 준비 중입니다 — 별 패키지, 구독, 전용 기능까지."
+    },
+    "transactions": {
+      "title": "최근 거래",
+      "reasons": {
+        "solveCleanNormal": "클린 풀이(일반)",
+        "solveCleanHard": "클린 풀이(하드)",
+        "solveHintsNormal": "힌트 사용 풀이",
+        "solveHintsHard": "하드 힌트 풀이",
+        "hintPurchase": "힌트 잠금 해제",
+        "makeupCost": "보충 시도",
+        "makeupReward": "보충 보상",
+        "streakFreezePurchase": "연속 기록 보호권 구매",
+        "problemSkip": "문제 스킵",
+        "dailyLoginBonus": "일일 로그인 보너스",
+        "noProblemBonus": "문제 없는 날 보너스",
+        "streakMilestone": "연속 기록 달성 보너스",
+        "firstSolveBonus": "첫 풀이 보너스",
+        "adminAdjustment": "관리자 조정"
+      }
+    },
+    "date": {
+      "today": "오늘",
+      "yesterday": "어제",
+      "daysAgo": "{count}일 전"
+    }
+  },
+  "ai": {
+    "explain": "문제 설명",
+    "thinking": "생각 중...",
+    "title": "AI 설명",
+    "errorFallback": "설명을 불러오지 못했습니다. 다시 시도해 주세요.",
+    "poweredBy": "{model} 제공",
+    "hintTiersAvailable": "단계별 안내를 위한 힌트 단계는 아래에서 계속 사용할 수 있습니다."
+  },
+  "admin": {
+    "config": {
+      "title": "게임 설정",
+      "desc": "별 보상과 시간 제한.",
+      "saving": "저장 중...",
+      "saved": "저장됨!",
+      "timeLimits": {
+        "title": "하드 모드 시간 제한",
+        "desc": "하드 챌린지 모드의 난이도별 초 단위 시간.",
+        "min": "분",
+        "sec": "초",
+        "total": "= 총 {seconds}초"
+      },
+      "starRewards": {
+        "title": "별 보상",
+        "desc": "풀이 유형별 지급 별 수입니다. 음수 값은 별을 차감합니다.",
+        "type": "유형",
+        "cleanSolve": "✓ 클린 풀이",
+        "withHints": "💡 힌트 사용"
+      },
+      "modes": {
+        "normal": "🛡 일반 모드",
+        "hard": "⚔ 하드 챌린지 모드"
+      },
+      "timeExpiredPenalty": {
+        "title": "시간 초과 페널티(하드 모드)",
+        "desc": "하드 모드 타이머가 끝났을 때 차감되는 별"
+      }
+    }
+  }
+}

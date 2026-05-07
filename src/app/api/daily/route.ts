@@ -8,6 +8,7 @@ import { checkDailyLoginBonus } from "@/lib/stars";
 import type { DailyResponse, HintData, StarterCode } from "@/types";
 import type { Difficulty } from "@prisma/client";
 import { parseProblemExamples } from "@/lib/problem-utils";
+import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 
 const NO_PROBLEM_BONUS_KEY = "NO_PROBLEM_BONUS_STARS";
 const DEFAULT_BONUS = 5;
@@ -22,9 +23,9 @@ export async function GET(req: Request) {
     create: { id: userId },
   });
 
-  await checkAndResetStreak(userId);
-
   const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  await checkAndResetStreak(userId, timeZone);
+
   const today = getTodayInTz(timeZone);
 
   // Daily login bonus
@@ -178,6 +179,22 @@ export async function GET(req: Request) {
   ]);
   const skipCount = Math.max(0, skipPurchases - skipUsed);
 
+  const timeLimitConfigs = await prisma.appConfig.findMany({
+    where: {
+      key: { in: ["HARD_TIME_EASY", "HARD_TIME_MEDIUM", "HARD_TIME_HARD"] },
+    },
+  });
+  const timeLimitMap = Object.fromEntries(
+    timeLimitConfigs.map((c) => [c.key, parseInt(c.value)]),
+  );
+
+  const hardTimeLimits = {
+    EASY: timeLimitMap["HARD_TIME_EASY"] ?? TIME_LIMIT_DEFAULTS.HARD_TIME_EASY,
+    MEDIUM:
+      timeLimitMap["HARD_TIME_MEDIUM"] ?? TIME_LIMIT_DEFAULTS.HARD_TIME_MEDIUM,
+    HARD: timeLimitMap["HARD_TIME_HARD"] ?? TIME_LIMIT_DEFAULTS.HARD_TIME_HARD,
+  };
+
   const response: DailyResponse = {
     problem: {
       id: problem.id,
@@ -206,6 +223,7 @@ export async function GET(req: Request) {
       streakFreezeCount: freshUser?.streakFreezeCount ?? 0,
     },
     skipCount,
+    hardTimeLimits,
   };
 
   return NextResponse.json(response);

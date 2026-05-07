@@ -57,6 +57,16 @@ export function useTimer({ initialSeconds, onExpire }: UseTimerOptions) {
     setIsVisible((v) => !v);
   }, []);
 
+  const reset = useCallback(
+    (newSeconds?: number) => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setIsRunning(false);
+      setIsExpired(false);
+      setSecondsLeft(newSeconds ?? initialSeconds);
+    },
+    [initialSeconds],
+  );
+
   return {
     secondsLeft,
     isRunning,
@@ -66,5 +76,6 @@ export function useTimer({ initialSeconds, onExpire }: UseTimerOptions) {
     stop,
     toggleVisibility,
     getElapsedSeconds,
+    reset,
   };
 }

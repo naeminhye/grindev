@@ -7,6 +7,8 @@ import { updateStreak } from "@/lib/streak";
 import { calculateStarDelta } from "@/lib/challenge";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
+import { STAR_REWARD_DEFAULTS } from "@/lib/game-config";
+import type { StarRewardConfig } from "@/lib/challenge";
 
 const bodySchema = z.object({
   problemId: z.string().min(1),
@@ -14,6 +16,7 @@ const bodySchema = z.object({
   language: z.enum(["JAVASCRIPT", "TYPESCRIPT", "PYTHON", "CPP", "JAVA"]),
   challengeMode: z.enum(["NORMAL", "HARD"]).default("NORMAL"),
   timeExpired: z.boolean().default(false),
+  submit: z.boolean().default(false),
 });
 
 export async function POST(req: Request) {
@@ -29,7 +32,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const { problemId, code, language, challengeMode, timeExpired } = parsed.data;
+  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+
+  const { problemId, code, language, challengeMode, timeExpired, submit } =
+    parsed.data;
 
   const problem = await prisma.problem.findUnique({ where: { id: problemId } });
 
@@ -80,6 +86,17 @@ export async function POST(req: Request) {
   }
 
   const allPassed = results.every((r) => r.passed);
+
+  // ── Trial run — no DB writes ──────────────────────────────────────────
+  if (!submit) {
+    return NextResponse.json({
+      passed: allPassed,
+      results,
+      isTrialRun: true,
+    } satisfies SolveResponse);
+  }
+
+  // ── Submission — record solve, update streak and stars ────────────────
   const hintCount = await prisma.hintPurchase.count({
     where: { userId, problemId },
   });
@@ -116,17 +133,35 @@ export async function POST(req: Request) {
     });
   }
 
+  const rewardKeys = Object.keys(STAR_REWARD_DEFAULTS);
+  const rewardConfigs = await prisma.appConfig.findMany({
+    where: { key: { in: rewardKeys } },
+  });
+  const rewardMap = Object.fromEntries(
+    rewardConfigs.map((c) => [c.key, parseInt(c.value)]),
+  );
+  const starConfig = Object.fromEntries(
+    rewardKeys.map((k) => [
+      k,
+      rewardMap[k] ??
+        STAR_REWARD_DEFAULTS[k as keyof typeof STAR_REWARD_DEFAULTS],
+    ]),
+  ) as StarRewardConfig;
+
   let streakUpdate;
   let starDelta = 0;
 
   if (allPassed) {
-    streakUpdate = await updateStreak(userId);
+    streakUpdate = await updateStreak(userId, timeZone);
     starDelta = calculateStarDelta({
       mode: challengeMode,
       passed: true,
       usedHints,
       timeExpired,
+      difficulty: problem.difficulty,
+      config: starConfig,
     });
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { stars: true },

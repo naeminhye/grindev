@@ -1,0 +1,425 @@
+{
+  "nav": {
+    "today": "今日",
+    "history": "历史",
+    "profile": "个人资料",
+    "shop": "商店",
+    "settings": "设置",
+    "signOut": "退出登录"
+  },
+  "today": {
+    "loading": "正在加载今日题目...",
+    "noAttempts": "暂无尝试",
+    "attempts": "{count} 次尝试",
+    "attempts_plural": "{count} 次尝试",
+    "runCode": "运行代码",
+    "submit": "提交",
+    "running": "运行中...",
+    "trialRunNote": "试运行 — 不计入提交",
+    "reset": "重置",
+    "alreadySolved": "今天已经解完啦！",
+    "normalMode": "普通模式 — 星星较少",
+    "hardMode": "困难模式 — 禁用粘贴",
+    "noProblemToday": "休息日！",
+    "noProblemDesc": "今天没有安排题目。喘口气吧 — 你值得休息一下。",
+    "bonusStars": "+{count} 星星",
+    "bonusDesc": "抱歉中间空了一天 — 送你一些奖励继续前进！",
+    "bonusAlreadyGiven": "你今天已经领取过奖励星星了。",
+    "comeBackTomorrow": "明天回来挑战新题吧。",
+    "pasteAllowed": "普通模式 — 允许粘贴，星星较少",
+    "makeupMode": "补题模式 — 使用普通规则",
+    "solved": "今日题目已解决！",
+    "streakDays": "连续 {count} 天",
+    "hardModeGate": {
+      "title": "困难模式已开启",
+      "rulesTitle": "规则",
+      "rules": {
+        "timer": "点击开始的瞬间计时器就会启动 — 包括读题时间。",
+        "noPaste": "代码编辑器中禁用粘贴。",
+        "stars": "解题成功可获得更多星星，但超时会扣除 2 颗星。",
+        "locked": "开始后无法更改模式。"
+      },
+      "changeMode": "更改模式",
+      "startTimer": "开始计时"
+    }
+  },
+  "problem": {
+    "examples": "示例",
+    "constraints": "约束条件",
+    "input": "输入",
+    "output": "输出",
+    "explanation": "解释",
+    "hints": "提示",
+    "costsStars": "消耗星星",
+    "unlocked": "已解锁"
+  },
+  "hints": {
+    "tier1": "数据结构",
+    "tier2": "算法名称",
+    "tier3": "伪代码",
+    "tier4": "完整讲解"
+  },
+  "testResults": {
+    "passed": "通过",
+    "expected": "期望结果",
+    "yourOutput": "你的输出",
+    "error": "错误",
+    "empty": "空"
+  },
+  "success": {
+    "allTestsPassed": "所有测试都通过了！",
+    "newRecord": "🔥 新个人纪录！",
+    "streak": "连续天数",
+    "starsEarned": "获得星星",
+    "cleanSolve": "纯净解题",
+    "hardMode": "困难模式",
+    "timeExpired": "时间已到",
+    "continue": "继续 →"
+  },
+  "makeup": {
+    "title": "补题任务",
+    "desc": "补上错过的题目。",
+    "loading": "正在加载补题...",
+    "firstReward": "今天第一次完成补题可获得星星（扣除尝试成本后）。之后的补题只会消耗星星。",
+    "rewardGiven": "你今天已经领取过补题星星奖励了。额外补题只消耗星星，不再奖励。",
+    "allCaughtUp": "全部补完啦！",
+    "noPastProblems": "没有错过的题目。明天再来吧。",
+    "completed": "已完成",
+    "yesterday": "昨天",
+    "daysAgo": "{count} 天前",
+    "toAttempt": "去尝试",
+    "noRewardToday": "今天无奖励",
+    "start": "开始",
+    "needStars": "需要 ⭐",
+    "done": "完成",
+    "back": "← 返回今日",
+    "backShort": "← 返回"
+  },
+  "history": {
+    "title": "历史",
+    "desc": "你过去的解题记录。",
+    "total": "总计",
+    "clean": "纯净",
+    "hardMode": "困难模式",
+    "usedHints": "使用提示",
+    "all": "全部",
+    "noSolves": "未找到解题记录。",
+    "clearFilter": "清除筛选",
+    "solves": "{count} 次解题",
+    "solves_plural": "{count} 次解题",
+    "today": "今天",
+    "yesterday": "昨天",
+    "daysAgo": "{count}天前"
+  },
+  "profile": {
+    "title": "个人资料",
+    "desc": "你的统计和进度。",
+    "streak": "连续天数",
+    "best": "最佳",
+    "stars": "星星",
+    "days": "天",
+    "totalSolved": "总解题数",
+    "cleanSolves": "纯净解题",
+    "avgAttempts": "平均尝试次数",
+    "cleanRate": "纯净解题率",
+    "cleanRateDesc": "共 {total} 次，其中 {clean} 次纯净",
+    "last30Days": "最近 30 天",
+    "solved": "已解",
+    "makeUp": "补题",
+    "missed": "错过",
+    "byTopic": "按主题",
+    "byDifficulty": "按难度",
+    "normalMode": "普通模式",
+    "hardMode": "困难模式"
+  },
+  "settings": {
+    "title": "设置",
+    "desc": "配置你的使用体验。",
+    "preferredDifficulty": "偏好难度",
+    "preferredDifficultyDesc": "如果你偏好的难度当天没有安排，我们会分配最接近的可用题目。",
+    "any": "任意",
+    "challengeMode": "挑战模式",
+    "challengeModeDesc": "开始题目后模式会锁定。每天重置。",
+    "normal": "普通",
+    "hard": "困难",
+    "pasteAllowed": "允许粘贴",
+    "noTimer": "无计时器",
+    "cleanSolveStars": "纯净解题 +3 星",
+    "hintSolveStars": "使用提示解题 +1 星",
+    "noPaste": "禁止粘贴",
+    "timerActive": "计时器开启",
+    "hardCleanStars": "困难纯净解题 +8 星",
+    "hardHintStars": "困难使用提示 +3 星",
+    "timeExpiredPenalty": "超时扣除 −2 星",
+    "timeLimits": "困难模式时间限制",
+    "easy": "简单",
+    "medium": "中等",
+    "appearance": "外观",
+    "appearanceDesc": "选择你喜欢的颜色主题。",
+    "darkTheme": "深色",
+    "lightTheme": "浅色",
+    "language": "语言",
+    "languageDesc": "选择你想使用的界面语言。",
+    "saved": "已保存",
+    "difficultyNotes": {
+      "any": "你每天会获得一道随机题目。",
+      "specific": "有可用题目时，你会获得{difficulty}题目。如果当天没有安排，则会获得最接近的难度。",
+      "easy": "简单",
+      "medium": "中等",
+      "hard": "困难"
+    }
+  },
+  "auth": {
+    "signInToContinue": "登录后继续",
+    "noAccountNeeded": "无需账号 — 登录即可开始。",
+    "tagline": "每日磨练，锋芒更利。",
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithGithub": "使用 GitHub 继续"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出了点问题。",
+    "noScheduled": "今天没有安排题目。",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭"
+  },
+  "streak": {
+    "day": "天",
+    "days": "天"
+  },
+  "help": {
+    "buttonTitle": "帮助与说明",
+    "title": "如何使用 GrinDev",
+    "subtitle": "你需要知道的一切",
+    "previous": "上一页",
+    "next": "下一页",
+    "tipPrefix": "提示：快捷键",
+    "tipSuffix": "可打开这里",
+    "gotIt": "知道了",
+    "sections": {
+      "dailyProblems": {
+        "title": "每日题目",
+        "items": [
+          {
+            "label": "每天一道题",
+            "desc": "每天都会安排一道新的 DSA 题目。午夜前解出它以保持连续天数。"
+          },
+          {
+            "label": "偏好难度",
+            "desc": "在设置中选择偏好难度。如果当天没有该难度，我们会选择最接近的题目。"
+          },
+          {
+            "label": "已经解完？",
+            "desc": "解完今日题目后，你会看到补题任务区域。"
+          }
+        ]
+      },
+      "streaks": {
+        "title": "连续天数",
+        "items": [
+          {
+            "label": "保持连续",
+            "desc": "每天至少解一道题以保持连续天数。错过一天就会重置为 0。"
+          },
+          {
+            "label": "连续天数计数器",
+            "desc": "显示在右上角。最长连续天数会记录在个人资料页面。"
+          }
+        ]
+      },
+      "stars": {
+        "title": "星星",
+        "items": [
+          {
+            "label": "获得星星",
+            "desc": "普通模式：纯净解题 +3，使用提示 +1。困难模式：纯净解题 +8，使用提示 +3。"
+          },
+          {
+            "label": "花费星星",
+            "desc": "可用于解锁提示（1–15 ⭐）以及支付补题任务费用（根据距离现在多久，5–25 ⭐）。"
+          },
+          {
+            "label": "奖励星星",
+            "desc": "没有安排题目的日子，你会收到补偿星星。"
+          }
+        ]
+      },
+      "hints": {
+        "title": "提示",
+        "items": [
+          {
+            "label": "第 1 层 — 1 ⭐",
+            "desc": "指向正确数据结构的小提示。"
+          },
+          {
+            "label": "第 2 层 — 3 ⭐",
+            "desc": "算法或模式名称。"
+          },
+          {
+            "label": "第 3 层 — 7 ⭐",
+            "desc": "分步骤伪代码。"
+          },
+          {
+            "label": "第 4 层 — 15 ⭐",
+            "desc": "完整可运行解法。连续天数会保留，但不会获得纯净解题徽章。"
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "挑战模式",
+        "items": [
+          {
+            "label": "普通模式",
+            "desc": "允许粘贴。没有计时器。星星奖励较少。"
+          },
+          {
+            "label": "困难模式",
+            "desc": "禁用粘贴。计时器倒计时（简单 15 分钟，中等 30 分钟，困难 45 分钟）。奖励更高，但超时会扣 −2⭐。"
+          },
+          {
+            "label": "模式锁定",
+            "desc": "开始输入后模式会锁定。请在开始前到设置中更改。"
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "补题任务",
+        "items": [
+          {
+            "label": "补上错过的日子",
+            "desc": "解完今日题目后，你可以尝试之前错过的题目。"
+          },
+          {
+            "label": "星星成本",
+            "desc": "补题会消耗星星：昨天的题目 5⭐，更早的题目最高 25⭐。"
+          },
+          {
+            "label": "每天一次奖励",
+            "desc": "每天只有第一次补题成功会获得星星。额外补题只消耗星星，不再奖励。"
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "代码编辑器",
+        "items": [
+          {
+            "label": "从零开始写",
+            "desc": "困难模式下粘贴被禁用 — 你必须逐字符输入解法。"
+          },
+          {
+            "label": "运行代码",
+            "desc": "用隐藏测试用例运行你的代码。失败时会显示期望结果和你的输出。"
+          },
+          {
+            "label": "重置",
+            "desc": "将编辑器恢复为初始模板。需要确认。"
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "星星商店",
+    "desc": "用星星购买强化道具。",
+    "available": "可购买",
+    "buy": "购买",
+    "buying": "购买中...",
+    "confirmLabel": "确认",
+    "needMoreStars": "需要更多 ⭐",
+    "items": {
+      "streakFreeze": {
+        "title": "连续保护",
+        "desc": "保护你的连续天数，允许错过一天。即使跳过一天，连续记录也会保留。",
+        "stock": "你有 {count} 个保护"
+      },
+      "problemSkip": {
+        "title": "题目跳过",
+        "desc": "今天不想做这题？跳过它，从完整题库中获得一道随机题。",
+        "stock": "一次性使用"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "购买连续保护",
+        "message": "花费 {cost}⭐ 购买一个连续保护？下次错过一天时会自动启用。"
+      },
+      "problemSkip": {
+        "title": "跳过今日题目",
+        "message": "花费 {cost}⭐，用一道随机题替换今天安排的题目吗？"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "连续保护购买成功！你现在有 {count} 个保护。",
+      "problemSkipped": "题目已跳过！到今日页面查看新题吧。"
+    },
+    "comingSoon": {
+      "title": "即将推出",
+      "desc": "更多赚取和花费星星的方式即将到来 — 包括星星包、订阅和专属功能。"
+    },
+    "transactions": {
+      "title": "最近交易",
+      "reasons": {
+        "solveCleanNormal": "纯净解题（普通）",
+        "solveCleanHard": "纯净解题（困难）",
+        "solveHintsNormal": "使用提示解题",
+        "solveHintsHard": "困难使用提示解题",
+        "hintPurchase": "已解锁提示",
+        "makeupCost": "补题尝试",
+        "makeupReward": "补题奖励",
+        "streakFreezePurchase": "购买连续保护",
+        "problemSkip": "题目跳过",
+        "dailyLoginBonus": "每日登录奖励",
+        "noProblemBonus": "无题日奖励",
+        "streakMilestone": "连续里程碑奖励",
+        "firstSolveBonus": "首次解题奖励",
+        "adminAdjustment": "管理员调整"
+      }
+    },
+    "date": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "daysAgo": "{count}天前"
+    }
+  },
+  "ai": {
+    "explain": "解释题目",
+    "thinking": "思考中...",
+    "title": "AI 解析",
+    "errorFallback": "无法加载解析。请重试。",
+    "poweredBy": "由 {model} 提供支持",
+    "hintTiersAvailable": "下方仍可使用分级提示，帮助你一步步解题。"
+  },
+  "admin": {
+    "config": {
+      "title": "游戏配置",
+      "desc": "星星奖励和时间限制。",
+      "saving": "保存中...",
+      "saved": "已保存！",
+      "timeLimits": {
+        "title": "困难模式时间限制",
+        "desc": "困难挑战模式中每个难度的秒数。",
+        "min": "分",
+        "sec": "秒",
+        "total": "= 共 {seconds} 秒"
+      },
+      "starRewards": {
+        "title": "星星奖励",
+        "desc": "每种解题类型获得的星星。负值会扣除星星。",
+        "type": "类型",
+        "cleanSolve": "✓ 纯净解题",
+        "withHints": "💡 使用提示"
+      },
+      "modes": {
+        "normal": "🛡 普通模式",
+        "hard": "⚔ 困难挑战模式"
+      },
+      "timeExpiredPenalty": {
+        "title": "超时惩罚（困难模式）",
+        "desc": "困难模式计时器结束时扣除的星星"
+      }
+    }
+  }
+}
