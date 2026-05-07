@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HelpButton } from "@/components/ui/HelpButton";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { useI18n } from "@/lib/i18n";
+import { APP_MENUS } from "@/lib/menus";
+import { useEffect, useState } from "react";
 
 interface AppNavProps {
   userName: string;
@@ -13,18 +16,11 @@ interface AppNavProps {
 export function AppNav({ userName, userImage }: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
+  const [mounted, setMounted] = useState(false);
 
-  const menus = [
-    { href: "/today", icon: "ri-code-s-slash-line", label: t("nav.today") },
-    { href: "/history", icon: "ri-history-line", label: t("nav.history") },
-    {
-      href: "/profile",
-      icon: "ri-bar-chart-box-line",
-      label: t("nav.profile"),
-    },
-    { href: "/shop", icon: "ri-settings-3-line", label: t("nav.shop") },
-    { href: "/settings", icon: "ri-settings-3-line", label: t("nav.settings") },
-  ];
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
@@ -35,8 +31,9 @@ export function AppNav({ userName, userImage }: AppNavProps) {
         >
           Grin<span className="text-lime-400">Dev</span>
         </Link>
+
         <div className="hidden md:flex items-center gap-1">
-          {menus.map((menu) => (
+          {APP_MENUS.map((menu) => (
             <Link
               key={menu.href}
               href={menu.href}
@@ -47,7 +44,7 @@ export function AppNav({ userName, userImage }: AppNavProps) {
               }
             >
               <i className={`${menu.icon} mr-1.5`} />
-              {menu.label}
+              {mounted ? t(menu.labelKey) : ""}
             </Link>
           ))}
         </div>
@@ -61,9 +58,12 @@ export function AppNav({ userName, userImage }: AppNavProps) {
             className="w-7 h-7 rounded-full border border-border"
           />
         )}
+
         <span className="hidden sm:block text-xs font-mono text-zinc-400 max-w-[120px] truncate">
           {userName}
         </span>
+
+        <HelpButton />
         <SignOutButton />
       </div>
     </nav>

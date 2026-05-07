@@ -59,6 +59,19 @@
     --surface-raised: 240 5% 96%;
   }
 
+  /* Fix near-white text in light mode */
+  .light .text-zinc-100 {
+    color: hsl(240 5% 10%);
+  }
+
+  .light .text-zinc-300 {
+    color: hsl(240 5% 20%);
+  }
+
+  .light .text-zinc-200 {
+    color: hsl(240 5% 15%);
+  }
+
   * {
     border-color: hsl(var(--border));
   }

@@ -20,14 +20,16 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [diffNote, setDiffNote] = useState("");
+
+  const diffNote = settings
+    ? getDifficultyNote(settings.preferredDifficulty, t)
+    : "";
 
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => r.json())
       .then((s: Settings) => {
         setSettings(s);
-        setDiffNote(getDifficultyNote(s.preferredDifficulty));
       });
   }, []);
 
@@ -46,7 +48,6 @@ export default function SettingsPage() {
   }
 
   function handlePreferredDifficultyChange(diff: PreferredDifficulty) {
-    setDiffNote(getDifficultyNote(diff));
     save({ preferredDifficulty: diff });
   }
 

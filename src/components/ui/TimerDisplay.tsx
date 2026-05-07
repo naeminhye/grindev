@@ -24,7 +24,7 @@ export function TimerDisplay({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-3 py-1.5 rounded-md border font-mono text-sm transition-colors",
+        "h-8 flex items-center gap-2 px-3 rounded-md border font-mono text-sm transition-colors",
         isExpired
           ? "bg-red-500/10 border-red-500/30 text-red-400"
           : isCritical

@@ -5,6 +5,7 @@ import { StarCount } from "@/components/ui/StarCount";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { STREAK_FREEZE_COST, PROBLEM_SKIP_COST } from "@/lib/stars";
+import { useI18n } from "@/lib/i18n";
 
 type Transaction = {
   id: string;
@@ -19,39 +20,68 @@ type UserStats = {
   currentStreak: number;
 };
 
-const REASON_LABELS: Record<string, { label: string; icon: string }> = {
+const REASON_LABELS: Record<string, { labelKey: string; icon: string }> = {
   SOLVE_CLEAN_NORMAL: {
-    label: "Clean solve (Normal)",
+    labelKey: "shop.transactions.reasons.solveCleanNormal",
     icon: "ri-shield-star-line",
   },
   SOLVE_CLEAN_HARD: {
-    label: "Clean solve (Hard)",
+    labelKey: "shop.transactions.reasons.solveCleanHard",
     icon: "ri-shield-star-fill",
   },
-  SOLVE_HINTS_NORMAL: { label: "Solve with hints", icon: "ri-lightbulb-line" },
+  SOLVE_HINTS_NORMAL: {
+    labelKey: "shop.transactions.reasons.solveHintsNormal",
+    icon: "ri-lightbulb-line",
+  },
   SOLVE_HINTS_HARD: {
-    label: "Hard solve with hints",
+    labelKey: "shop.transactions.reasons.solveHintsHard",
     icon: "ri-lightbulb-fill",
   },
-  HINT_PURCHASE: { label: "Hint unlocked", icon: "ri-eye-line" },
-  MAKEUP_COST: { label: "Make-up attempt", icon: "ri-history-line" },
-  MAKEUP_REWARD: { label: "Make-up reward", icon: "ri-history-line" },
+  HINT_PURCHASE: {
+    labelKey: "shop.transactions.reasons.hintPurchase",
+    icon: "ri-eye-line",
+  },
+  MAKEUP_COST: {
+    labelKey: "shop.transactions.reasons.makeupCost",
+    icon: "ri-history-line",
+  },
+  MAKEUP_REWARD: {
+    labelKey: "shop.transactions.reasons.makeupReward",
+    icon: "ri-history-line",
+  },
   STREAK_FREEZE_PURCHASE: {
-    label: "Streak freeze purchased",
+    labelKey: "shop.transactions.reasons.streakFreezePurchase",
     icon: "ri-shield-flash-line",
   },
-  PROBLEM_SKIP: { label: "Problem skip", icon: "ri-skip-forward-line" },
+  PROBLEM_SKIP: {
+    labelKey: "shop.transactions.reasons.problemSkip",
+    icon: "ri-skip-forward-line",
+  },
   DAILY_LOGIN_BONUS: {
-    label: "Daily login bonus",
+    labelKey: "shop.transactions.reasons.dailyLoginBonus",
     icon: "ri-calendar-check-line",
   },
-  NO_PROBLEM_BONUS: { label: "No problem day bonus", icon: "ri-gift-line" },
-  STREAK_MILESTONE: { label: "Streak milestone bonus", icon: "ri-trophy-line" },
-  FIRST_SOLVE_BONUS: { label: "First solve bonus", icon: "ri-award-line" },
-  ADMIN_ADJUSTMENT: { label: "Admin adjustment", icon: "ri-settings-line" },
+  NO_PROBLEM_BONUS: {
+    labelKey: "shop.transactions.reasons.noProblemBonus",
+    icon: "ri-gift-line",
+  },
+  STREAK_MILESTONE: {
+    labelKey: "shop.transactions.reasons.streakMilestone",
+    icon: "ri-trophy-line",
+  },
+  FIRST_SOLVE_BONUS: {
+    labelKey: "shop.transactions.reasons.firstSolveBonus",
+    icon: "ri-award-line",
+  },
+  ADMIN_ADJUSTMENT: {
+    labelKey: "shop.transactions.reasons.adminAdjustment",
+    icon: "ri-settings-line",
+  },
 };
 
 export default function ShopPage() {
+  const { t, locale } = useI18n();
+
   const [stats, setStats] = useState<UserStats | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,8 +142,11 @@ export default function ShopPage() {
     setMessage({
       text:
         item === "STREAK_FREEZE"
-          ? `Streak freeze purchased! You now have ${data.streakFreezeCount} freeze${data.streakFreezeCount !== 1 ? "s" : ""}.`
-          : "Problem skipped! Check Today for your new problem.",
+          ? t("shop.messages.streakFreezePurchased").replace(
+              "{count}",
+              String(data.streakFreezeCount),
+            )
+          : t("shop.messages.problemSkipped"),
       ok: true,
     });
 
@@ -137,11 +170,14 @@ export default function ShopPage() {
       icon: "ri-shield-flash-line",
       color: "text-blue-400",
       bg: "bg-blue-500/10 border-blue-500/20",
-      title: "Streak Freeze",
-      desc: "Protect your streak for one missed day. Your streak stays intact even if you skip a day.",
+      title: t("shop.items.streakFreeze.title"),
+      desc: t("shop.items.streakFreeze.desc"),
       cost: STREAK_FREEZE_COST,
       stock: stats
-        ? `You have ${stats.streakFreezeCount} freeze${stats.streakFreezeCount !== 1 ? "s" : ""}`
+        ? t("shop.items.streakFreeze.stock").replace(
+            "{count}",
+            String(stats.streakFreezeCount),
+          )
         : "",
       canBuy: (stats?.stars ?? 0) >= STREAK_FREEZE_COST,
     },
@@ -150,10 +186,10 @@ export default function ShopPage() {
       icon: "ri-skip-forward-line",
       color: "text-purple-400",
       bg: "bg-purple-500/10 border-purple-500/20",
-      title: "Problem Skip",
-      desc: "Not feeling today's problem? Skip it and get a random problem from the full problem bank instead.",
+      title: t("shop.items.problemSkip.title"),
+      desc: t("shop.items.problemSkip.desc"),
       cost: PROBLEM_SKIP_COST,
-      stock: "One-time use",
+      stock: t("shop.items.problemSkip.stock"),
       canBuy: (stats?.stars ?? 0) >= PROBLEM_SKIP_COST,
     },
   ];
@@ -161,12 +197,18 @@ export default function ShopPage() {
   const confirmConfig =
     confirmItem === "STREAK_FREEZE"
       ? {
-          title: "Buy Streak Freeze",
-          message: `Spend ${STREAK_FREEZE_COST}⭐ for a streak freeze? It will activate automatically the next time you miss a day.`,
+          title: t("shop.confirm.streakFreeze.title"),
+          message: t("shop.confirm.streakFreeze.message").replace(
+            "{cost}",
+            String(STREAK_FREEZE_COST),
+          ),
         }
       : {
-          title: "Skip Today's Problem",
-          message: `Spend ${PROBLEM_SKIP_COST}⭐ to get a random problem instead of today\'s scheduled one?`,
+          title: t("shop.confirm.problemSkip.title"),
+          message: t("shop.confirm.problemSkip.message").replace(
+            "{cost}",
+            String(PROBLEM_SKIP_COST),
+          ),
         };
 
   return (
@@ -175,7 +217,7 @@ export default function ShopPage() {
         <ConfirmDialog
           title={confirmConfig.title}
           message={confirmConfig.message}
-          confirmLabel={buying ? "Buying..." : "Confirm"}
+          confirmLabel={buying ? t("shop.buying") : t("shop.confirmLabel")}
           variant="warning"
           onConfirm={() => handleBuy(confirmItem)}
           onCancel={() => !buying && setConfirmItem(null)}
@@ -186,10 +228,10 @@ export default function ShopPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading text-xl md:text-2xl font-bold tracking-tight">
-            Star Shop
+            {t("shop.title")}
           </h1>
           <p className="text-sm text-zinc-500 font-mono mt-1">
-            Spend stars on power-ups.
+            {t("shop.desc")}
           </p>
         </div>
         {stats && <StarCount stars={stats.stars} />}
@@ -215,7 +257,7 @@ export default function ShopPage() {
       {/* Shop items */}
       <div className="space-y-3">
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-          Available
+          {t("shop.available")}
         </h2>
         {shopItems.map((item) => (
           <div
@@ -259,7 +301,7 @@ export default function ShopPage() {
                     : "bg-[hsl(var(--surface-raised))] text-zinc-600 border border-zinc-700 cursor-not-allowed",
                 )}
               >
-                {!item.canBuy ? "Need more ⭐" : "Buy"}
+                {!item.canBuy ? t("shop.needMoreStars") : t("shop.buy")}{" "}
               </button>
             </div>
           </div>
@@ -269,13 +311,12 @@ export default function ShopPage() {
       {/* Coming soon */}
       <div className="space-y-3">
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-          Coming soon
+          {t("shop.comingSoon.title")}
         </h2>
         <div className="p-5 bg-[hsl(var(--surface))]/50 border border-dashed border-zinc-800 rounded-md text-center space-y-2">
           <i className="ri-store-2-line text-2xl text-zinc-700" />
           <p className="font-mono text-xs text-zinc-600">
-            More ways to earn and spend stars are coming — including star packs,
-            subscriptions, and exclusive features.
+            {t("shop.comingSoon.desc")}
           </p>
         </div>
       </div>
@@ -284,12 +325,12 @@ export default function ShopPage() {
       {transactions.length > 0 && (
         <div className="space-y-3">
           <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-            Recent transactions
+            {t("shop.transactions.title")}
           </h2>
           <div className="space-y-1.5">
             {transactions.slice(0, 20).map((tx) => {
               const meta = REASON_LABELS[tx.reason] ?? {
-                label: tx.reason,
+                labelKey: tx.reason,
                 icon: "ri-exchange-line",
               };
               return (
@@ -305,7 +346,9 @@ export default function ShopPage() {
                     )}
                   />
                   <span className="font-mono text-xs text-zinc-400 flex-1 truncate">
-                    {meta.label}
+                    {meta.labelKey.startsWith("shop.")
+                      ? t(meta.labelKey)
+                      : meta.labelKey}
                   </span>
                   <span
                     className={cn(
@@ -324,7 +367,7 @@ export default function ShopPage() {
                         : tx.amount}
                   </span>
                   <span className="font-mono text-[10px] text-zinc-700 shrink-0">
-                    {formatDate(tx.createdAt)}
+                    {formatDate(tx.createdAt, t, locale)}
                   </span>
                 </div>
               );
@@ -336,13 +379,24 @@ export default function ShopPage() {
   );
 }
 
-function formatDate(iso: string): string {
+function formatDate(
+  iso: string,
+  t: (key: string) => string,
+  locale: string,
+): string {
   const date = new Date(iso);
   const diffDays = Math.floor(
     (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+  if (diffDays === 0) return t("shop.date.today");
+  if (diffDays === 1) return t("shop.date.yesterday");
+  if (diffDays < 7) {
+    return t("shop.date.daysAgo").replace("{count}", String(diffDays));
+  }
+
+  return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+    month: "short",
+    day: "numeric",
+  });
 }

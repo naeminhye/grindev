@@ -1,36 +1,32 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { StarCount } from "@/components/ui/StarCount";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { HINT_TIERS } from "@/lib/hints";
+import { ProblemPanel } from "@/components/problem/ProblemPanel";
+import { MobileTabs } from "@/components/problem/MobileTabs";
+import { TestResults } from "@/components/problem/TestResults";
+import { CodeActionBar } from "@/components/problem/CodeActionBar";
+
 import { getMonacoLanguage } from "@/lib/languages";
+import { useI18n } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+
 import type {
   MakeupProblemResponse,
   SolveResponse,
   HintResponse,
-  ProblemExample,
 } from "@/types";
-import { cn } from "@/lib/utils";
-import { useI18n } from "@/lib/i18n";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
 
 export default function MakeupPage() {
   const { t } = useI18n();
-
   const { date } = useParams<{ date: string }>();
   const router = useRouter();
 
@@ -51,7 +47,6 @@ export default function MakeupPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-
     fetch(`/api/makeup/${date}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((d: MakeupProblemResponse) => {
@@ -66,7 +61,6 @@ export default function MakeupPage() {
         if (err.name === "AbortError") return;
         setPageState("error");
       });
-
     return () => controller.abort();
   }, [date]);
 
@@ -108,7 +102,6 @@ export default function MakeupPage() {
     setPageState("running");
     setSolveResult(null);
     setStarDelta(null);
-
     try {
       const res = await fetch(`/api/makeup/${date}/solve`, {
         method: "POST",
@@ -121,18 +114,15 @@ export default function MakeupPage() {
           timeExpired: false,
         }),
       });
-
       if (!res.ok) {
         const err = await res.json();
         alert(err.error);
         setPageState("ready");
         return;
       }
-
       const result: SolveResponse = await res.json();
       setSolveResult(result);
       setAttempts((a) => a + 1);
-
       if (result.passed) {
         setPageState("solved");
         if (result.starDelta !== undefined) {
@@ -173,13 +163,12 @@ export default function MakeupPage() {
     [data, hintLoading],
   );
 
-  // ── Loading ───────────────────────────────────────────────────────────
   if (pageState === "loading") {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="flex items-center gap-3 text-zinc-500 font-mono text-sm">
           <i className="ri-loader-4-line animate-spin text-lime-400" />
-          Loading make-up problem...
+          {t("makeup.loading")}
         </div>
       </div>
     );
@@ -207,435 +196,9 @@ export default function MakeupPage() {
   const { problem } = data;
   const isSolved = pageState === "solved";
   const daysLabel =
-    data.daysAgo === 1 ? "Yesterday" : `${data.daysAgo} days ago`;
-  const examples = (problem.examples ?? []) as ProblemExample[];
-
-  // ── Header ────────────────────────────────────────────────────────────
-  const Header = (
-    <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
-      <div className="flex items-center gap-2 min-w-0">
-        <button
-          onClick={() => router.push("/today")}
-          className="text-zinc-500 hover:text-foreground transition-colors shrink-0"
-        >
-          <i className="ri-arrow-left-line" />
-        </button>
-        <div className="w-px h-4 bg-border shrink-0" />
-        <span className="text-xs font-mono text-zinc-500 flex items-center gap-1.5 shrink-0">
-          <i className="ri-history-line" />
-          <span className="hidden sm:inline">Make-up ·</span> {daysLabel}
-        </span>
-        <div className="w-px h-4 bg-border shrink-0" />
-        <h1 className="font-heading font-bold text-sm md:text-base truncate">
-          {problem.title}
-        </h1>
-        <DifficultyBadge difficulty={problem.difficulty} />
-      </div>
-
-      <div className="flex items-center gap-2 shrink-0">
-        {/* Star cost */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 text-xs font-mono">
-          <i className="ri-star-fill" />
-          {data.starCost} to attempt
-        </div>
-
-        {/* No reward notice */}
-        {data.makeupRewardGivenToday && (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-500 text-xs font-mono">
-            <i className="ri-information-line" /> No reward today
-          </div>
-        )}
-
-        <StarCount stars={stars} />
-      </div>
-    </div>
-  );
-
-  // ── Mobile tabs ───────────────────────────────────────────────────────
-  const MobileTabs = (
-    <div className="flex md:hidden border-b border-border shrink-0">
-      {(["problem", "code"] as MobileTab[]).map((tab) => (
-        <button
-          key={tab}
-          onClick={() => setMobileTab(tab)}
-          className={cn(
-            "flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors",
-            mobileTab === tab
-              ? "text-lime-400 border-b-2 border-lime-400"
-              : "text-zinc-500 hover:text-zinc-300",
-          )}
-        >
-          {tab === "problem" ? (
-            <>
-              <i className="ri-file-text-line mr-1.5" />
-              Problem
-            </>
-          ) : (
-            <>
-              <i className="ri-code-s-slash-line mr-1.5" />
-              Code
-            </>
-          )}
-        </button>
-      ))}
-    </div>
-  );
-
-  // ── Problem panel ─────────────────────────────────────────────────────
-  const ProblemPanel = (
-    <aside
-      className={cn(
-        "min-h-0 overflow-y-auto custom-scrollbar border-border",
-        "md:border-r",
-        mobileTab === "problem" ? "block" : "hidden md:block",
-      )}
-    >
-      <div className="p-4 md:p-6 space-y-8">
-        <ProblemMarkdownSection>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {problem.description}
-          </ReactMarkdown>
-        </ProblemMarkdownSection>
-
-        {examples.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
-              {t("problem.examples")}
-            </h2>
-            {examples.map((example, index) => (
-              <div
-                key={index}
-                className="rounded-md border border-border bg-[hsl(var(--surface))]/50 overflow-hidden"
-              >
-                <div className="px-4 py-2 border-b border-border bg-[hsl(var(--surface))]">
-                  <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
-                    Example {index + 1}
-                  </span>
-                </div>
-                <div className="p-4 space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                      {t("problem.input")}
-                    </p>
-                    <ProblemMarkdownSection compact>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {example.input}
-                      </ReactMarkdown>
-                    </ProblemMarkdownSection>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                      {t("problem.output")}
-                    </p>
-                    <ProblemMarkdownSection compact>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {example.output}
-                      </ReactMarkdown>
-                    </ProblemMarkdownSection>
-                  </div>
-                  {example.explanation && (
-                    <div className="space-y-2">
-                      <p className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                        {t("problem.explanation")}
-                      </p>
-                      <ProblemMarkdownSection compact>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {example.explanation}
-                        </ReactMarkdown>
-                      </ProblemMarkdownSection>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {problem.constraints && (
-          <section className="space-y-3">
-            <h2 className="font-heading text-base font-bold tracking-tight text-zinc-100">
-              {t("problem.constraints")}
-            </h2>
-            <ProblemMarkdownSection>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {problem.constraints}
-              </ReactMarkdown>
-            </ProblemMarkdownSection>
-          </section>
-        )}
-      </div>
-
-      {/* Hints */}
-      <div className="border-t border-border p-4 md:p-6 space-y-3">
-        <div className="flex items-center gap-2 mb-4">
-          <i className="ri-lightbulb-line text-yellow-400" />
-          <span className="font-mono text-xs uppercase tracking-widest text-zinc-400">
-            {t("problem.hints")}
-          </span>
-          <span className="text-xs text-zinc-600 ml-auto">
-            {t("problem.costsStars")}
-          </span>
-        </div>
-
-        {HINT_TIERS.map((tier) => {
-          const isUnlocked = hintsUnlocked.includes(tier.tier);
-          const content = hintContents[tier.tier];
-          const isLoading = hintLoading === tier.tier;
-          return (
-            <div
-              key={tier.tier}
-              className={cn(
-                "rounded-md border transition-colors",
-                isUnlocked
-                  ? "border-lime-500/20 bg-lime-500/5"
-                  : "border-border bg-[hsl(var(--surface))]/50",
-              )}
-            >
-              <div className="flex items-center justify-between p-3">
-                <div className="flex items-center gap-2">
-                  <i
-                    className={cn(
-                      tier.icon,
-                      "text-sm",
-                      isUnlocked ? "text-lime-400" : "text-zinc-500",
-                    )}
-                  />
-                  <span className="font-mono text-xs font-medium">
-                    {tier.label}
-                  </span>
-                </div>
-                {isUnlocked ? (
-                  <span className="text-xs text-lime-400 font-mono flex items-center gap-1">
-                    <i className="ri-check-line" /> unlocked
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => handleBuyHint(tier.tier)}
-                    disabled={isLoading || stars < tier.cost}
-                    className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors",
-                      stars >= tier.cost
-                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
-                        : "bg-[hsl(var(--surface))] text-zinc-600 border border-zinc-800 cursor-not-allowed",
-                    )}
-                  >
-                    {isLoading ? (
-                      <i className="ri-loader-4-line animate-spin" />
-                    ) : (
-                      <>
-                        <i className="ri-star-fill" /> {tier.cost}
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-              {isUnlocked && content && (
-                <div className="px-3 pb-3">
-                  <div className="text-xs text-zinc-300 font-mono leading-relaxed whitespace-pre-wrap border-t border-lime-500/10 pt-3">
-                    {content}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </aside>
-  );
-
-  // ── Code panel ────────────────────────────────────────────────────────
-  const CodePanel = (
-    <section
-      className={cn(
-        "min-h-0 overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]",
-        mobileTab === "code" ? "grid" : "hidden md:grid",
-      )}
-    >
-      {/* Toolbar */}
-      <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-[hsl(var(--surface))] border-b border-border shrink-0">
-        <i className="ri-information-line text-zinc-600 text-sm" />
-        <span className="text-xs font-mono text-zinc-600 hidden sm:inline">
-          {t("today.makeupMode")}
-        </span>
-        <div className="ml-auto">
-          {/* TODO: add more language */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-[hsl(var(--surface-raised))] text-xs font-mono text-zinc-400">
-            <i className="ri-code-s-slash-line text-lime-400" />
-            JavaScript
-            <span className="text-zinc-600 text-[10px]">only</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Editor */}
-      <div className="min-h-0 overflow-hidden">
-        <CodeEditor
-          value={code}
-          onChange={handleCodeChange}
-          language={getMonacoLanguage("JAVASCRIPT")}
-          disabled={isSolved}
-          pasteBlocked={false}
-          className="h-full min-h-0 rounded-none border-0"
-        />
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-border shrink-0 space-y-3">
-        {/* Solved banner */}
-        {isSolved && (
-          <div className="px-3 md:px-4 pt-3">
-            <div className="flex items-center gap-3 p-3 rounded-md bg-lime-500/5 border border-lime-500/20 flex-wrap">
-              <i className="ri-checkbox-circle-line text-lime-400 shrink-0" />
-              <span className="text-sm font-mono text-lime-400">
-                Make-up complete!
-              </span>
-              {starDelta !== null && (
-                <span
-                  className={cn(
-                    "flex items-center gap-1 text-sm font-mono",
-                    starDelta >= 0 ? "text-yellow-400" : "text-red-400",
-                  )}
-                >
-                  <i className="ri-star-fill text-xs" />
-                  {starDelta >= 0 ? `+${starDelta}` : starDelta} net
-                </span>
-              )}
-              <button
-                onClick={() => router.push("/today")}
-                className="ml-auto text-xs font-mono text-zinc-400 hover:text-foreground transition-colors"
-              >
-                {t("makeup.back")}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Test results */}
-        {solveResult && solveResult.results && !isSolved && (
-          <div className="px-3 md:px-4 pt-3 space-y-2 max-h-32 md:max-h-44 overflow-y-auto custom-scrollbar">
-            {solveResult.results.map((r) => (
-              <div
-                key={r.index}
-                className={cn(
-                  "rounded-md border p-3 text-xs font-mono space-y-2",
-                  r.passed
-                    ? "bg-green-500/5 border-green-500/20"
-                    : "bg-red-500/5 border-red-500/20",
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <i
-                    className={
-                      r.passed
-                        ? "ri-check-line text-green-400"
-                        : "ri-close-line text-red-400"
-                    }
-                  />
-                  <span
-                    className={r.passed ? "text-green-400" : "text-red-400"}
-                  >
-                    Test {r.index}
-                  </span>
-                  {r.passed && <span className="text-green-600">Passed</span>}
-                </div>
-                {!r.passed && (
-                  <div className="space-y-1 pl-5">
-                    {r.input && (
-                      <div className="flex gap-2 flex-wrap">
-                        <span className="text-zinc-600 w-20 shrink-0">
-                          Input
-                        </span>
-                        <span className="text-zinc-400 whitespace-pre break-all">
-                          {r.input}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex gap-2 flex-wrap">
-                      <span className="text-zinc-600 w-20 shrink-0">
-                        Expected
-                      </span>
-                      <span className="text-green-400 break-all">
-                        {r.expected}
-                      </span>
-                    </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <span className="text-zinc-600 w-20 shrink-0">
-                        Your output
-                      </span>
-                      <span className="text-red-400 break-all">
-                        {r.actual || <em className="text-zinc-600">empty</em>}
-                      </span>
-                    </div>
-                    {r.stderr && (
-                      <div className="flex gap-2 flex-wrap">
-                        <span className="text-zinc-600 w-20 shrink-0">
-                          Error
-                        </span>
-                        <span className="text-red-400 break-all">
-                          {r.stderr}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Action bar */}
-        <div className="border-t border-border p-3 md:p-4 bg-background">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-mono text-zinc-600 flex items-center gap-1.5 shrink-0">
-              <i className="ri-refresh-line" />
-              {attempts === 0
-                ? t("today.noAttempts")
-                : attempts !== 1
-                  ? t("today.attempts_plural", { count: attempts })
-                  : t("today.attempts", { count: attempts })}
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleResetCode}
-                disabled={pageState === "running" || isSolved}
-                className={cn(
-                  "h-10 shrink-0 rounded-md border border-border px-4 text-sm font-mono font-semibold text-zinc-400 transition-colors",
-                  "hover:border-primary hover:text-primary",
-                  "disabled:opacity-50 disabled:cursor-not-allowed",
-                )}
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <i className="ri-reset-left-line" />
-                  Reset
-                </span>
-              </button>
-              <button
-                onClick={handleRun}
-                disabled={pageState === "running" || isSolved}
-                className={cn(
-                  "flex items-center gap-2 px-4 md:px-5 py-2.5 rounded font-mono text-sm font-bold transition-all",
-                  isSolved
-                    ? "bg-[hsl(var(--surface-raised))] text-zinc-500 cursor-not-allowed"
-                    : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
-                )}
-              >
-                {pageState === "running" ? (
-                  <>
-                    <i className="ri-loader-4-line animate-spin" /> Running...
-                  </>
-                ) : (
-                  <>
-                    <i className="ri-play-fill" /> Run Code
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+    data.daysAgo === 1
+      ? t("makeup.yesterday")
+      : t("makeup.daysAgo", { count: data.daysAgo });
 
   return (
     <div className="h-[calc(100dvh-3.5rem)] overflow-hidden grid grid-rows-[auto_auto_minmax(0,1fr)] md:grid-rows-[auto_minmax(0,1fr)]">
@@ -650,39 +213,133 @@ export default function MakeupPage() {
         />
       )}
 
-      <div className="shrink-0">{Header}</div>
-      <div className="md:hidden shrink-0">{MobileTabs}</div>
-      <div className="min-h-0 overflow-hidden grid grid-cols-1 md:grid-cols-[50%_minmax(0,1fr)]">
-        {ProblemPanel}
-        {CodePanel}
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            onClick={() => router.push("/today")}
+            className="text-zinc-500 hover:text-foreground transition-colors shrink-0"
+          >
+            <i className="ri-arrow-left-line" />
+          </button>
+          <div className="w-px h-4 bg-border shrink-0" />
+          <span className="text-xs font-mono text-zinc-500 flex items-center gap-1.5 shrink-0">
+            <i className="ri-history-line" />
+            <span className="hidden sm:inline">Make-up ·</span> {daysLabel}
+          </span>
+          <div className="w-px h-4 bg-border shrink-0" />
+          <h1 className="font-heading font-bold text-sm md:text-base truncate">
+            {problem.title}
+          </h1>
+          <DifficultyBadge difficulty={problem.difficulty} />
+        </div>
+        {/* Left part */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="h-8 flex items-center gap-1.5 px-2.5 py-1 rounded border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 text-xs font-mono">
+            <i className="ri-star-fill" />
+            {data.starCost} {t("makeup.toAttempt")}
+          </div>
+          {data.makeupRewardGivenToday && (
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[hsl(var(--surface-raised))] border-zinc-700 text-zinc-500 text-xs font-mono">
+              <i className="ri-information-line" /> {t("makeup.noRewardToday")}
+            </div>
+          )}
+          <StarCount stars={stars} />
+        </div>
       </div>
-    </div>
-  );
-}
 
-function ProblemMarkdownSection({
-  children,
-  compact = false,
-}: {
-  children: ReactNode;
-  compact?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "prose prose-invert prose-sm max-w-none font-mono",
-        "prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-zinc-100",
-        "prose-p:text-zinc-300 prose-li:text-zinc-300 prose-strong:text-zinc-100",
-        "prose-code:bg-[hsl(var(--surface-raised))] prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
-        "prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-border prose-pre:text-zinc-200",
-        "prose-a:text-lime-400",
-        "prose-table:border prose-table:border-border",
-        "prose-th:border prose-th:border-border prose-th:bg-[hsl(var(--surface))] prose-th:px-3 prose-th:py-2",
-        "prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2",
-        compact && "prose-p:my-1 prose-pre:my-2 prose-ul:my-2 prose-ol:my-2",
-      )}
-    >
-      {children}
+      <MobileTabs activeTab={mobileTab} onTabChange={setMobileTab} />
+
+      <div className="min-h-0 overflow-hidden grid grid-cols-1 md:grid-cols-[50%_minmax(0,1fr)]">
+        <ProblemPanel
+          problem={problem}
+          mobileTab={mobileTab}
+          stars={stars}
+          hintsUnlocked={hintsUnlocked}
+          hintContents={hintContents}
+          hintLoading={hintLoading}
+          onBuyHint={handleBuyHint}
+        />
+
+        {/* Code panel */}
+        <section
+          className={cn(
+            "min-h-0 overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]",
+            mobileTab === "code" ? "grid" : "hidden md:grid",
+          )}
+        >
+          <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-[hsl(var(--surface))] border-b border-border shrink-0">
+            <i className="ri-information-line text-zinc-600 text-sm" />
+            <span className="text-xs font-mono text-zinc-600 hidden sm:inline">
+              {t("today.makeupMode")}
+            </span>
+            <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded border border-zinc-700 bg-[hsl(var(--surface-raised))] text-xs font-mono text-zinc-400">
+              <i className="ri-code-s-slash-line text-lime-400" />
+              JavaScript
+              <span className="text-zinc-600 text-[10px]">only</span>
+            </div>
+          </div>
+
+          <div className="min-h-0 overflow-hidden">
+            <CodeEditor
+              value={code}
+              onChange={handleCodeChange}
+              language={getMonacoLanguage("JAVASCRIPT")}
+              disabled={isSolved}
+              pasteBlocked={false}
+              className="h-full min-h-0 rounded-none border-0"
+            />
+          </div>
+
+          <div className="border-t border-border shrink-0">
+            {isSolved && (
+              <div className="px-3 md:px-4 pt-3">
+                <div className="flex items-center gap-3 p-3 rounded-md bg-lime-500/5 border border-lime-500/20 flex-wrap">
+                  <i className="ri-checkbox-circle-line text-lime-400 shrink-0" />
+                  <span className="text-sm font-mono text-lime-400">
+                    Make-up complete!
+                  </span>
+                  {starDelta !== null && (
+                    <span
+                      className={cn(
+                        "flex items-center gap-1 text-sm font-mono",
+                        starDelta >= 0 ? "text-yellow-400" : "text-red-400",
+                      )}
+                    >
+                      <i className="ri-star-fill text-xs" />
+                      {starDelta >= 0 ? `+${starDelta}` : starDelta} net
+                    </span>
+                  )}
+                  <button
+                    onClick={() => router.push("/today")}
+                    className="ml-auto text-xs font-mono text-zinc-400 hover:text-foreground transition-colors"
+                  >
+                    {t("makeup.backShort")}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {solveResult?.results && !isSolved && (
+              <div className="px-3 md:px-4 pt-3">
+                <TestResults
+                  solveResult={solveResult}
+                  starDelta={starDelta}
+                  showStreakInfo={false}
+                />
+              </div>
+            )}
+
+            <CodeActionBar
+              attempts={attempts}
+              pageState={pageState}
+              isSolved={isSolved}
+              onReset={handleResetCode}
+              onRun={handleRun}
+            />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

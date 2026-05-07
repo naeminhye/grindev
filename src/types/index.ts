@@ -80,6 +80,7 @@ export type DailyResponse = {
   makeupRewardGivenToday: boolean;
   loginBonus: number; // 0 if already received today
   userStats: UserStats;
+  skipCount: number;
 };
 
 export type NoProblemResponse = {

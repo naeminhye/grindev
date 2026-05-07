@@ -225,7 +225,7 @@ export default function ProfilePage() {
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-blue-400/60 inline-block" />{" "}
-            {t("profile.make-up")}
+            {t("profile.makeUp")}
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-[hsl(var(--surface-raised))] border border-zinc-700 inline-block" />{" "}

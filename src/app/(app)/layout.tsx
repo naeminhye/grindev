@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AppNav } from "@/components/layout/AppNav";
 import { ToastContainer } from "@/components/ui/Toast";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { TimezoneSync } from "@/components/TimezoneSync";
 
 export default async function AppLayout({
   children,
@@ -14,6 +15,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <TimezoneSync />
       <AppNav
         userName={session.user?.name ?? session.user?.email ?? ""}
         userImage={session.user?.image ?? null}

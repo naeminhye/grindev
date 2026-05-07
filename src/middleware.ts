@@ -9,7 +9,6 @@ export function middleware(req: NextRequest) {
   const isPublic = publicPaths.some((path) => pathname.startsWith(path));
   if (isPublic) return NextResponse.next();
 
-  // Check for Auth.js session cookie (works without importing Prisma)
   const sessionToken =
     req.cookies.get("authjs.session-token")?.value ??
     req.cookies.get("__Secure-authjs.session-token")?.value;
@@ -18,7 +17,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  return NextResponse.next();
+  // Forward user's timezone to API routes
+  const tz = req.cookies.get("tz")?.value;
+  const res = NextResponse.next();
+  if (tz) {
+    res.headers.set("x-timezone", decodeURIComponent(tz));
+  }
+
+  return res;
 }
 
 export const config = {
