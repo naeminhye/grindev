@@ -3,8 +3,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { subDays, format } from "date-fns";
 import type { ProfileStats } from "@/types";
+import { getTodayInTz } from "@/lib/streak";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const today = getTodayInTz(timeZone);
+
   const { userId, error } = await getAuthUserId();
   if (error) return NextResponse.json({ error }, { status: 401 });
 
@@ -61,7 +65,6 @@ export async function GET() {
   );
 
   // Last 30 days activity
-  const today = new Date();
   const recentActivity = [];
 
   // Regular solves — use solvedAt date

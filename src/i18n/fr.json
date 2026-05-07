@@ -1,0 +1,515 @@
+{
+  "landing": {
+    "nav": {
+      "signIn": "Se connecter",
+      "startFree": "Commencer gratuitement →",
+      "startFreeShort": "Commencer →"
+    },
+    "hero": {
+      "label": "Code · Tous les jours · Sans excuses",
+      "titleLine1": "Affûte",
+      "titleLine2": "tes compétences.",
+      "subtitleLine1": "Un problème DSA par jour. Pas de copier-coller. Pas de recherche Google.",
+      "subtitleLine2": "Les indices coûtent des étoiles — regagne-les en résolvant proprement.",
+      "cta": "Commencer le problème du jour"
+    },
+    "features": {
+      "dailyStreaks": "Séries quotidiennes",
+      "noPaste": "Pas de collage",
+      "hintEconomy": "Système d'indices",
+      "hardMode": "Mode difficile",
+      "makeUpTasks": "Rattrapages"
+    },
+    "stats": {
+      "problems": "Problèmes",
+      "hintTiers": "Niveaux d'indices",
+      "streakPotential": "Potentiel de série"
+    },
+    "howItWorks": {
+      "kicker": "Comment ça marche",
+      "title": "Trois étapes pour progresser.",
+      "steps": {
+        "dailyProblem": {
+          "title": "Récupère le problème du jour",
+          "desc": "Un problème DSA chaque jour. La difficulté suit ta préférence. Si tu manques un jour, ta série est réinitialisée."
+        },
+        "solveScratch": {
+          "title": "Résous-le depuis zéro",
+          "desc": "En mode difficile, l'éditeur bloque le collage. Tape chaque caractère toi-même. C'est là que l'apprentissage se passe."
+        },
+        "earnBadge": {
+          "title": "Gagne ton badge",
+          "desc": "Une résolution propre sans indice rapporte des étoiles. Les étoiles débloquent des indices les jours plus difficiles. Une petite boucle pour muscler le cerveau."
+        }
+      }
+    },
+    "hints": {
+      "kicker": "Système d'indices",
+      "title": "Bloqué ? Ça va te coûter.",
+      "tier": "Niveau",
+      "items": {
+        "tier1": {
+          "title": "Structure de données",
+          "desc": "Un petit coup de pouce vers la bonne structure de données."
+        },
+        "tier2": {
+          "title": "Nom de l'algorithme",
+          "desc": "Le motif ou l'algorithme qui résout ce problème."
+        },
+        "tier3": {
+          "title": "Pseudo-code",
+          "desc": "La logique étape par étape en langage clair."
+        },
+        "tier4": {
+          "title": "Explication complète",
+          "desc": "Explication complète. La série survit."
+        }
+      }
+    },
+    "footer": {
+      "titlePrefix": "Le problème du jour",
+      "titleHighlight": "t'attend.",
+      "cta": "Commencer gratuitement",
+      "startNow": "Commencer maintenant — c'est gratuit →",
+      "noCreditCard": "Pas de carte bancaire. Pas d'excuses.",
+      "copyright": "© 2026 GrinDev. Conçu pour les devs qui veulent progresser."
+    }
+  },
+  "nav": {
+    "today": "Aujourd'hui",
+    "history": "Historique",
+    "profile": "Profil",
+    "shop": "Boutique",
+    "settings": "Paramètres",
+    "signOut": "Se déconnecter"
+  },
+  "today": {
+    "loading": "Chargement du problème du jour...",
+    "noAttempts": "Aucune tentative",
+    "attempts": "{count} tentative",
+    "attempts_plural": "{count} tentatives",
+    "runCode": "Exécuter le code",
+    "submit": "Soumettre",
+    "running": "Exécution...",
+    "trialRunNote": "Exécution d'essai — ne compte pas comme soumission",
+    "reset": "Réinitialiser",
+    "alreadySolved": "Déjà résolu aujourd'hui !",
+    "normalMode": "Mode normal — moins d'étoiles",
+    "hardMode": "Mode difficile — collage désactivé",
+    "noProblemToday": "Jour de repos !",
+    "noProblemDesc": "Aucun problème n'est prévu aujourd'hui. Respire un peu — tu l'as mérité.",
+    "bonusStars": "+{count} étoiles",
+    "bonusDesc": "Désolé pour l'interruption — voici un bonus pour continuer !",
+    "bonusAlreadyGiven": "Tu as déjà reçu tes étoiles bonus aujourd'hui.",
+    "comeBackTomorrow": "Reviens demain pour un nouveau problème.",
+    "pasteAllowed": "Mode normal — collage autorisé, moins d'étoiles",
+    "makeupMode": "Mode rattrapage — règles normales appliquées",
+    "solved": "Problème du jour résolu !",
+    "streakDays": "Série de {count} jour(s)",
+    "hardModeGate": {
+      "title": "Mode difficile activé",
+      "rulesTitle": "Règles",
+      "rules": {
+        "timer": "Le minuteur démarre dès que tu cliques sur Commencer — le temps de lecture est inclus.",
+        "noPaste": "Le collage est désactivé dans l'éditeur de code.",
+        "stars": "Plus d'étoiles à gagner, mais −2 étoiles si le temps est écoulé.",
+        "locked": "Le mode ne peut plus être modifié après le démarrage."
+      },
+      "changeMode": "Changer de mode",
+      "startTimer": "Démarrer le minuteur"
+    }
+  },
+  "problem": {
+    "examples": "Exemples",
+    "constraints": "Contraintes",
+    "input": "Entrée",
+    "output": "Sortie",
+    "explanation": "Explication",
+    "hints": "Indices",
+    "costsStars": "coûte des étoiles",
+    "unlocked": "débloqué"
+  },
+  "hints": {
+    "tier1": "Structure de données",
+    "tier2": "Nom de l'algorithme",
+    "tier3": "Pseudo-code",
+    "tier4": "Explication complète"
+  },
+  "testResults": {
+    "passed": "Réussi",
+    "expected": "Attendu",
+    "yourOutput": "Ta sortie",
+    "error": "Erreur",
+    "empty": "vide"
+  },
+  "success": {
+    "allTestsPassed": "Tous les tests sont passés !",
+    "newRecord": "🔥 Nouveau record personnel !",
+    "streak": "Série",
+    "starsEarned": "Étoiles gagnées",
+    "cleanSolve": "Résolution propre",
+    "hardMode": "Mode difficile",
+    "timeExpired": "Temps écoulé",
+    "continue": "Continuer →"
+  },
+  "makeup": {
+    "title": "Rattrapages",
+    "desc": "Rattrape les problèmes manqués.",
+    "loading": "Chargement du problème de rattrapage...",
+    "firstReward": "La première résolution de rattrapage du jour rapporte des étoiles (moins le coût de tentative). Ensuite, les rattrapages supplémentaires coûtent seulement des étoiles.",
+    "rewardGiven": "Tu as déjà reçu ta récompense de rattrapage aujourd'hui. Les rattrapages supplémentaires coûtent des étoiles sans récompense.",
+    "allCaughtUp": "Tout est rattrapé !",
+    "noPastProblems": "Aucun problème manqué. Reviens demain.",
+    "completed": "Terminé",
+    "yesterday": "Hier",
+    "daysAgo": "Il y a {count} jours",
+    "toAttempt": "pour tenter",
+    "noRewardToday": "Aucune récompense aujourd'hui",
+    "start": "Commencer",
+    "needStars": "Besoin de ⭐",
+    "done": "Terminé",
+    "back": "← Retour à aujourd'hui",
+    "backShort": "← Retour"
+  },
+  "history": {
+    "title": "Historique",
+    "desc": "Tes résolutions passées.",
+    "total": "Total",
+    "clean": "Propres",
+    "hardMode": "Mode difficile",
+    "usedHints": "Indices utilisés",
+    "all": "Tout",
+    "noSolves": "Aucune résolution trouvée.",
+    "clearFilter": "Effacer le filtre",
+    "solves": "{count} résolution",
+    "solves_plural": "{count} résolutions",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "daysAgo": "il y a {count} j"
+  },
+  "profile": {
+    "title": "Profil",
+    "desc": "Tes statistiques et ta progression.",
+    "streak": "Série",
+    "best": "Meilleur",
+    "stars": "Étoiles",
+    "days": "jours",
+    "totalSolved": "Total résolu",
+    "cleanSolves": "Résolutions propres",
+    "avgAttempts": "Tentatives moy.",
+    "cleanRate": "Taux de résolution propre",
+    "cleanRateDesc": "{clean} propres sur {total} au total",
+    "last30Days": "30 derniers jours",
+    "solved": "Résolu",
+    "makeUp": "Rattrapage",
+    "missed": "Manqué",
+    "byTopic": "Par sujet",
+    "byDifficulty": "Par difficulté",
+    "normalMode": "Mode normal",
+    "hardMode": "Mode difficile"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "desc": "Configure ton expérience.",
+    "preferredDifficulty": "Difficulté préférée",
+    "preferredDifficultyDesc": "Nous t'attribuerons le problème disponible le plus proche si ton niveau préféré n'est pas prévu.",
+    "any": "Tous",
+    "challengeMode": "Mode défi",
+    "challengeModeDesc": "Le mode est verrouillé dès que tu commences un problème. Il se réinitialise chaque jour.",
+    "normal": "Normal",
+    "hard": "Difficile",
+    "pasteAllowed": "Collage autorisé",
+    "noTimer": "Pas de minuteur",
+    "cleanSolveStars": "+3 étoiles pour une résolution propre",
+    "hintSolveStars": "+1 étoile avec indice",
+    "noPaste": "Pas de collage",
+    "timerActive": "Minuteur actif",
+    "hardCleanStars": "+8 étoiles pour une résolution propre",
+    "hardHintStars": "+3 étoiles avec indice",
+    "timeExpiredPenalty": "−2 étoiles si le temps est écoulé",
+    "timeLimits": "Limites de temps du mode difficile",
+    "easy": "Facile",
+    "medium": "Moyen",
+    "appearance": "Apparence",
+    "appearanceDesc": "Choisis ton thème de couleur préféré.",
+    "darkTheme": "Sombre",
+    "lightTheme": "Clair",
+    "language": "Langue",
+    "languageDesc": "Choisis la langue de l'interface.",
+    "saved": "Enregistré",
+    "difficultyNotes": {
+      "any": "Tu recevras un problème aléatoire chaque jour.",
+      "specific": "Tu recevras des problèmes {difficulty} quand ils sont disponibles. Si aucun n'est prévu, tu recevras la difficulté la plus proche.",
+      "easy": "faciles",
+      "medium": "moyens",
+      "hard": "difficiles"
+    },
+    "practiceMode": {
+      "title": "Mode d’entraînement",
+      "desc": "Choisissez ce que vous voulez pratiquer chaque jour. Les changements prendront effet la prochaine fois que vous ouvrirez la page Aujourd’hui.",
+      "modes": {
+        "dsa": {
+          "label": "Problèmes DSA",
+          "desc": "Défis de code quotidiens. Résolvez-les dans l’éditeur de code."
+        },
+        "quiz": {
+          "label": "Quiz de connaissances",
+          "desc": "Questions à choix multiple sur JS, CSS, les bases de données et plus encore."
+        }
+      }
+    }
+  },
+  "auth": {
+    "signInToContinue": "Connecte-toi pour continuer",
+    "noAccountNeeded": "Pas besoin de compte — connecte-toi pour commencer.",
+    "tagline": "Affûte tes compétences. Chaque jour.",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithGithub": "Continuer avec GitHub"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue.",
+    "noScheduled": "Aucun problème prévu aujourd'hui.",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer"
+  },
+  "streak": {
+    "day": "jour",
+    "days": "jours"
+  },
+  "help": {
+    "buttonTitle": "Aide et instructions",
+    "title": "Comment utiliser GrinDev",
+    "subtitle": "Tout ce que tu dois savoir",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "tipPrefix": "Astuce : le raccourci clavier",
+    "tipSuffix": "ouvre cette fenêtre",
+    "gotIt": "Compris",
+    "sections": {
+      "dailyProblems": {
+        "title": "Problèmes quotidiens",
+        "items": [
+          {
+            "label": "Un problème par jour",
+            "desc": "Un nouveau problème DSA est prévu chaque jour. Résous-le avant minuit pour garder ta série."
+          },
+          {
+            "label": "Difficulté préférée",
+            "desc": "Définis ta difficulté préférée dans Paramètres. Nous choisissons la plus proche disponible si ton niveau n'est pas prévu."
+          },
+          {
+            "label": "Déjà résolu ?",
+            "desc": "Une fois le problème du jour résolu, tu verras la section Rattrapages."
+          }
+        ]
+      },
+      "streaks": {
+        "title": "Séries",
+        "items": [
+          {
+            "label": "Garde-la active",
+            "desc": "Résous au moins un problème par jour pour maintenir ta série. Si tu manques un jour, elle retombe à 0."
+          },
+          {
+            "label": "Compteur de série",
+            "desc": "Affiché en haut à droite. Ta plus longue série est suivie sur la page Profil."
+          }
+        ]
+      },
+      "stars": {
+        "title": "Étoiles",
+        "items": [
+          {
+            "label": "Gagner des étoiles",
+            "desc": "Mode normal : +3 résolution propre, +1 avec indices. Mode difficile : +8 propre, +3 avec indices."
+          },
+          {
+            "label": "Dépenser des étoiles",
+            "desc": "Débloque des indices (1–15 ⭐) et paie les rattrapages (5–25 ⭐ selon l'ancienneté)."
+          },
+          {
+            "label": "Étoiles bonus",
+            "desc": "Les jours sans problème prévu, tu recevras des étoiles bonus en compensation."
+          }
+        ]
+      },
+      "hints": {
+        "title": "Indices",
+        "items": [
+          {
+            "label": "Niveau 1 — 1 ⭐",
+            "desc": "Un indice vers la bonne structure de données."
+          },
+          {
+            "label": "Niveau 2 — 3 ⭐",
+            "desc": "Le nom de l'algorithme ou du motif."
+          },
+          {
+            "label": "Niveau 3 — 7 ⭐",
+            "desc": "Pseudo-code étape par étape."
+          },
+          {
+            "label": "Niveau 4 — 15 ⭐",
+            "desc": "Solution complète. La série reste active, mais pas de badge de résolution propre."
+          }
+        ]
+      },
+      "challengeModes": {
+        "title": "Modes défi",
+        "items": [
+          {
+            "label": "Mode normal",
+            "desc": "Le collage est autorisé. Pas de minuteur. Moins d'étoiles attribuées."
+          },
+          {
+            "label": "Mode difficile",
+            "desc": "Collage désactivé. Le minuteur compte à rebours (Facile 15 min, Moyen 30 min, Difficile 45 min). Récompenses plus élevées, mais −2⭐ si le temps expire."
+          },
+          {
+            "label": "Verrouillage du mode",
+            "desc": "Le mode est verrouillé dès que tu commences à écrire. Change-le dans Paramètres avant de commencer."
+          }
+        ]
+      },
+      "makeUpTasks": {
+        "title": "Rattrapages",
+        "items": [
+          {
+            "label": "Rattraper les jours manqués",
+            "desc": "Après avoir résolu le problème du jour, tu peux tenter les problèmes des jours précédents manqués."
+          },
+          {
+            "label": "Coût en étoiles",
+            "desc": "Les rattrapages coûtent des étoiles : 5⭐ pour hier, jusqu'à 25⭐ pour les jours plus anciens."
+          },
+          {
+            "label": "Une récompense par jour",
+            "desc": "Seul le premier rattrapage résolu aujourd'hui rapporte des étoiles. Les autres coûtent seulement des étoiles, sans récompense."
+          }
+        ]
+      },
+      "codeEditor": {
+        "title": "Éditeur de code",
+        "items": [
+          {
+            "label": "Écrire depuis zéro",
+            "desc": "En mode difficile, le collage est désactivé — tu dois taper ta solution caractère par caractère."
+          },
+          {
+            "label": "Exécuter le code",
+            "desc": "Exécute ton code contre des tests cachés. Les résultats affichent l'attendu et ta sortie en cas d'échec."
+          },
+          {
+            "label": "Réinitialiser",
+            "desc": "Réinitialise l'éditeur au modèle de départ. Une confirmation est requise."
+          }
+        ]
+      }
+    }
+  },
+  "shop": {
+    "title": "Boutique d'étoiles",
+    "desc": "Dépense tes étoiles en bonus.",
+    "available": "Disponible",
+    "buy": "Acheter",
+    "buying": "Achat...",
+    "confirmLabel": "Confirmer",
+    "needMoreStars": "Besoin de plus de ⭐",
+    "items": {
+      "streakFreeze": {
+        "title": "Gel de série",
+        "desc": "Protège ta série pour un jour manqué. Ta série reste intacte même si tu sautes un jour.",
+        "stock": "Tu as {count} gel(s)"
+      },
+      "problemSkip": {
+        "title": "Passer le problème",
+        "desc": "Pas envie du problème du jour ? Passe-le et reçois un problème aléatoire de toute la banque.",
+        "stock": "Usage unique"
+      }
+    },
+    "confirm": {
+      "streakFreeze": {
+        "title": "Acheter un gel de série",
+        "message": "Dépenser {cost}⭐ pour un gel de série ? Il s'activera automatiquement la prochaine fois que tu manques un jour."
+      },
+      "problemSkip": {
+        "title": "Passer le problème du jour",
+        "message": "Dépenser {cost}⭐ pour obtenir un problème aléatoire au lieu de celui prévu aujourd'hui ?"
+      }
+    },
+    "messages": {
+      "streakFreezePurchased": "Gel de série acheté ! Tu as maintenant {count} gel(s).",
+      "problemSkipped": "Problème passé ! Va sur Aujourd'hui pour voir ton nouveau problème."
+    },
+    "comingSoon": {
+      "title": "Bientôt disponible",
+      "desc": "Plus de façons de gagner et dépenser des étoiles arrivent — packs d'étoiles, abonnements et fonctionnalités exclusives."
+    },
+    "transactions": {
+      "title": "Transactions récentes",
+      "reasons": {
+        "solveCleanNormal": "Résolution propre (Normal)",
+        "solveCleanHard": "Résolution propre (Difficile)",
+        "solveHintsNormal": "Résolution avec indices",
+        "solveHintsHard": "Résolution difficile avec indices",
+        "hintPurchase": "Indice débloqué",
+        "makeupCost": "Tentative de rattrapage",
+        "makeupReward": "Récompense de rattrapage",
+        "streakFreezePurchase": "Gel de série acheté",
+        "problemSkip": "Problème passé",
+        "dailyLoginBonus": "Bonus de connexion quotidien",
+        "noProblemBonus": "Bonus de jour sans problème",
+        "streakMilestone": "Bonus de palier de série",
+        "firstSolveBonus": "Bonus de première résolution",
+        "adminAdjustment": "Ajustement admin"
+      }
+    },
+    "date": {
+      "today": "Aujourd'hui",
+      "yesterday": "Hier",
+      "daysAgo": "il y a {count} j"
+    }
+  },
+  "ai": {
+    "explain": "Expliquer le problème",
+    "thinking": "Réflexion...",
+    "title": "Explication IA",
+    "errorFallback": "Impossible de charger l'explication. Réessaie.",
+    "poweredBy": "Propulsé par {model}",
+    "hintTiersAvailable": "Les niveaux d'indices restent disponibles ci-dessous pour un guidage pas à pas."
+  },
+  "admin": {
+    "config": {
+      "title": "Configuration du jeu",
+      "desc": "Récompenses en étoiles et limites de temps.",
+      "saving": "Enregistrement...",
+      "saved": "Enregistré !",
+      "timeLimits": {
+        "title": "Limites de temps du mode difficile",
+        "desc": "Secondes par difficulté en mode défi difficile.",
+        "min": "Min",
+        "sec": "Sec",
+        "total": "= {seconds}s au total"
+      },
+      "starRewards": {
+        "title": "Récompenses en étoiles",
+        "desc": "Étoiles attribuées selon le type de résolution. Les valeurs négatives retirent des étoiles.",
+        "type": "Type",
+        "cleanSolve": "✓ Résolution propre",
+        "withHints": "💡 Avec indices"
+      },
+      "modes": {
+        "normal": "🛡 Mode normal",
+        "hard": "⚔ Mode défi difficile"
+      },
+      "timeExpiredPenalty": {
+        "title": "Pénalité de temps écoulé (Mode difficile)",
+        "desc": "Étoiles retirées lorsque le minuteur du mode difficile arrive à zéro"
+      }
+    }
+  }
+}

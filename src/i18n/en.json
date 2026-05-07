@@ -243,6 +243,20 @@
       "easy": "Easy",
       "medium": "Medium",
       "hard": "Hard"
+    },
+    "practiceMode": {
+      "title": "Practice Mode",
+      "desc": "Choose what you practice each day. Changes take effect the next time you open Today.",
+      "modes": {
+        "dsa": {
+          "label": "DSA Problems",
+          "desc": "Daily coding challenges. Solve in the code editor."
+        },
+        "quiz": {
+          "label": "Knowledge Quiz",
+          "desc": "Multiple-choice questions on JS, CSS, databases and more."
+        }
+      }
     }
   },
   "auth": {

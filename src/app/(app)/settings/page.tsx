@@ -7,6 +7,57 @@ import { useTheme, type Theme } from "@/lib/theme";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { PreferredDifficulty, Settings } from "@/types";
 
+// TODO: add to common
+const LANGUAGES = [
+  {
+    id: "en",
+    label: "English",
+    nativeName: "English",
+    flag: "🇺🇸",
+  },
+  {
+    id: "vi",
+    label: "Vietnamese",
+    nativeName: "Tiếng Việt",
+    flag: "🇻🇳",
+  },
+  {
+    id: "ko",
+    label: "Korean",
+    nativeName: "한국어",
+    flag: "🇰🇷",
+  },
+  {
+    id: "ja",
+    label: "Japanese",
+    nativeName: "日本語",
+    flag: "🇯🇵",
+  },
+  {
+    id: "zh",
+    label: "Chinese",
+    nativeName: "中文",
+    flag: "🇨🇳",
+  },
+  {
+    id: "th",
+    label: "Thai",
+    nativeName: "ไทย",
+    flag: "🇹🇭",
+  },
+  {
+    id: "fr",
+    label: "French",
+    nativeName: "Français",
+    flag: "🇫🇷",
+  },
+] as {
+  id: Locale;
+  label: string;
+  nativeName: string;
+  flag: string;
+}[];
+
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { locale, setLocale, t } = useI18n();
@@ -129,45 +180,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {(
-            [
-              {
-                id: "en",
-                label: "English",
-                nativeName: "English",
-                flag: "🇺🇸",
-              },
-              {
-                id: "vi",
-                label: "Vietnamese",
-                nativeName: "Tiếng Việt",
-                flag: "🇻🇳",
-              },
-              {
-                id: "ko",
-                label: "Korean",
-                nativeName: "한국어",
-                flag: "🇰🇷",
-              },
-              {
-                id: "ja",
-                label: "Japanese",
-                nativeName: "日本語",
-                flag: "🇯🇵",
-              },
-              {
-                id: "zh",
-                label: "Chinese",
-                nativeName: "中文",
-                flag: "🇨🇳",
-              },
-            ] as {
-              id: Locale;
-              label: string;
-              nativeName: string;
-              flag: string;
-            }[]
-          ).map((lang) => {
+          {LANGUAGES.map((lang) => {
             const active = locale === lang.id;
 
             return (
@@ -216,36 +229,39 @@ export default function SettingsPage() {
       {/* Practice Mode */}
       <div className="space-y-4">
         <div>
-          <h2 className="font-heading font-bold text-base">Practice Mode</h2>
+          <h2 className="font-heading font-bold text-base">
+            {t("settings.practiceMode.title")}
+          </h2>
           <p className="text-xs text-zinc-500 font-mono mt-1">
-            Choose what you practice each day. Changes take effect the next time
-            you open Today.
+            {t("settings.practiceMode.desc")}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {(
             [
               {
                 id: "DSA",
-                label: "DSA Problems",
+                labelKey: "settings.practiceMode.modes.dsa.label",
                 icon: "ri-code-s-slash-line",
-                desc: "Daily coding challenges. Solve in the code editor.",
+                descKey: "settings.practiceMode.modes.dsa.desc",
               },
               {
                 id: "QUIZ",
-                label: "Knowledge Quiz",
+                labelKey: "settings.practiceMode.modes.quiz.label",
                 icon: "ri-questionnaire-line",
-                desc: "Multiple-choice questions on JS, CSS, databases and more.",
+                descKey: "settings.practiceMode.modes.quiz.desc",
               },
             ] as {
               id: "DSA" | "QUIZ";
-              label: string;
+              labelKey: string;
               icon: string;
-              desc: string;
+              descKey: string;
             }[]
           ).map((mode) => (
             <button
               key={mode.id}
+              type="button"
               onClick={() => save({ practiceMode: mode.id })}
               className={cn(
                 "p-4 rounded-md border text-left transition-all space-y-2",
@@ -254,18 +270,22 @@ export default function SettingsPage() {
                   : "border-border bg-zinc-900 hover:border-zinc-600",
               )}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <i className={`${mode.icon} text-lime-400`} />
-                  <span className="font-heading font-bold text-sm">
-                    {mode.label}
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <i className={`${mode.icon} text-lime-400 shrink-0`} />
+                  <span className="font-heading font-bold text-sm truncate">
+                    {t(mode.labelKey)}
                   </span>
                 </div>
+
                 {settings.practiceMode === mode.id && (
-                  <i className="ri-check-line text-lime-400" />
+                  <i className="ri-check-line text-lime-400 shrink-0" />
                 )}
               </div>
-              <p className="text-xs font-mono text-zinc-500">{mode.desc}</p>
+
+              <p className="text-xs font-mono text-zinc-500 leading-relaxed">
+                {t(mode.descKey)}
+              </p>
             </button>
           ))}
         </div>

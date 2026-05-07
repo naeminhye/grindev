@@ -243,6 +243,20 @@
       "easy": "Dễ",
       "medium": "Trung bình",
       "hard": "Khó"
+    },
+    "practiceMode": {
+      "title": "Chế độ luyện tập",
+      "desc": "Chọn nội dung bạn muốn luyện mỗi ngày. Thay đổi sẽ có hiệu lực vào lần tiếp theo bạn mở trang Hôm nay.",
+      "modes": {
+        "dsa": {
+          "label": "Bài tập DSA",
+          "desc": "Thử thách code hằng ngày. Giải trực tiếp trong trình viết code."
+        },
+        "quiz": {
+          "label": "Câu hỏi kiến thức",
+          "desc": "Câu hỏi trắc nghiệm về JS, CSS, cơ sở dữ liệu và nhiều chủ đề khác."
+        }
+      }
     }
   },
   "auth": {
