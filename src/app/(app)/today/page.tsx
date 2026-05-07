@@ -9,8 +9,14 @@ export default function TodayPage() {
 
   useEffect(() => {
     fetch("/api/settings")
-      .then((r) => r.json())
-      .then((s) => setPracticeMode(s.practiceMode ?? "DSA"));
+      .then((r) => {
+        if (!r.ok) return { practiceMode: "DSA" };
+        return r
+          .text()
+          .then((text) => (text ? JSON.parse(text) : { practiceMode: "DSA" }));
+      })
+      .then((s) => setPracticeMode(s.practiceMode ?? "DSA"))
+      .catch(() => setPracticeMode("DSA"));
   }, []);
 
   if (practiceMode === null) {

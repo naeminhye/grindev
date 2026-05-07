@@ -171,6 +171,20 @@ export async function POST(req: Request) {
       where: { id: userId },
       data: { stars: newStars },
     });
+
+    await prisma.starTransaction.create({
+      data: {
+        userId,
+        amount: starDelta,
+        reason: cleanSolve
+          ? challengeMode === "HARD"
+            ? "SOLVE_CLEAN_HARD"
+            : "SOLVE_CLEAN_NORMAL"
+          : challengeMode === "HARD"
+            ? "SOLVE_HINTS_HARD"
+            : "SOLVE_HINTS_NORMAL",
+      },
+    });
   }
 
   return NextResponse.json({

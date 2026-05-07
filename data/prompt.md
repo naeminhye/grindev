@@ -511,4 +511,37 @@ Do not create hidden difficulty.
 The user should know from the problem statement when brute force is not enough.
 
 
+Quiz Template
+
+{
+  "title": "My Quiz Title",
+  "topic": "JAVASCRIPT",
+  "difficulty": "EASY",
+  "questions": [
+    {
+      "question": "What is the output of typeof null?",
+      "options": [
+        "\"null\"",
+        "\"object\"",
+        "\"undefined\"",
+        "null"
+      ],
+      "correctIndex": 1,
+      "explanation": "typeof null returns \"object\" due to a historical bug in JavaScript."
+    },
+    {
+      "question": "What does the following code log?",
+      "code": "const arr = [1, 2, 3];\nconsole.log(arr[5]);",
+      "options": [
+        "null",
+        "0",
+        "undefined",
+        "Error"
+      ],
+      "correctIndex": 2,
+      "explanation": "Accessing an array index that doesn't exist returns undefined, not null or an error."
+    }
+  ]
+}
+
 ```

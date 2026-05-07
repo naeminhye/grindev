@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { QuizImportButton } from "@/components/admin/QuizImportButton";
 
 type Quiz = {
   id: string;
@@ -74,6 +75,7 @@ export default function AdminQuizzesPage() {
           >
             <i className="ri-calendar-line" /> Schedule
           </Link>
+          <QuizImportButton onImported={() => window.location.reload()} />
           <Link
             href="/admin/quizzes/new"
             className="flex items-center gap-2 px-4 py-2 bg-lime-400 text-zinc-950 font-mono text-sm font-bold rounded hover:bg-lime-300 transition-colors"

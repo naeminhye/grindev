@@ -15,6 +15,7 @@ export async function GET() {
         challengeMode: true,
         preferredDifficulty: true,
         practiceMode: true,
+        preferredQuizTopic: true,
       },
     }),
     prisma.appConfig.findUnique({ where: { key: "NO_PROBLEM_BONUS_STARS" } }),
@@ -25,6 +26,7 @@ export async function GET() {
     preferredDifficulty: user?.preferredDifficulty ?? "ANY",
     noProblemBonusStars: bonusConfig ? parseInt(bonusConfig.value) : 5,
     practiceMode: user?.practiceMode ?? "DSA",
+    preferredQuizTopic: user?.preferredQuizTopic ?? null,
   });
 }
 
@@ -39,6 +41,21 @@ export async function PATCH(req: Request) {
       preferredDifficulty: z.enum(["ANY", "EASY", "MEDIUM", "HARD"]).optional(),
       noProblemBonusStars: z.number().int().min(0).max(100).optional(),
       practiceMode: z.enum(["DSA", "QUIZ"]).optional(),
+      preferredQuizTopic: z
+        .enum([
+          "JAVASCRIPT",
+          "TYPESCRIPT",
+          "PYTHON",
+          "CSS",
+          "HTML",
+          "REACT",
+          "NODE",
+          "DATABASES",
+          "SYSTEM_DESIGN",
+          "GENERAL_CS",
+        ])
+        .nullable()
+        .optional(),
     })
     .safeParse(body);
 

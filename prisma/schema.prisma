@@ -26,11 +26,12 @@ model User {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @default(now()) @updatedAt
 
-  solves           Solve[]
-  hintPurchases    HintPurchase[]
-  starTransactions StarTransaction[]
-  quizAttempts     QuizAttempt[]
-  practiceMode     PracticeMode      @default(DSA)
+  solves             Solve[]
+  hintPurchases      HintPurchase[]
+  starTransactions   StarTransaction[]
+  quizAttempts       QuizAttempt[]
+  practiceMode       PracticeMode      @default(DSA)
+  preferredQuizTopic QuizTopic?
 }
 
 model StarTransaction {
