@@ -483,7 +483,8 @@
         "quizReward": "测验奖励",
         "hintDiscountPurchase": "提示折扣",
         "doubleStarsPurchase": "双倍星星",
-        "extraAttemptPurchase": "第二次机会"
+        "extraAttemptPurchase": "第二次机会",
+        "hintDiscountUsed": "已使用提示折扣"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "超时惩罚（困难模式）",
         "desc": "困难模式计时器结束时扣除的星星"
+      },
+      "aiFeatures": {
+        "title": "AI 功能",
+        "desc": "用户使用 AI 功能时消耗的星星费用。如果请求失败，星星会退还。",
+        "items": {
+          "explain": {
+            "label": "AI 题目讲解",
+            "desc": "解释 DSA 题目在要求什么，并提示解题思路"
+          },
+          "codeReview": {
+            "label": "AI 代码评审",
+            "desc": "评审已提交代码的正确性、复杂度和代码风格"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "Quiz 星星奖励",
+        "desc": "根据 quiz 得分百分比发放星星。",
+        "items": {
+          "perfect": "100% 得分",
+          "great": "80–99% 得分",
+          "pass": "60–79% 得分",
+          "passThreshold": "通过阈值 (%)"
+        }
       }
     }
   }

@@ -5,6 +5,7 @@ import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
 import { getTodayUTC } from "@/lib/streak";
 import { type MakeupProblemResponse, type HintData } from "@/types";
 import { parseProblemExamples } from "@/lib/problem-utils";
+import { DEFAULT_EXPLAIN_COST } from "../../ai/explain/route";
 
 export async function GET(
   _req: Request,
@@ -64,6 +65,19 @@ export async function GET(
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   const makeupRewardGivenToday = user?.lastMakeupDate === today;
+  const [explainCostConfig, hintDiscountBought, hintDiscountUsed] =
+    await Promise.all([
+      prisma.appConfig.findUnique({ where: { key: "AI_EXPLAIN_COST" } }),
+      prisma.starTransaction.count({
+        where: { userId, reason: "HINT_DISCOUNT_PURCHASE" },
+      }),
+      prisma.starTransaction.count({
+        where: { userId, reason: "HINT_DISCOUNT_USED" as any },
+      }),
+    ]);
+  const reviewCostConfig = await prisma.appConfig.findUnique({
+    where: { key: "AI_CODE_REVIEW_COST" },
+  });
 
   const response: MakeupProblemResponse = {
     problem: {
@@ -92,6 +106,11 @@ export async function GET(
       lastSolvedAt: user?.lastSolvedAt?.toISOString() ?? null,
       streakFreezeCount: 0,
     },
+    hintDiscount: Math.max(0, hintDiscountBought - hintDiscountUsed),
+    explainCost: explainCostConfig
+      ? parseInt(explainCostConfig.value)
+      : DEFAULT_EXPLAIN_COST,
+    reviewCost: reviewCostConfig ? parseInt(reviewCostConfig.value) : 5,
   };
 
   return NextResponse.json(response);

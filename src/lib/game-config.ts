@@ -65,8 +65,14 @@ export async function getTimeLimit(
   return getConfigValue(prisma, key, TIME_LIMIT_DEFAULTS[key]);
 }
 
+export const AI_COST_DEFAULTS = {
+  AI_EXPLAIN_COST: 5,
+  AI_CODE_REVIEW_COST: 5,
+} as const;
+
 export const allKeys = [
   ...Object.keys(STAR_REWARD_DEFAULTS),
   ...Object.keys(TIME_LIMIT_DEFAULTS),
   ...Object.keys(QUIZ_STAR_DEFAULTS),
+  ...Object.keys(AI_COST_DEFAULTS),
 ];

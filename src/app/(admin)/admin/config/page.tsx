@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { STAR_REWARD_DEFAULTS, TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
+import {
+  AI_COST_DEFAULTS,
+  STAR_REWARD_DEFAULTS,
+  TIME_LIMIT_DEFAULTS,
+} from "@/lib/game-config";
 import { useI18n } from "@/lib/i18n";
 import { QUIZ_STAR_DEFAULTS } from "@/lib/quiz-rewards";
 
@@ -17,6 +21,7 @@ export default function AdminConfigPage() {
   const [config, setConfig] = useState<{
     starRewards: Config;
     timeLimits: Config;
+    aiCosts: Config;
   } | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -47,6 +52,10 @@ export default function AdminConfigPage() {
               key in TIME_LIMIT_DEFAULTS
                 ? { ...c.timeLimits, [key]: value }
                 : c.timeLimits,
+            aiCosts:
+              key in AI_COST_DEFAULTS
+                ? { ...c.aiCosts, [key]: value }
+                : c.aiCosts,
           }
         : c,
     );
@@ -285,46 +294,115 @@ export default function AdminConfigPage() {
           />
         </div>
       </section>
+
+      {/* AI Features */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="font-heading font-bold text-base">
+            {t("admin.config.aiFeatures.title")}
+          </h2>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            {t("admin.config.aiFeatures.desc")}
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {[
+            {
+              key: "AI_EXPLAIN_COST",
+              labelKey: "admin.config.aiFeatures.items.explain.label",
+              icon: "ri-sparkling-line",
+              color: "text-blue-400",
+              descKey: "admin.config.aiFeatures.items.explain.desc",
+            },
+            {
+              key: "AI_CODE_REVIEW_COST",
+              labelKey: "admin.config.aiFeatures.items.codeReview.label",
+              icon: "ri-code-ai-line",
+              color: "text-purple-400",
+              descKey: "admin.config.aiFeatures.items.codeReview.desc",
+            },
+          ].map(({ key, labelKey, icon, color, descKey }) => (
+            <div
+              key={key}
+              className="flex items-center gap-4 p-4 bg-zinc-900 border border-border rounded-md"
+            >
+              <div
+                className={cn(
+                  "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                  `bg-current/10`,
+                )}
+              >
+                <i className={cn(icon, color, "text-lg")} />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className={cn("text-sm font-mono font-bold", color)}>
+                  {t(labelKey)}
+                </p>
+                <p className="text-xs font-mono text-zinc-600 mt-0.5">
+                  {t(descKey)}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <i className="ri-star-fill text-yellow-400 text-sm" />
+                <input
+                  type="number"
+                  value={config.aiCosts[key] ?? 5}
+                  min={0}
+                  max={50}
+                  onChange={(e) => set(key, parseInt(e.target.value))}
+                  className="w-16 px-2 py-1.5 bg-zinc-800 border border-zinc-700 rounded text-center text-zinc-200 font-mono text-sm focus:outline-none focus:border-lime-500/50"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Quiz star rewards */}
       <section className="space-y-4">
         <div>
           <h2 className="font-heading font-bold text-base">
-            Quiz Star Rewards
+            {t("admin.config.quizRewards.title")}
           </h2>
           <p className="text-xs text-zinc-500 font-mono mt-1">
-            Stars awarded based on quiz score percentage.
+            {t("admin.config.quizRewards.desc")}
           </p>
         </div>
+
         <div className="space-y-3">
           {[
             {
               key: "QUIZ_STARS_PERFECT",
-              label: "100% score",
+              labelKey: "admin.config.quizRewards.items.perfect",
               color: "text-lime-400",
             },
             {
               key: "QUIZ_STARS_GREAT",
-              label: "80–99% score",
+              labelKey: "admin.config.quizRewards.items.great",
               color: "text-green-400",
             },
             {
               key: "QUIZ_STARS_PASS",
-              label: "60–79% score",
+              labelKey: "admin.config.quizRewards.items.pass",
               color: "text-yellow-400",
             },
             {
               key: "QUIZ_PASS_THRESHOLD",
-              label: "Pass threshold (%)",
+              labelKey: "admin.config.quizRewards.items.passThreshold",
               color: "text-zinc-400",
             },
-          ].map(({ key, label, color }) => (
+          ].map(({ key, labelKey, color }) => (
             <div
               key={key}
               className="flex items-center justify-between p-4 bg-zinc-900 border border-border rounded-md"
             >
               <div>
-                <p className={`text-sm font-mono ${color}`}>{label}</p>
+                <p className={cn("text-sm font-mono", color)}>{t(labelKey)}</p>
               </div>
+
               <input
                 type="number"
                 value={

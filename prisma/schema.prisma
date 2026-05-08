@@ -190,6 +190,8 @@ enum StarTransactionReason {
   HINT_DISCOUNT_USED
   DOUBLE_STARS_PURCHASE
   EXTRA_ATTEMPT_PURCHASE
+  AI_EXPLAIN
+  AI_CODE_REVIEW
 }
 
 /////////////////////////////////////////////////////

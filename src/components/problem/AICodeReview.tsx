@@ -1,209 +1,130 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
-import type { PublicProblem } from "@/types";
 
-interface AIExplainProps {
-  problem: PublicProblem;
+interface AICodeReviewProps {
+  problemId: string;
+  problemTitle: string;
+  problemDescription: string;
+  code: string;
+  language: string;
+  passed: boolean;
   stars: number;
   onStarsChange: (stars: number) => void;
-  explainCost?: number;
+  reviewCost?: number;
 }
 
-type AIState = "idle" | "confirm" | "loading" | "done" | "error";
+type ReviewState = "idle" | "confirm" | "loading" | "done" | "error";
 
-const CACHE_PREFIX = "grindev_ai_explain_";
-const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-
-function getCached(problemId: string): string | null {
-  try {
-    const raw = localStorage.getItem(CACHE_PREFIX + problemId);
-    if (!raw) return null;
-    const { explanation, savedAt } = JSON.parse(raw);
-    if (Date.now() - savedAt > CACHE_TTL_MS) {
-      localStorage.removeItem(CACHE_PREFIX + problemId);
-      return null;
-    }
-    return explanation;
-  } catch {
-    return null;
-  }
-}
-
-function setCache(problemId: string, explanation: string) {
-  try {
-    localStorage.setItem(
-      CACHE_PREFIX + problemId,
-      JSON.stringify({ explanation, savedAt: Date.now() }),
-    );
-  } catch {}
-}
-
-function buildSystemPrompt(): string {
-  return `You are a friendly DSA tutor. Format your response with clear markdown structure:
-- Use ## for main sections: What the problem asks, Key Insight, The Pattern, Example Walkthrough, Complexity
-- Use **bold** for important terms and algorithm names
-- Use bullet points for lists
-- Use \`inline code\` only for variable names
-- Keep each section concise — 2-4 sentences or bullets max
-
-Do NOT write solution code. Do NOT reveal the answer. Be encouraging.`;
-}
-
-function buildUserPrompt(problem: PublicProblem): string {
-  const examplesText = problem.examples
-    .slice(0, 2)
-    .map(
-      (e, i) =>
-        `Example ${i + 1}:\nInput: ${e.input}\nOutput: ${e.output}${e.explanation ? `\nExplanation: ${e.explanation}` : ""}`,
-    )
-    .join("\n\n");
-
-  return `Please explain this coding problem:
-
-**Problem:** ${problem.title}
-**Difficulty:** ${problem.difficulty}
-**Topics:** ${problem.topics.join(", ")}
-
-**Description:**
-${problem.description}
-
-**Examples:**
-${examplesText}
-
-**Constraints:**
-${problem.constraints}`;
-}
-
-export function AIExplain({
-  problem,
+export function AICodeReview({
+  problemId,
+  problemTitle,
+  problemDescription,
+  code,
+  language,
+  passed,
   stars,
   onStarsChange,
-  explainCost = 5,
-}: AIExplainProps) {
+  reviewCost = 5,
+}: AICodeReviewProps) {
   const { t } = useI18n();
-  const [state, setState] = useState<AIState>("idle");
-  const [explanation, setExplanation] = useState("");
+  const [state, setReviewState] = useState<ReviewState>("idle");
+  const [review, setReview] = useState("");
   const [open, setOpen] = useState(false);
-  const [fromCache, setFromCache] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  useEffect(() => {
-    const cached = getCached(problem.id);
-    if (cached) {
-      setExplanation(cached);
-      setState("done");
-      setFromCache(true);
-    }
-  }, [problem.id]);
+  const canAfford = stars >= reviewCost;
 
   function handleClick() {
     setOpen(true);
-    if (state === "done" && explanation) return; // already loaded
-
-    const cached = getCached(problem.id);
-    if (cached) {
-      setExplanation(cached);
-      setState("done");
-      setFromCache(true);
-      return;
-    }
-
-    // Show cost confirmation
-    setState("confirm");
+    if (state === "done" && review) return;
+    setReviewState("confirm");
   }
 
   async function handleConfirm() {
-    if (stars < explainCost) {
-      setErrorMsg(`You need ${explainCost} stars to use AI explanation.`);
-      setState("error");
+    if (!canAfford) {
+      setErrorMsg(`You need ${reviewCost} stars to use AI code review.`);
+      setReviewState("error");
       return;
     }
-    setState("loading");
+
+    setReviewState("loading");
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/ai/explain", {
+      const res = await fetch("/api/ai/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          systemPrompt: buildSystemPrompt(),
-          userPrompt: buildUserPrompt(problem),
-          problemId: problem.id,
-          free: false,
+          problemId,
+          problemTitle,
+          problemDescription,
+          code,
+          language,
+          passed,
         }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        setErrorMsg(data.error ?? t("ai.errorFallback"));
-        setState("error");
+        setErrorMsg(data.error ?? "Failed to get code review.");
+        setReviewState("error");
         return;
       }
 
       const data = await res.json();
-      setExplanation(data.explanation);
-      setState("done");
-      setFromCache(false);
-      setCache(problem.id, data.explanation);
+      setReview(data.review);
+      setReviewState("done");
       if (data.starsRemaining !== undefined) onStarsChange(data.starsRemaining);
     } catch {
-      setErrorMsg(t("ai.errorFallback"));
-      setState("error");
+      setErrorMsg("An error occurred. Please try again.");
+      setReviewState("error");
     }
   }
 
-  async function handleRetry() {
-    try {
-      localStorage.removeItem(CACHE_PREFIX + problem.id);
-    } catch {}
-    setState("confirm");
-    setExplanation("");
-    setFromCache(false);
+  function handleRetry() {
+    setReviewState("confirm");
+    setReview("");
   }
-
-  const canAfford = stars >= explainCost;
 
   return (
     <>
       <button
         onClick={handleClick}
         className={cn(
-          "w-full flex items-center gap-2 px-3 py-2.5 rounded-md border text-xs font-mono transition-colors cursor-pointer",
+          "flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-mono transition-colors",
           state === "done"
-            ? "border-blue-500/30 bg-blue-500/5 text-blue-400"
+            ? "border-purple-500/30 bg-purple-500/5 text-purple-400"
             : canAfford
-              ? "border-blue-500/20 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/30"
+              ? "border-purple-500/20 bg-purple-500/5 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/30"
               : "border-zinc-700 bg-zinc-900 text-zinc-500 cursor-not-allowed",
         )}
+        title="AI Code Review"
       >
         <i
           className={cn(
-            "text-sm shrink-0",
+            "shrink-0",
             state === "loading"
               ? "ri-loader-4-line animate-spin"
-              : "ri-sparkling-line",
+              : "ri-code-ai-line",
           )}
         />
-        <span className="flex-1 text-left">{t("ai.explain")}</span>
+        <span className="hidden sm:inline">Review</span>
         {state === "done" ? (
-          <span className="text-[10px] text-blue-600">
-            {fromCache ? "cached ✓" : "✓"}
-          </span>
+          <i className="ri-check-line text-purple-400" />
         ) : (
           <span
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors min-w-[56px] justify-center",
-              "bg-[hsl(var(--surface-raised))] border border-zinc-700",
+              "flex items-center gap-0.5 text-[10px]",
               canAfford ? "text-yellow-500" : "text-red-500",
             )}
           >
             <i className="ri-star-fill text-[10px]" />
-            {explainCost}
+            {reviewCost}
           </span>
         )}
       </button>
@@ -219,18 +140,13 @@ export function AIExplain({
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <div className="flex items-center gap-2">
-                <i className="ri-sparkling-line text-blue-400" />
+                <i className="ri-code-ai-line text-purple-400" />
                 <h2 className="font-heading font-bold text-base">
-                  {t("ai.title")}
+                  AI Code Review
                 </h2>
                 <span className="text-[10px] font-mono text-zinc-600 border border-zinc-800 px-1.5 py-0.5 rounded">
                   Gemini 2.5
                 </span>
-                {fromCache && (
-                  <span className="text-[10px] font-mono text-zinc-600 border border-zinc-800 px-1.5 py-0.5 rounded flex items-center gap-1">
-                    <i className="ri-database-2-line" /> cached · free
-                  </span>
-                )}
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -240,46 +156,67 @@ export function AIExplain({
               </button>
             </div>
 
-            {/* Problem title */}
-            <div className="px-5 py-2 border-b border-border bg-zinc-800/50 shrink-0">
-              <p className="text-xs font-mono text-zinc-400 truncate">
-                <span className="text-zinc-600">Explaining: </span>
-                {problem.title}
+            {/* Problem + code info */}
+            <div className="px-5 py-2 border-b border-border bg-zinc-800/50 shrink-0 flex items-center gap-3">
+              <p className="text-xs font-mono text-zinc-400 flex-1 truncate">
+                <span className="text-zinc-600">Reviewing: </span>
+                {problemTitle}
               </p>
+              <span
+                className={cn(
+                  "text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0",
+                  passed
+                    ? "bg-lime-500/10 text-lime-400 border-lime-500/20"
+                    : "bg-red-500/10 text-red-400 border-red-500/20",
+                )}
+              >
+                {passed ? "✓ Passed" : "✗ Failed"}
+              </span>
             </div>
 
             {/* Content */}
             <div className="overflow-y-auto custom-scrollbar p-5 flex-1">
-              {/* Confirm cost */}
+              {/* Confirm */}
               {state === "confirm" && (
                 <div className="flex flex-col items-center gap-5 py-10 text-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                    <i className="ri-sparkling-line text-blue-400 text-2xl" />
+                  <div className="w-16 h-16 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                    <i className="ri-code-ai-line text-purple-400 text-2xl" />
                   </div>
                   <div className="space-y-2">
                     <p className="font-heading font-bold text-base text-foreground">
-                      AI Problem Explanation
+                      AI Code Review
                     </p>
                     <p className="text-xs font-mono text-zinc-400 max-w-xs">
-                      Get a detailed explanation of this problem — key insight,
-                      pattern, and worked example.
+                      Get feedback on correctness, complexity, code quality,
+                      edge cases, and suggestions for improvement.
                     </p>
                   </div>
+
+                  {/* Code preview */}
+                  <div className="w-full text-left p-3 bg-zinc-800 rounded-md border border-zinc-700 max-h-32 overflow-y-auto">
+                    <pre className="text-[10px] font-mono text-zinc-300 whitespace-pre-wrap">
+                      {code.slice(0, 300)}
+                      {code.length > 300 ? "..." : ""}
+                    </pre>
+                  </div>
+
                   <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-zinc-800 border border-zinc-700">
                     <i className="ri-star-fill text-yellow-400" />
                     <span className="font-mono text-sm font-bold text-yellow-400">
-                      {explainCost} stars
+                      {reviewCost} stars
                     </span>
                     <span className="text-xs font-mono text-zinc-500">
-                      · once per problem (cached after)
+                      · each review costs stars
                     </span>
                   </div>
+
                   {!canAfford && (
                     <p className="text-xs font-mono text-red-400 flex items-center gap-1">
                       <i className="ri-error-warning-line" /> Not enough stars —
                       you have {stars}
                     </p>
                   )}
+
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setOpen(false)}
@@ -293,12 +230,12 @@ export function AIExplain({
                       className={cn(
                         "flex items-center gap-2 px-5 py-2 rounded font-mono text-sm font-bold transition-all",
                         canAfford
-                          ? "bg-blue-500 text-white hover:bg-blue-400 active:scale-95"
+                          ? "bg-purple-500 text-white hover:bg-purple-400 active:scale-95"
                           : "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700",
                       )}
                     >
-                      <i className="ri-sparkling-line" />
-                      Explain for {explainCost}{" "}
+                      <i className="ri-code-ai-line" />
+                      Review for {reviewCost}{" "}
                       <i className="ri-star-fill text-yellow-400 text-xs" />
                     </button>
                   </div>
@@ -307,9 +244,12 @@ export function AIExplain({
 
               {state === "loading" && (
                 <div className="flex flex-col items-center gap-4 py-12 text-center">
-                  <i className="ri-loader-4-line animate-spin text-blue-400 text-2xl" />
+                  <i className="ri-loader-4-line animate-spin text-purple-400 text-2xl" />
                   <p className="font-mono text-sm text-zinc-300">
-                    {t("ai.thinking")}
+                    Reviewing your code...
+                  </p>
+                  <p className="font-mono text-xs text-zinc-600">
+                    Checking correctness, complexity, and style...
                   </p>
                 </div>
               )}
@@ -318,11 +258,7 @@ export function AIExplain({
                 <div className="flex flex-col items-center gap-3 py-12 text-center">
                   <i className="ri-error-warning-line text-yellow-400 text-2xl" />
                   <p className="font-mono text-sm text-zinc-300">{errorMsg}</p>
-                  {errorMsg.includes("stars") ? (
-                    <p className="text-xs font-mono text-zinc-600">
-                      Visit the shop to earn more stars.
-                    </p>
-                  ) : (
+                  {!errorMsg.includes("stars") && (
                     <button
                       onClick={handleRetry}
                       className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-border rounded hover:border-zinc-600 text-zinc-400 transition-colors"
@@ -333,25 +269,24 @@ export function AIExplain({
                 </div>
               )}
 
-              {state === "done" && explanation && (
+              {state === "done" && review && (
                 <article
                   className={cn(
                     "prose prose-invert prose-sm max-w-none",
                     "prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-foreground",
                     "prose-h2:text-sm prose-h2:font-bold prose-h2:mt-5 prose-h2:mb-2",
-                    "prose-h2:border-b prose-h2:border-border prose-h2:pb-1 prose-h2:text-lime-400",
+                    "prose-h2:border-b prose-h2:border-border prose-h2:pb-1 prose-h2:text-purple-400",
                     "prose-h3:text-xs prose-h3:font-bold prose-h3:mt-3 prose-h3:mb-1 prose-h3:text-zinc-200",
                     "prose-p:text-zinc-300 prose-p:leading-relaxed prose-p:text-xs prose-p:font-sans",
                     "prose-li:text-zinc-300 prose-li:text-xs prose-li:font-sans prose-li:leading-relaxed",
                     "prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5",
                     "prose-strong:text-zinc-100 prose-strong:font-bold",
-                    "prose-code:bg-zinc-800 prose-code:text-lime-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:font-mono",
+                    "prose-code:bg-zinc-800 prose-code:text-purple-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:font-mono",
                     "prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-border prose-pre:rounded-md prose-pre:text-xs",
-                    "prose-blockquote:border-l-2 prose-blockquote:border-blue-500/50 prose-blockquote:text-zinc-400 prose-blockquote:italic",
                   )}
                 >
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {explanation}
+                    {review}
                   </ReactMarkdown>
                 </article>
               )}
@@ -360,14 +295,15 @@ export function AIExplain({
             {/* Footer */}
             <div className="px-5 py-3 border-t border-border shrink-0 flex items-center justify-between">
               <p className="text-[10px] font-mono text-zinc-600">
-                {t("ai.poweredBy")} · No solution revealed
+                Powered by Gemini 2.5 · Each review costs {reviewCost}{" "}
+                <i className="ri-star-fill text-yellow-400" />
               </p>
               <div className="flex items-center gap-2">
-                {state === "done" && !fromCache && (
+                {state === "done" && (
                   <button
                     onClick={handleRetry}
                     className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors"
-                    title="Regenerate (costs stars again)"
+                    title="Get new review"
                   >
                     <i className="ri-refresh-line text-sm" />
                   </button>
@@ -376,7 +312,7 @@ export function AIExplain({
                   onClick={() => setOpen(false)}
                   className="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-border text-xs font-mono text-zinc-300 rounded transition-colors"
                 >
-                  {t("common.close")}
+                  Close
                 </button>
               </div>
             </div>
