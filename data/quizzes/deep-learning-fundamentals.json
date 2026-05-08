@@ -1,0 +1,90 @@
+{
+  "title": "Deep Learning Fundamentals",
+  "topic": "GENERAL_CS",
+  "difficulty": "MEDIUM",
+  "questions": [
+    {
+      "question": "What is a key difference between traditional Machine Learning and Deep Learning?",
+      "options": [
+        "Deep Learning requires less data",
+        "Deep Learning automatically learns hierarchical feature representations",
+        "Deep Learning only works with structured tabular data",
+        "Deep Learning does not use neural networks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Deep Learning models, especially deep neural networks, automatically discover multi-level feature representations from raw data, reducing the need for manual feature engineering."
+    },
+    {
+      "question": "What does the term 'backpropagation' refer to in neural networks?",
+      "options": [
+        "Forward passing input through the network",
+        "Calculating gradients and updating weights by propagating errors backwards",
+        "Visualizing model architecture",
+        "Deploying models to production"
+      ],
+      "correctIndex": 1,
+      "explanation": "Backpropagation is the core algorithm used to train neural networks by computing gradients of the loss function with respect to each weight using the chain rule."
+    },
+    {
+      "question": "Which activation function is most commonly used in hidden layers of modern deep neural networks?",
+      "options": ["Sigmoid", "Tanh", "ReLU", "Softmax"],
+      "correctIndex": 2,
+      "explanation": "ReLU (Rectified Linear Unit) and its variants (Leaky ReLU, GELU) are preferred due to reduced vanishing gradient problem and faster computation."
+    },
+    {
+      "question": "What problem does Batch Normalization primarily help mitigate?",
+      "options": [
+        "Overfitting",
+        "Internal Covariate Shift",
+        "Vanishing gradients only",
+        "Exploding gradients only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Batch Normalization reduces internal covariate shift by normalizing layer inputs, allowing higher learning rates and acting as a regularizer."
+    },
+    {
+      "question": "What is the main purpose of Dropout in deep learning models?",
+      "options": [
+        "Increase model complexity",
+        "Prevent overfitting by randomly dropping neurons during training",
+        "Speed up inference",
+        "Normalize the output layer"
+      ],
+      "correctIndex": 1,
+      "explanation": "Dropout is a regularization technique that randomly sets a fraction of neurons to zero during training, reducing co-adaptation and improving generalization."
+    },
+    {
+      "question": "Which of the following is a common loss function for multi-class classification?",
+      "options": [
+        "Mean Squared Error",
+        "Binary Crossentropy",
+        "Categorical Crossentropy",
+        "Mean Absolute Error"
+      ],
+      "correctIndex": 2,
+      "explanation": "Categorical Crossentropy (or Softmax Loss) is widely used for multi-class classification problems when using one-hot encoded labels."
+    },
+    {
+      "question": "What is Transfer Learning in the context of Deep Learning?",
+      "options": [
+        "Training a model from scratch on a very large dataset",
+        "Using a pre-trained model on a new but related task",
+        "Transferring data between servers",
+        "Converting models between frameworks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Transfer Learning leverages knowledge from a model trained on a large dataset (e.g., ImageNet) and fine-tunes it for a new specific task, saving time and data."
+    },
+    {
+      "question": "What does the vanishing gradient problem refer to?",
+      "options": [
+        "Gradients becoming too large during training",
+        "Gradients becoming extremely small in early layers of deep networks",
+        "Gradients staying constant",
+        "Gradients oscillating wildly"
+      ],
+      "correctIndex": 1,
+      "explanation": "In very deep networks (especially with sigmoid/tanh), gradients can become extremely small during backpropagation, making it difficult for early layers to learn."
+    }
+  ]
+}

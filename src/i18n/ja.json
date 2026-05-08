@@ -243,6 +243,20 @@
       "easy": "易しい",
       "medium": "普通",
       "hard": "難しい"
+    },
+    "practiceMode": {
+      "title": "練習モード",
+      "desc": "毎日何を練習するかを選びます。変更は次に「今日」ページを開いたときに反映されます。",
+      "modes": {
+        "dsa": {
+          "label": "DSA問題",
+          "desc": "毎日のコーディング課題です。コードエディターで解きます。"
+        },
+        "quiz": {
+          "label": "知識クイズ",
+          "desc": "JS、CSS、データベースなどに関する選択式問題です。"
+        }
+      }
     }
   },
   "auth": {
@@ -415,6 +429,18 @@
         "title": "問題スキップ",
         "desc": "今日の問題の気分じゃない？スキップして全問題バンクからランダムな問題を受け取りましょう。",
         "stock": "1回限り"
+      },
+      "hintDiscount": {
+        "title": "ヒント割引",
+        "desc": "1問のすべてのヒント費用を1スター減らします。次の問題に自動で適用されます。"
+      },
+      "doubleStars": {
+        "title": "スター2倍",
+        "desc": "次に解いた問題で獲得スターが2倍になります。次の提出にのみ適用されます。"
+      },
+      "secondChance": {
+        "title": "セカンドチャンス",
+        "desc": "うまくいかない日もあります。以前失敗した問題の試行回数をリセットし、もう一度クリーンに挑戦できます。"
       }
     },
     "confirm": {
@@ -429,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "連続記録フリーズを購入しました！現在{count}個所持しています。",
-      "problemSkipped": "問題をスキップしました！今日ページで新しい問題を確認してください。"
+      "problemSkipped": "問題をスキップしました！今日ページで新しい問題を確認してください。",
+      "itemPurchased": "{item}を購入しました！"
     },
     "comingSoon": {
       "title": "近日公開",
@@ -451,13 +478,28 @@
         "noProblemBonus": "問題なし日のボーナス",
         "streakMilestone": "連続記録マイルストーンボーナス",
         "firstSolveBonus": "初回解答ボーナス",
-        "adminAdjustment": "管理者調整"
+        "adminAdjustment": "管理者調整",
+        "problemSkipUsed": "問題スキップを使用",
+        "quizReward": "クイズ報酬",
+        "hintDiscountPurchase": "ヒント割引",
+        "doubleStarsPurchase": "スター2倍",
+        "extraAttemptPurchase": "セカンドチャンス",
+        "hintDiscountUsed": "ヒント割引を使用",
+        "aiCodeReview": "AIコードレビュー",
+        "aiExplain": "AI問題解説"
       }
     },
     "date": {
       "today": "今日",
       "yesterday": "昨日",
       "daysAgo": "{count}日前"
+    },
+    "starsCount": "{count}スター",
+    "owned": "{count}個所持",
+    "needMore": "スター不足",
+    "badges": {
+      "mostPopular": "人気",
+      "oneTimeUse": "1回限り"
     }
   },
   "ai": {
@@ -495,6 +537,30 @@
       "timeExpiredPenalty": {
         "title": "時間切れペナルティ（ハードモード）",
         "desc": "ハードモードのタイマーが切れたときに差し引かれる星"
+      },
+      "aiFeatures": {
+        "title": "AI機能",
+        "desc": "AI機能を利用する際にユーザーへ請求されるスター費用です。リクエストに失敗した場合、スターは返金されます。",
+        "items": {
+          "explain": {
+            "label": "AI問題解説",
+            "desc": "DSA問題が何を求めているかを説明し、アプローチのヒントを示します"
+          },
+          "codeReview": {
+            "label": "AIコードレビュー",
+            "desc": "提出されたコードの正確性、計算量、スタイルをレビューします"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "クイズスター報酬",
+        "desc": "クイズの正答率に応じて付与されるスターです。",
+        "items": {
+          "perfect": "100%スコア",
+          "great": "80–99%スコア",
+          "pass": "60–79%スコア",
+          "passThreshold": "合格ライン (%)"
+        }
       }
     }
   }

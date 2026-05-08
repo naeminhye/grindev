@@ -32,7 +32,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
 
   const { problemId, code, language, challengeMode, timeExpired, submit } =
     parsed.data;
@@ -170,6 +175,20 @@ export async function POST(req: Request) {
     await prisma.user.update({
       where: { id: userId },
       data: { stars: newStars },
+    });
+
+    await prisma.starTransaction.create({
+      data: {
+        userId,
+        amount: starDelta,
+        reason: cleanSolve
+          ? challengeMode === "HARD"
+            ? "SOLVE_CLEAN_HARD"
+            : "SOLVE_CLEAN_NORMAL"
+          : challengeMode === "HARD"
+            ? "SOLVE_HINTS_HARD"
+            : "SOLVE_HINTS_NORMAL",
+      },
     });
   }
 

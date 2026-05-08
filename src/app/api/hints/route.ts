@@ -13,68 +13,49 @@ const bodySchema = z.object({
 
 export async function POST(req: Request) {
   const { userId, error } = await getAuthUserId();
-  if (error) return NextResponse.json({ error }, { status: 401 });
+  if (error) return error;
 
-  const body = await req.json().catch(() => null);
-  const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: parsed.error.flatten().fieldErrors },
-      { status: 400 },
-    );
-  }
+  const { problemId, tier } = await req.json();
 
-  const { problemId, tier } = parsed.data as {
-    problemId: string;
-    tier: HintTier;
-  };
-
-  // Check if already purchased this tier
-  const existing = await prisma.hintPurchase.findFirst({
-    where: { userId, problemId, tier },
-  });
-
-  if (existing) {
-    // Already bought — just return the content without charging again
-    const problem = await prisma.problem.findUnique({
-      where: { id: problemId },
-    });
-    const hints = problem?.hints as HintData[];
-    const hint = hints?.find((h) => h.tier === tier);
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-
-    return NextResponse.json({
-      content: hint?.content ?? "",
-      tier,
-      starsRemaining: user?.stars ?? 0,
-    } satisfies HintResponse);
-  }
-
-  // Check user can afford it
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-  const cost = getHintCost(tier);
-  if (!canAffordHint(user.stars, tier)) {
-    return NextResponse.json(
-      { error: `Not enough stars. Need ${cost}, have ${user.stars}.` },
-      { status: 402 },
-    );
-  }
-
-  // Fetch the hint content
   const problem = await prisma.problem.findUnique({ where: { id: problemId } });
   if (!problem)
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
 
-  const hints = problem.hints as HintData[];
+  const hints = problem.hints as any[];
   const hint = hints.find((h) => h.tier === tier);
   if (!hint)
     return NextResponse.json({ error: "Hint not found" }, { status: 404 });
 
-  // Deduct stars and record purchase in a transaction
-  const [updatedUser] = await prisma.$transaction([
+  // Check if already purchased
+  const existing = await prisma.hintPurchase.findFirst({
+    where: { userId, problemId, tier },
+  });
+  if (existing)
+    return NextResponse.json({ error: "Already purchased" }, { status: 400 });
+
+  // Check for hint discount
+  const [discountsBought, discountsUsed] = await Promise.all([
+    prisma.starTransaction.count({
+      where: { userId, reason: "HINT_DISCOUNT_PURCHASE" },
+    }),
+    prisma.starTransaction.count({
+      where: { userId, reason: "HINT_DISCOUNT_USED" as any },
+    }),
+  ]);
+  const hasDiscount = discountsBought - discountsUsed > 0;
+  const cost = Math.max(0, hint.cost - (hasDiscount ? 1 : 0));
+
+  // Check stars
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { stars: true },
+  });
+  if (!user || user.stars < cost) {
+    return NextResponse.json({ error: "Not enough stars" }, { status: 400 });
+  }
+
+  // Deduct stars, record purchase, consume discount if used
+  await prisma.$transaction([
     prisma.user.update({
       where: { id: userId },
       data: { stars: { decrement: cost } },
@@ -82,11 +63,27 @@ export async function POST(req: Request) {
     prisma.hintPurchase.create({
       data: { userId, problemId, tier, cost },
     }),
+    prisma.starTransaction.create({
+      data: { userId, amount: -cost, reason: "HINT_PURCHASE" },
+    }),
+    ...(hasDiscount
+      ? [
+          prisma.starTransaction.create({
+            data: { userId, amount: 0, reason: "HINT_DISCOUNT_USED" as any },
+          }),
+        ]
+      : []),
   ]);
+
+  const updatedUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { stars: true },
+  });
 
   return NextResponse.json({
     content: hint.content,
     tier,
-    starsRemaining: updatedUser.stars,
-  } satisfies HintResponse);
+    starsRemaining: updatedUser?.stars ?? 0,
+    discountApplied: hasDiscount,
+  });
 }

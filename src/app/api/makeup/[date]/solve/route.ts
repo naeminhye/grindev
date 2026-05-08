@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { runCode } from "@/lib/piston";
 import { calculateStarDelta } from "@/lib/challenge";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { getTodayUTC } from "@/lib/streak";
+import { getTodayInTz, recalculateStreak } from "@/lib/streak";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
 import { STAR_REWARD_DEFAULTS } from "@/lib/game-config";
@@ -28,7 +28,13 @@ export async function POST(
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { date } = await params;
-  const today = getTodayUTC();
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
+  const today = getTodayInTz(timeZone);
 
   if (date >= today) {
     return NextResponse.json(
@@ -50,14 +56,15 @@ export async function POST(
     parsed.data;
 
   // find the best slot for this date
-  const slots = await prisma.dailyProblem.findMany({
-    where: { date },
-    include: { problem: true },
+  const daily = await prisma.dailyProblem.findFirst({
+    where: { date, problemId },
   });
-  const daily = slots[0]; // or pick by difficulty if needed
 
-  if (!daily || daily.problemId !== problemId) {
-    return NextResponse.json({ error: "Problem mismatch" }, { status: 400 });
+  if (!daily) {
+    return NextResponse.json(
+      { error: "Problem not found for this date" },
+      { status: 404 },
+    );
   }
 
   const problem = await prisma.problem.findUnique({ where: { id: problemId } });
@@ -191,6 +198,8 @@ export async function POST(
   let starDelta = 0;
 
   if (allPassed) {
+    await recalculateStreak(userId, timeZone);
+
     const makeupRewardGivenToday = user?.lastMakeupDate === today;
 
     // Deduct makeup cost first

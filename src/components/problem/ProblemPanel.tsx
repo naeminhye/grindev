@@ -17,6 +17,9 @@ interface ProblemPanelProps {
   hintContents: Record<number, string>;
   hintLoading: number | null;
   onBuyHint: (tier: number) => void;
+  hintDiscount?: number;
+  explainCost?: number;
+  onStarsChange: (stars: number) => void;
 }
 
 export function ProblemPanel({
@@ -27,6 +30,9 @@ export function ProblemPanel({
   hintContents,
   hintLoading,
   onBuyHint,
+  hintDiscount,
+  explainCost,
+  onStarsChange,
 }: ProblemPanelProps) {
   const { t } = useI18n();
   const examples = (problem.examples ?? []) as ProblemExample[];
@@ -158,6 +164,11 @@ export function ProblemPanel({
             4: t("hints.tier4"),
           };
 
+          const effectiveCost = Math.max(
+            0,
+            tier.cost - ((hintDiscount ?? 0 > 0) ? 1 : 0),
+          );
+
           return (
             <div
               key={tier.tier}
@@ -190,9 +201,9 @@ export function ProblemPanel({
                     onClick={() => onBuyHint(tier.tier)}
                     disabled={isLoading || stars < tier.cost}
                     className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors",
+                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors min-w-[56px] justify-center",
                       stars >= tier.cost
-                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
+                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700 cursor-pointer"
                         : "bg-[hsl(var(--surface))] text-zinc-600 border border-zinc-800 cursor-not-allowed",
                     )}
                   >
@@ -200,7 +211,17 @@ export function ProblemPanel({
                       <i className="ri-loader-4-line animate-spin" />
                     ) : (
                       <>
-                        <i className="ri-star-fill" /> {tier.cost}
+                        <i className="ri-star-fill" />
+                        {hintDiscount ? (
+                          <>
+                            <span className="line-through text-zinc-600 text-[10px]">
+                              {tier.cost}
+                            </span>
+                            <span>{effectiveCost}</span>
+                          </>
+                        ) : (
+                          tier.cost
+                        )}
                       </>
                     )}
                   </button>
@@ -217,7 +238,12 @@ export function ProblemPanel({
           );
         })}
         <div className="border-t border-border my-3" />
-        <AIExplain problem={problem} />
+        <AIExplain
+          problem={problem}
+          stars={stars}
+          onStarsChange={onStarsChange}
+          explainCost={explainCost}
+        />
       </div>
     </aside>
   );

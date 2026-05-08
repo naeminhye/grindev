@@ -1,0 +1,95 @@
+{
+  "title": "Design Systems Fundamentals",
+  "topic": "SYSTEM_DESIGN",
+  "difficulty": "MEDIUM",
+  "questions": [
+    {
+      "question": "What is the primary goal of a Design System?",
+      "options": [
+        "To create beautiful marketing websites",
+        "To provide reusable, consistent UI components and guidelines across products",
+        "To replace all frontend frameworks",
+        "To manage only colors and typography"
+      ],
+      "correctIndex": 1,
+      "explanation": "A Design System is a collection of reusable components, guided by clear standards, that ensures consistency and accelerates development across multiple products."
+    },
+    {
+      "question": "Which of the following is NOT a core pillar of most Design Systems?",
+      "options": [
+        "Component Library",
+        "Design Tokens",
+        "Documentation",
+        "Backend API endpoints"
+      ],
+      "correctIndex": 3,
+      "explanation": "Design Systems typically include design tokens, component libraries, patterns, and documentation. Backend APIs are outside their scope."
+    },
+    {
+      "question": "What are Design Tokens?",
+      "options": [
+        "Secret keys used for authentication",
+        "Platform-agnostic variables for colors, spacing, typography, etc.",
+        "Individual React components",
+        "User testing results"
+      ],
+      "correctIndex": 1,
+      "explanation": "Design Tokens are the smallest style units (colors, spacing, radii, etc.) that allow consistent theming and easy brand changes across platforms."
+    },
+    {
+      "question": "Why is atomic design methodology often used in Design Systems?",
+      "options": [
+        "To make the system slower",
+        "To organize components from smallest to largest (atoms → molecules → organisms → pages)",
+        "To reduce the number of components",
+        "To focus only on colors"
+      ],
+      "correctIndex": 1,
+      "explanation": "Atomic Design breaks UI into hierarchical levels (atoms, molecules, organisms, templates, pages), making the system more organized and scalable."
+    },
+    {
+      "question": "What is the main benefit of using Storybook in a Design System?",
+      "options": [
+        "Production deployment",
+        "Isolated component development, testing, and documentation",
+        "Backend integration",
+        "Performance optimization"
+      ],
+      "correctIndex": 1,
+      "explanation": "Storybook allows developers to build, test, and document components in isolation, which is essential for maintaining Design Systems."
+    },
+    {
+      "question": "Which accessibility practice is critical in Design Systems?",
+      "options": [
+        "Using only brand colors",
+        "Providing semantic HTML, ARIA roles, focus management, and sufficient contrast",
+        "Avoiding keyboard navigation",
+        "Using only custom fonts"
+      ],
+      "correctIndex": 1,
+      "explanation": "Design Systems must enforce accessibility standards (WCAG) through semantic markup, proper contrast, keyboard support, and ARIA attributes."
+    },
+    {
+      "question": "What problem does a good Design System solve regarding product teams?",
+      "options": [
+        "Increased development speed and design consistency",
+        "Slower iteration due to more rules",
+        "Vendor lock-in",
+        "Reduced code quality"
+      ],
+      "correctIndex": 0,
+      "explanation": "A mature Design System enables teams to ship faster with consistent user experiences while reducing duplication and maintenance overhead."
+    },
+    {
+      "question": "What is the recommended way to handle theming (light/dark mode) in a Design System?",
+      "options": [
+        "Hardcode colors in components",
+        "Use CSS variables or design tokens with a theming layer",
+        "Create completely separate component libraries",
+        "Use only inline styles"
+      ],
+      "correctIndex": 1,
+      "explanation": "Using design tokens + CSS variables (or equivalent) allows seamless switching between themes while keeping components clean and maintainable."
+    }
+  ]
+}

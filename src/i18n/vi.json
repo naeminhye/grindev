@@ -243,6 +243,20 @@
       "easy": "Dễ",
       "medium": "Trung bình",
       "hard": "Khó"
+    },
+    "practiceMode": {
+      "title": "Chế độ luyện tập",
+      "desc": "Chọn nội dung bạn muốn luyện mỗi ngày. Thay đổi sẽ có hiệu lực vào lần tiếp theo bạn mở trang Hôm nay.",
+      "modes": {
+        "dsa": {
+          "label": "Bài tập DSA",
+          "desc": "Thử thách code hằng ngày. Giải trực tiếp trong trình viết code."
+        },
+        "quiz": {
+          "label": "Câu hỏi kiến thức",
+          "desc": "Câu hỏi trắc nghiệm về JS, CSS, cơ sở dữ liệu và nhiều chủ đề khác."
+        }
+      }
     }
   },
   "auth": {
@@ -415,6 +429,18 @@
         "title": "Bỏ qua bài",
         "desc": "Không muốn làm bài hôm nay? Bỏ qua và nhận một bài ngẫu nhiên từ toàn bộ ngân hàng bài tập.",
         "stock": "Dùng một lần"
+      },
+      "hintDiscount": {
+        "title": "Giảm giá gợi ý",
+        "desc": "Giảm 1 sao cho tất cả gợi ý trong một bài. Tự động áp dụng cho bài tiếp theo."
+      },
+      "doubleStars": {
+        "title": "Nhân đôi sao",
+        "desc": "Nhận gấp đôi sao ở bài giải tiếp theo. Chỉ áp dụng cho lần nộp tiếp theo."
+      },
+      "secondChance": {
+        "title": "Cơ hội thứ hai",
+        "desc": "Một ngày không ổn? Đặt lại số lần thử của một bài đã làm sai trước đó và thử giải sạch lại."
       }
     },
     "confirm": {
@@ -429,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "Đã mua đóng băng chuỗi ngày! Hiện bạn có {count} lượt đóng băng.",
-      "problemSkipped": "Đã bỏ qua bài! Hãy vào trang Hôm nay để xem bài mới."
+      "problemSkipped": "Đã bỏ qua bài! Hãy vào trang Hôm nay để xem bài mới.",
+      "itemPurchased": "Đã mua {item}!"
     },
     "comingSoon": {
       "title": "Sắp ra mắt",
@@ -451,13 +478,28 @@
         "noProblemBonus": "Thưởng ngày không có bài",
         "streakMilestone": "Thưởng mốc chuỗi ngày",
         "firstSolveBonus": "Thưởng lần giải đầu tiên",
-        "adminAdjustment": "Điều chỉnh từ admin"
+        "adminAdjustment": "Điều chỉnh từ admin",
+        "problemSkipUsed": "Đã dùng lượt bỏ qua bài",
+        "quizReward": "Thưởng quiz",
+        "hintDiscountPurchase": "Giảm giá gợi ý",
+        "doubleStarsPurchase": "Nhân đôi sao",
+        "extraAttemptPurchase": "Cơ hội thứ hai",
+        "hintDiscountUsed": "Đã dùng giảm giá gợi ý",
+        "aiCodeReview": "AI review code",
+        "aiExplain": "AI giải thích bài toán"
       }
     },
     "date": {
       "today": "Hôm nay",
       "yesterday": "Hôm qua",
       "daysAgo": "{count} ngày trước"
+    },
+    "starsCount": "{count} sao",
+    "owned": "Bạn có {count}",
+    "needMore": "Cần thêm",
+    "badges": {
+      "mostPopular": "Phổ biến nhất",
+      "oneTimeUse": "Dùng một lần"
     }
   },
   "ai": {
@@ -495,6 +537,30 @@
       "timeExpiredPenalty": {
         "title": "Phạt khi hết giờ (Chế độ khó)",
         "desc": "Số sao bị trừ khi bộ đếm giờ chế độ khó chạy hết"
+      },
+      "aiFeatures": {
+        "title": "Tính năng AI",
+        "desc": "Chi phí sao người dùng phải trả cho các tính năng dùng AI. Sao sẽ được hoàn lại nếu yêu cầu thất bại.",
+        "items": {
+          "explain": {
+            "label": "AI giải thích bài toán",
+            "desc": "Giải thích đề bài DSA đang yêu cầu gì và gợi ý hướng tiếp cận"
+          },
+          "codeReview": {
+            "label": "AI review code",
+            "desc": "Review code đã nộp về độ đúng, độ phức tạp và phong cách code"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "Sao thưởng Quiz",
+        "desc": "Sao được thưởng dựa trên phần trăm điểm quiz.",
+        "items": {
+          "perfect": "Điểm 100%",
+          "great": "Điểm 80–99%",
+          "pass": "Điểm 60–79%",
+          "passThreshold": "Ngưỡng đạt (%)"
+        }
       }
     }
   }

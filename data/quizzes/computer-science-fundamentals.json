@@ -1,0 +1,75 @@
+{
+  "title": "Computer Science Fundamentals",
+  "topic": "GENERAL_CS",
+  "difficulty": "MEDIUM",
+  "questions": [
+    {
+      "question": "What is the time complexity of binary search on a sorted array?",
+      "options": ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+      "correctIndex": 1,
+      "explanation": "Binary search repeatedly divides the search interval in half, resulting in logarithmic time complexity O(log n)."
+    },
+    {
+      "question": "Which data structure follows the FIFO (First In, First Out) principle?",
+      "options": ["Stack", "Queue", "Heap", "Tree"],
+      "correctIndex": 1,
+      "explanation": "A Queue processes elements in the order they arrive — First In, First Out (FIFO)."
+    },
+    {
+      "question": "What does DNS stand for and what is its primary function?",
+      "options": [
+        "Dynamic Name System — allocates memory",
+        "Domain Name System — translates domain names to IP addresses",
+        "Data Node Server — stores files",
+        "Direct Network Security — encrypts traffic"
+      ],
+      "correctIndex": 1,
+      "explanation": "The Domain Name System (DNS) acts as the internet's phonebook, converting human-readable domain names into machine-readable IP addresses."
+    },
+    {
+      "question": "What is the difference between a process and a thread?",
+      "options": [
+        "Processes are lightweight, threads are heavy",
+        "Threads share the same memory space within a process",
+        "Processes cannot run concurrently",
+        "Threads have separate virtual memory"
+      ],
+      "correctIndex": 1,
+      "explanation": "Threads within the same process share memory and resources, making them lighter than processes which have isolated memory spaces."
+    },
+    {
+      "question": "Which of the following is an example of a lossless compression algorithm?",
+      "options": ["JPEG", "MP3", "PNG", "AAC"],
+      "correctIndex": 2,
+      "explanation": "PNG uses lossless compression, preserving all original data. JPEG and MP3 are lossy formats."
+    },
+    {
+      "question": "What is Big O notation primarily used for?",
+      "options": [
+        "Measuring exact execution time",
+        "Describing the worst-case asymptotic upper bound of an algorithm",
+        "Calculating memory usage in bytes",
+        "Visualizing data structures"
+      ],
+      "correctIndex": 1,
+      "explanation": "Big O notation describes how the runtime or space requirements grow relative to input size, focusing on scalability."
+    },
+    {
+      "question": "What is the purpose of a mutex in concurrent programming?",
+      "options": [
+        "To increase thread speed",
+        "To provide mutual exclusion and prevent race conditions",
+        "To manage memory allocation",
+        "To handle network requests"
+      ],
+      "correctIndex": 1,
+      "explanation": "A mutex (mutual exclusion) ensures that only one thread can access a critical section of code at a time, preventing data corruption."
+    },
+    {
+      "question": "Which paradigm does SQL belong to?",
+      "options": ["Imperative", "Declarative", "Functional", "Procedural"],
+      "correctIndex": 1,
+      "explanation": "SQL is a declarative language — you specify what you want, and the database engine determines how to retrieve it."
+    }
+  ]
+}

@@ -4,11 +4,13 @@ export type MakeupDay = {
   date: string; // "YYYY-MM-DD"
   daysAgo: number;
   problemId: string;
+  problemSlug: string;
   problemTitle: string;
   difficulty: string;
   topics: string[];
   starCost: number;
   alreadySolved: boolean;
+  dateHasAnySolved?: boolean;
 };
 
 export function getMakeupCost(daysAgo: number): number {

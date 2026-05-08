@@ -23,8 +23,10 @@ export async function getAdminUserId(): Promise<
   return { userId: session.user.id };
 }
 
-export async function isAdmin(): Promise<boolean> {
-  const session = await auth();
-  if (!session?.user?.email) return false;
-  return ADMIN_EMAILS.includes(session.user.email.toLowerCase());
+export function isAdmin(email: string): boolean {
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+  return adminEmails.includes(email);
 }

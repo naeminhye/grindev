@@ -15,6 +15,8 @@
 //
 // Default values are used when key is not in AppConfig.
 
+import { QUIZ_STAR_DEFAULTS } from "./quiz-rewards";
+
 export const STAR_REWARD_DEFAULTS = {
   STARS_NORMAL_CLEAN_EASY: 3,
   STARS_NORMAL_CLEAN_MEDIUM: 4,
@@ -62,3 +64,15 @@ export async function getTimeLimit(
 ): Promise<number> {
   return getConfigValue(prisma, key, TIME_LIMIT_DEFAULTS[key]);
 }
+
+export const AI_COST_DEFAULTS = {
+  AI_EXPLAIN_COST: 5,
+  AI_CODE_REVIEW_COST: 5,
+} as const;
+
+export const allKeys = [
+  ...Object.keys(STAR_REWARD_DEFAULTS),
+  ...Object.keys(TIME_LIMIT_DEFAULTS),
+  ...Object.keys(QUIZ_STAR_DEFAULTS),
+  ...Object.keys(AI_COST_DEFAULTS),
+];

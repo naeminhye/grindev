@@ -13,9 +13,10 @@ interface AppNavProps {
   userName: string;
   userImage: string | null;
   streak: number;
+  isAdmin: boolean;
 }
 
-export function AppNav({ userName, userImage, streak }: AppNavProps) {
+export function AppNav({ userName, userImage, streak, isAdmin }: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
@@ -64,7 +65,16 @@ export function AppNav({ userName, userImage, streak }: AppNavProps) {
         <span className="hidden sm:block text-xs font-mono text-zinc-400 max-w-[120px] truncate">
           {userName}
         </span>
-
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono rounded border border-lime-500/30 bg-lime-500/5 text-lime-400 hover:bg-lime-500/10 transition-colors"
+            title="Admin panel"
+          >
+            <i className="ri-shield-keyhole-line" />
+            <span className="hidden sm:inline">Admin</span>
+          </Link>
+        )}
         <StreakBadge streak={streak} />
         <HelpButton />
         <SignOutButton />

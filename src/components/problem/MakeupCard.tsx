@@ -21,6 +21,13 @@ export function MakeupCard({
   const { t } = useI18n();
   const canAfford = userStars >= day.starCost;
 
+  const daysLabel =
+    day.daysAgo === 0
+      ? t("shop.date.today") // or just 'Today' if no i18n key
+      : day.daysAgo === 1
+        ? t("makeup.yesterday")
+        : t("makeup.daysAgo", { count: day.daysAgo });
+
   return (
     <div
       className={cn(
@@ -38,11 +45,7 @@ export function MakeupCard({
           <DifficultyBadge difficulty={day.difficulty as any} />
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 flex-wrap">
-          <span>
-            {day.daysAgo === 1
-              ? t("makeup.yesterday")
-              : t("makeup.daysAgo", { count: day.daysAgo })}
-          </span>
+          <span>{daysLabel}</span>
           <span className="hidden sm:inline">
             ·{" "}
             {(day.topics ?? [])

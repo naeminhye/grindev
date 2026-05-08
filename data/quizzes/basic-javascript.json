@@ -1,0 +1,58 @@
+{
+  "title": "Basic JavaScript",
+  "topic": "JAVASCRIPT",
+  "difficulty": "EASY",
+  "questions": [
+    {
+      "question": "What is the output of typeof undefined?",
+      "options": ["\"null\"", "\"undefined\"", "\"object\"", "undefined"],
+      "correctIndex": 1,
+      "explanation": "The typeof operator returns the string \"undefined\" when applied to an undefined value."
+    },
+    {
+      "question": "What is the output of the following code?",
+      "code": "console.log(5 + '5');",
+      "options": ["10", "\"55\"", "\"5 5\"", "Error"],
+      "correctIndex": 1,
+      "explanation": "When one operand is a string, the + operator performs string concatenation instead of numeric addition."
+    },
+    {
+      "question": "Which keyword is used to declare a variable that can be reassigned?",
+      "options": ["const", "let", "var", "Both let and var"],
+      "correctIndex": 3,
+      "explanation": "Both `let` and `var` allow reassignment. `const` does not allow reassignment after initialization."
+    },
+    {
+      "question": "What does Array.isArray([]) return?",
+      "options": ["undefined", "null", "true", "false"],
+      "correctIndex": 2,
+      "explanation": "Array.isArray() is the reliable way to check whether a value is an array. It correctly returns true for array literals."
+    },
+    {
+      "question": "What is the result of this expression?",
+      "code": "console.log(!!0);",
+      "options": ["true", "false", "0", "1"],
+      "correctIndex": 1,
+      "explanation": "The double negation (!! ) converts a value to its boolean equivalent. 0 is falsy, so it becomes false."
+    },
+    {
+      "question": "Which method removes the last element from an array?",
+      "options": ["shift()", "unshift()", "pop()", "push()"],
+      "correctIndex": 2,
+      "explanation": "`pop()` removes the last element from an array and returns that element."
+    },
+    {
+      "question": "What will be logged?",
+      "code": "let name = 'John';\nfunction greet() {\n  console.log('Hello ' + name);\n}\ngreet();",
+      "options": ["\"Hello undefined\"", "\"Hello John\"", "Error", "null"],
+      "correctIndex": 1,
+      "explanation": "The function can access the `name` variable from the outer (global) scope through lexical scoping."
+    },
+    {
+      "question": "Which of the following is a falsy value in JavaScript?",
+      "options": ["\"false\"", "0", "[]", "{}"],
+      "correctIndex": 1,
+      "explanation": "0 is one of the falsy values in JavaScript. Non-empty strings, empty arrays, and empty objects are all truthy."
+    }
+  ]
+}
