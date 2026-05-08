@@ -1,0 +1,95 @@
+{
+  "title": "Advanced Design Systems Architecture",
+  "topic": "SYSTEM_DESIGN",
+  "difficulty": "HARD",
+  "questions": [
+    {
+      "question": "What is the main advantage of using a multi-layer design token architecture (base → semantic → component)?",
+      "options": [
+        "It makes the system slower to build",
+        "It enables easier theming, brand customization, and platform-specific overrides",
+        "It reduces the need for documentation",
+        "It eliminates the need for component libraries"
+      ],
+      "correctIndex": 1,
+      "explanation": "Multi-layer tokens (global/base → semantic → component-specific) provide flexibility for theming, dark mode, brand variations, and platform adaptations while maintaining consistency."
+    },
+    {
+      "question": "Which approach is considered best practice for large-scale design systems supporting multiple brands?",
+      "options": [
+        "Hardcoding brand values directly into components",
+        "Using design token aliases with brand-specific token sets",
+        "Creating completely separate component libraries per brand",
+        "Using CSS !important everywhere"
+      ],
+      "correctIndex": 1,
+      "explanation": "Token aliases and brand-specific token sets allow a single codebase to support multiple brands/themes efficiently through configuration."
+    },
+    {
+      "question": "What is a major challenge when implementing a headless design system?",
+      "options": [
+        "Lack of styling control",
+        "Ensuring consistent behavior and accessibility across different styling solutions",
+        "Too much design flexibility",
+        "Performance overhead"
+      ],
+      "correctIndex": 1,
+      "explanation": "Headless systems provide unstyled logic and accessibility while letting consumers apply their own styling. The challenge is maintaining consistent a11y and behavior across implementations."
+    },
+    {
+      "question": "In design systems, what does 'component composition' primarily help achieve?",
+      "options": [
+        "Reduce the total number of components to zero",
+        "Build complex UIs from small, reusable pieces while avoiding prop drilling and duplication",
+        "Make all components tightly coupled",
+        "Eliminate the need for TypeScript"
+      ],
+      "correctIndex": 1,
+      "explanation": "Composition (using children, render props, or slots) promotes flexibility and reduces combinatorial explosion of component variants."
+    },
+    {
+      "question": "What is the recommended strategy for handling breaking changes in a mature Design System?",
+      "options": [
+        "Release breaking changes immediately",
+        "Use semantic versioning + deprecation warnings + codemods + parallel major versions",
+        "Never make breaking changes",
+        "Rename all components every year"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mature design systems use semantic versioning, gradual deprecation, codemods, and sometimes dual major version support to minimize consumer disruption."
+    },
+    {
+      "question": "Which testing strategy is most critical for a Design System component library?",
+      "options": [
+        "Only visual regression testing",
+        "Unit tests, interaction tests, accessibility tests, and visual regression tests",
+        "Only manual QA",
+        "End-to-end tests for every component"
+      ],
+      "correctIndex": 1,
+      "explanation": "Comprehensive testing (Jest + Testing Library for behavior, Axe for a11y, Chromatic/Storybook for visual) is essential to maintain quality at scale."
+    },
+    {
+      "question": "What problem does the 'owner' vs 'consumer' component pattern solve in large design systems?",
+      "options": [
+        "Reduces bundle size",
+        "Prevents consumers from overriding critical internal logic while allowing safe customization",
+        "Makes components slower",
+        "Removes the need for props"
+      ],
+      "correctIndex": 1,
+      "explanation": "This pattern distinguishes between internal implementation details (owner) and public customization APIs (consumer), improving stability and maintainability."
+    },
+    {
+      "question": "What is a key consideration when scaling a Design System across Web, iOS, and Android?",
+      "options": [
+        "Using identical code on all platforms",
+        "Maintaining platform-agnostic design tokens while respecting native platform conventions and capabilities",
+        "Using only web technologies everywhere",
+        "Ignoring platform differences for consistency"
+      ],
+      "correctIndex": 1,
+      "explanation": "Successful cross-platform systems use shared design tokens and guidelines but implement platform-specific components that follow each platform’s human interface guidelines."
+    }
+  ]
+}

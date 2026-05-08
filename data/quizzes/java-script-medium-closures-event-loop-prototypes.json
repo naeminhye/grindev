@@ -1,0 +1,75 @@
+{
+  "title": "JavaScript Medium: Closures, Event Loop & Prototypes",
+  "topic": "JAVASCRIPT",
+  "difficulty": "MEDIUM",
+  "questions": [
+    {
+      "question": "What will be logged by this code?",
+      "code": "function createCounter() {\n  let count = 0;\n  return function() {\n    return ++count;\n  };\n}\nconst counter1 = createCounter();\nconst counter2 = createCounter();\nconsole.log(counter1());\nconsole.log(counter2());\nconsole.log(counter1());",
+      "options": ["1 1 2", "1 2 2", "1 1 1", "1 2 3"],
+      "correctIndex": 0,
+      "explanation": "Each call to createCounter() creates a new closure with its own independent 'count' variable. counter1 and counter2 do not share state."
+    },
+    {
+      "question": "In what order will the logs appear?",
+      "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+      "options": ["A B C D", "A D B C", "A D C B", "A C D B"],
+      "correctIndex": 2,
+      "explanation": "Synchronous code (A, D) runs first. Then microtasks (Promise.then → C). Finally macrotasks (setTimeout → B)."
+    },
+    {
+      "question": "What is logged when calling obj.getValue()?",
+      "code": "const obj = {\n  value: 42,\n  getValue: () => this.value\n};\nconsole.log(obj.getValue());",
+      "options": ["42", "undefined", "TypeError", "null"],
+      "correctIndex": 1,
+      "explanation": "Arrow functions capture 'this' lexically. Here 'this' refers to the global object (or undefined in strict mode), not 'obj'."
+    },
+    {
+      "question": "Which statement about prototypes is true?",
+      "options": [
+        "Every object has its own .prototype property",
+        "Object.create(null) creates an object with no prototype",
+        "Modifying Array.prototype does not affect existing array instances",
+        "Prototype chains are mainly used for type checking"
+      ],
+      "correctIndex": 1,
+      "explanation": "Object.create(null) produces an object whose [[Prototype]] is null, making it a pure hash map without inherited properties like toString."
+    },
+    {
+      "question": "What happens when this code runs?",
+      "code": "let x = 10;\nfunction foo() {\n  console.log(x);\n  let x = 20;\n}\nfoo();",
+      "options": ["10", "20", "undefined", "ReferenceError"],
+      "correctIndex": 3,
+      "explanation": "The let declaration is hoisted to the top of the block but stays in the Temporal Dead Zone, causing ReferenceError on access before initialization."
+    },
+    {
+      "question": "What is a common and correct use case for closures?",
+      "options": [
+        "Creating private variables and methods",
+        "Improving global performance through caching",
+        "Directly modifying built-in prototypes safely",
+        "Replacing the need for async/await"
+      ],
+      "correctIndex": 0,
+      "explanation": "Closures are frequently used to encapsulate private state that can only be accessed or modified through returned functions."
+    },
+    {
+      "question": "What does this code output?",
+      "code": "function Foo() {}\nFoo.prototype.value = 42;\nconst a = new Foo();\nconst b = new Foo();\na.value = 100;\nconsole.log(b.value);",
+      "options": ["100", "42", "undefined", "TypeError"],
+      "correctIndex": 1,
+      "explanation": "a.value creates an own property on instance a. Instance b still inherits the prototype's value (42)."
+    },
+    {
+      "question": "Which of these best describes the relationship between setTimeout and the event loop?",
+      "options": [
+        "setTimeout callbacks are executed as microtasks",
+        "setTimeout uses the timers phase of the event loop",
+        "setTimeout always runs immediately after the current script",
+        "setTimeout callbacks have higher priority than Promises"
+      ],
+      "correctIndex": 1,
+      "explanation": "setTimeout schedules macrotasks that are processed in the timers phase of the event loop after the current call stack and microtasks are cleared."
+    }
+  ]
+}

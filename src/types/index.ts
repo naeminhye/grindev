@@ -1,6 +1,7 @@
 import type { Difficulty, Topic } from "@prisma/client";
 import type { Language } from "@/lib/languages";
 import type { MakeupDay } from "@/lib/makeup";
+import { ChallengeMode } from "@/lib/challenge";
 
 export type ProblemExample = {
   input: string;
@@ -83,6 +84,7 @@ export type DailyResponse = {
   userStats: UserStats;
   skipCount: number;
   hardTimeLimits: { EASY: number; MEDIUM: number; HARD: number };
+  hintDiscount: number;
 };
 
 export type NoProblemResponse = {
@@ -119,4 +121,72 @@ export type ProfileStats = {
   topicBreakdown: { topic: string; count: number }[];
   difficultyBreakdown: { difficulty: string; count: number }[];
   recentActivity: { date: string; solved: boolean; isMakeup: boolean }[];
+};
+
+/////////////////////////////////////////////////////////////////////
+
+// Add to src/types/index.ts
+
+export type QuizQuestion = {
+  question: string;
+  code?: string; // optional code block
+  options: string[]; // exactly 4
+  correctIndex: number; // 0–3
+  explanation?: string; // shown after answering
+};
+
+export type PublicQuiz = {
+  id: string;
+  title: string;
+  topic: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD";
+  questions: QuizQuestion[];
+};
+
+export type QuizAnswer = {
+  questionIndex: number;
+  selectedIndex: number;
+};
+
+export type QuizSubmitResponse = {
+  passed: boolean;
+  score: number;
+  total: number;
+  starDelta: number;
+  results: {
+    questionIndex: number;
+    selectedIndex: number;
+    correctIndex: number;
+    isCorrect: boolean;
+    explanation?: string;
+  }[];
+  streak?: {
+    currentStreak: number;
+    longestStreak: number;
+    isNewRecord: boolean;
+  };
+};
+
+export type DailyQuizResponse = {
+  quiz: PublicQuiz;
+  alreadySolved: boolean;
+  makeupDays: MakeupDay[];
+  makeupRewardGivenToday: boolean;
+  userStats: UserStats;
+  hardTimeLimits?: never; // not used for quiz
+};
+
+export type NoDailyQuizResponse = {
+  noQuizToday: true;
+  bonusStars: number;
+  bonusAlreadyGiven: boolean;
+  userStats: UserStats;
+};
+
+export type PreferredDifficulty = "ANY" | "EASY" | "MEDIUM" | "HARD";
+
+export type Settings = {
+  challengeMode: ChallengeMode;
+  preferredDifficulty: PreferredDifficulty;
+  practiceMode: "DSA" | "QUIZ";
 };

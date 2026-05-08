@@ -1,0 +1,95 @@
+{
+  "title": "AI Fundamentals - Easy",
+  "topic": "GENERAL_CS",
+  "difficulty": "EASY",
+  "questions": [
+    {
+      "question": "What does AI stand for?",
+      "options": [
+        "Automated Intelligence",
+        "Artificial Intelligence",
+        "Advanced Internet",
+        "Automated Interaction"
+      ],
+      "correctIndex": 1,
+      "explanation": "AI stands for Artificial Intelligence — the simulation of human intelligence by machines."
+    },
+    {
+      "question": "What is the main goal of Artificial Intelligence?",
+      "options": [
+        "To replace all human jobs",
+        "To create machines that can perform tasks requiring human intelligence",
+        "To build faster computers",
+        "To design video games"
+      ],
+      "correctIndex": 1,
+      "explanation": "The core goal of AI is to develop systems that can reason, learn, perceive, and act in ways that typically require human intelligence."
+    },
+    {
+      "question": "Which of the following is an example of Narrow AI?",
+      "options": [
+        "A system that can do any intellectual task a human can do",
+        "ChatGPT answering questions",
+        "A robot that can cook any meal and drive a car",
+        "Self-aware machines"
+      ],
+      "correctIndex": 1,
+      "explanation": "Narrow AI (Weak AI) is designed for specific tasks, like language translation or image recognition. ChatGPT is a good example."
+    },
+    {
+      "question": "What is Machine Learning?",
+      "options": [
+        "Programming rules manually for every situation",
+        "A subset of AI where systems learn patterns from data instead of being explicitly programmed",
+        "Building physical robots",
+        "Designing computer hardware"
+      ],
+      "correctIndex": 1,
+      "explanation": "Machine Learning is a branch of AI that enables computers to learn and improve from experience (data) without being explicitly programmed for every rule."
+    },
+    {
+      "question": "What does 'training a model' mean in AI?",
+      "options": [
+        "Teaching the model by showing it examples so it can make predictions",
+        "Writing code line by line",
+        "Buying more powerful GPUs",
+        "Testing the final product"
+      ],
+      "correctIndex": 0,
+      "explanation": "During training, an AI model learns patterns from a dataset by adjusting its internal parameters (weights) to minimize errors."
+    },
+    {
+      "question": "Which of these is a common application of AI today?",
+      "options": [
+        "Recommendation systems on Netflix and YouTube",
+        "Controlling traffic lights manually",
+        "Writing all books automatically",
+        "Replacing all teachers permanently"
+      ],
+      "correctIndex": 0,
+      "explanation": "Recommendation engines (used by Netflix, Amazon, YouTube, etc.) are one of the most successful real-world applications of AI."
+    },
+    {
+      "question": "What is a Neural Network inspired by?",
+      "options": [
+        "Computer processors",
+        "The structure of the human brain",
+        "Mathematical equations only",
+        "Video game graphics"
+      ],
+      "correctIndex": 1,
+      "explanation": "Artificial Neural Networks are inspired by the biological neural networks in the human brain, consisting of interconnected nodes (neurons)."
+    },
+    {
+      "question": "What is the role of data in AI?",
+      "options": [
+        "It is optional",
+        "It is the fuel — AI models learn patterns from large amounts of data",
+        "It is only used for testing",
+        "It slows down AI systems"
+      ],
+      "correctIndex": 1,
+      "explanation": "High-quality, large volumes of data are essential for training effective AI models. 'Garbage in, garbage out' applies strongly in AI."
+    }
+  ]
+}

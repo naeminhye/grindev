@@ -23,7 +23,12 @@ export async function GET(req: Request) {
     create: { id: userId },
   });
 
-  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
   await checkAndResetStreak(userId, timeZone);
 
   const today = getTodayInTz(timeZone);
@@ -195,6 +200,14 @@ export async function GET(req: Request) {
     HARD: timeLimitMap["HARD_TIME_HARD"] ?? TIME_LIMIT_DEFAULTS.HARD_TIME_HARD,
   };
 
+  const hintDiscountOwned =
+    (await prisma.starTransaction.count({
+      where: { userId, reason: "HINT_DISCOUNT_PURCHASE" },
+    })) -
+    (await prisma.starTransaction.count({
+      where: { userId, reason: "HINT_DISCOUNT_USED" as any },
+    }));
+
   const response: DailyResponse = {
     problem: {
       id: problem.id,
@@ -224,6 +237,7 @@ export async function GET(req: Request) {
     },
     skipCount,
     hardTimeLimits,
+    hintDiscount: Math.max(0, hintDiscountOwned),
   };
 
   return NextResponse.json(response);

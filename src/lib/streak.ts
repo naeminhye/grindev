@@ -31,10 +31,7 @@ function getDateStr(date: Date, timeZone: string) {
   return formatInTimeZone(date, timeZone, "yyyy-MM-dd");
 }
 
-export async function checkAndResetStreak(
-  userId: string,
-  timeZone = "UTC",
-): Promise<void> {
+export async function checkAndResetStreak(userId: string, timeZone = "UTC") {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user || !user.lastSolvedAt) return;
 
@@ -46,10 +43,18 @@ export async function checkAndResetStreak(
   );
   const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
 
+  console.log("[streak check]", {
+    today,
+    yesterday,
+    lastSolvedDay,
+    timeZone,
+    currentStreak: user.currentStreak,
+  });
+
   const missedYesterday =
     lastSolvedDay !== today && lastSolvedDay !== yesterday;
-
   if (missedYesterday && user.currentStreak > 0) {
+    console.log("[streak reset] resetting to 0");
     await prisma.user.update({
       where: { id: userId },
       data: { currentStreak: 0 },

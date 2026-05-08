@@ -243,6 +243,20 @@
       "easy": "简单",
       "medium": "中等",
       "hard": "困难"
+    },
+    "practiceMode": {
+      "title": "练习模式",
+      "desc": "选择你每天要练习的内容。更改会在下次打开“今日”页面时生效。",
+      "modes": {
+        "dsa": {
+          "label": "DSA 题目",
+          "desc": "每日编程挑战。请在代码编辑器中完成。"
+        },
+        "quiz": {
+          "label": "知识测验",
+          "desc": "关于 JS、CSS、数据库等主题的选择题。"
+        }
+      }
     }
   },
   "auth": {
@@ -415,6 +429,18 @@
         "title": "题目跳过",
         "desc": "今天不想做这题？跳过它，从完整题库中获得一道随机题。",
         "stock": "一次性使用"
+      },
+      "hintDiscount": {
+        "title": "提示折扣",
+        "desc": "在一道题中，所有提示费用减少 1 颗星。会自动应用到下一道题。"
+      },
+      "doubleStars": {
+        "title": "双倍星星",
+        "desc": "下一道解出的题目可获得双倍星星。仅适用于下一次提交。"
+      },
+      "secondChance": {
+        "title": "第二次机会",
+        "desc": "状态不好？重置一道曾经失败题目的尝试次数，再次挑战干净解题。"
       }
     },
     "confirm": {
@@ -429,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "连续保护购买成功！你现在有 {count} 个保护。",
-      "problemSkipped": "题目已跳过！到今日页面查看新题吧。"
+      "problemSkipped": "题目已跳过！到今日页面查看新题吧。",
+      "itemPurchased": "已购买 {item}！"
     },
     "comingSoon": {
       "title": "即将推出",
@@ -451,13 +478,25 @@
         "noProblemBonus": "无题日奖励",
         "streakMilestone": "连续里程碑奖励",
         "firstSolveBonus": "首次解题奖励",
-        "adminAdjustment": "管理员调整"
+        "adminAdjustment": "管理员调整",
+        "problemSkipUsed": "已使用题目跳过",
+        "quizReward": "测验奖励",
+        "hintDiscountPurchase": "提示折扣",
+        "doubleStarsPurchase": "双倍星星",
+        "extraAttemptPurchase": "第二次机会"
       }
     },
     "date": {
       "today": "今天",
       "yesterday": "昨天",
       "daysAgo": "{count}天前"
+    },
+    "starsCount": "{count} 颗星",
+    "owned": "你有 {count}",
+    "needMore": "还差一些",
+    "badges": {
+      "mostPopular": "最受欢迎",
+      "oneTimeUse": "一次性使用"
     }
   },
   "ai": {

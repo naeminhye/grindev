@@ -5,11 +5,48 @@ import { cn } from "@/lib/utils";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 const LANGUAGES = [
-  { id: "en", label: "English", nativeName: "English", flag: "🇺🇸" },
-  { id: "vi", label: "Vietnamese", nativeName: "Tiếng Việt", flag: "🇻🇳" },
-  { id: "ko", label: "Korean", nativeName: "한국어", flag: "🇰🇷" },
-  { id: "ja", label: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
-  { id: "zh", label: "Chinese", nativeName: "中文", flag: "🇨🇳" },
+  {
+    id: "en",
+    label: "English",
+    nativeName: "English",
+    flag: "🇺🇸",
+  },
+  {
+    id: "vi",
+    label: "Vietnamese",
+    nativeName: "Tiếng Việt",
+    flag: "🇻🇳",
+  },
+  {
+    id: "ko",
+    label: "Korean",
+    nativeName: "한국어",
+    flag: "🇰🇷",
+  },
+  {
+    id: "ja",
+    label: "Japanese",
+    nativeName: "日本語",
+    flag: "🇯🇵",
+  },
+  {
+    id: "zh",
+    label: "Chinese",
+    nativeName: "中文",
+    flag: "🇨🇳",
+  },
+  {
+    id: "th",
+    label: "Thai",
+    nativeName: "ไทย",
+    flag: "🇹🇭",
+  },
+  {
+    id: "fr",
+    label: "French",
+    nativeName: "Français",
+    flag: "🇫🇷",
+  },
 ] as {
   id: Locale;
   label: string;

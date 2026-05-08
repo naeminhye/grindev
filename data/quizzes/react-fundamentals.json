@@ -1,0 +1,134 @@
+{
+  "title": "React Fundamentals",
+  "topic": "REACT",
+  "difficulty": "EASY",
+  "questions": [
+    {
+      "question": "What is the virtual DOM in React?",
+      "options": [
+        "A direct copy of the real DOM",
+        "An in-memory representation of the UI that React uses for performance",
+        "A database that stores component data",
+        "A browser API for manipulating HTML elements"
+      ],
+      "correctIndex": 1,
+      "explanation": "The Virtual DOM is a lightweight JavaScript object tree that React maintains. It allows efficient updates by comparing it with the previous version before touching the real DOM."
+    },
+    {
+      "question": "Which hook is used to manage state in a functional component?",
+      "options": ["useEffect", "useState", "useContext", "useReducer"],
+      "correctIndex": 1,
+      "explanation": "`useState` is the primary hook for adding state to functional components. It returns the current state and a setter function."
+    },
+    {
+      "question": "What is the correct way to render a list of items in React?",
+      "options": [
+        "Using a for loop inside the JSX",
+        "Using .map() with a key prop on each element",
+        "Using .forEach() directly in JSX",
+        "Using innerHTML"
+      ],
+      "correctIndex": 1,
+      "explanation": "The `.map()` method should be used to transform arrays into JSX elements. Each element needs a unique `key` prop for efficient reconciliation."
+    },
+    {
+      "question": "When does useEffect run by default?",
+      "options": [
+        "Only on component mount",
+        "After every render",
+        "Before every render",
+        "Only when props change"
+      ],
+      "correctIndex": 1,
+      "explanation": "Without a dependency array, `useEffect` runs after every render (mount and update). This is useful for side effects that need to sync with the component's output."
+    },
+    {
+      "question": "What is JSX?",
+      "options": [
+        "A new programming language",
+        "A syntax extension that allows writing HTML inside JavaScript",
+        "A CSS-in-JS library",
+        "A state management tool"
+      ],
+      "correctIndex": 1,
+      "explanation": "JSX is a syntax extension for JavaScript that lets you write HTML-like code inside JS files. It gets transpiled to React.createElement() calls."
+    },
+    {
+      "question": "How do you pass data from a parent to a child component?",
+      "options": [
+        "Using props",
+        "Using state",
+        "Using context only",
+        "Using useEffect"
+      ],
+      "correctIndex": 0,
+      "explanation": "Props (properties) are the standard way to pass data from parent to child components in React."
+    },
+    {
+      "question": "What happens when you call setState in a class component?",
+      "options": [
+        "It immediately updates the state and DOM",
+        "It schedules a re-render with the new state",
+        "It only updates if the value is different",
+        "It throws an error in functional components"
+      ],
+      "correctIndex": 1,
+      "explanation": "setState is asynchronous. It schedules an update and merges the new state, triggering a re-render when the batch is processed."
+    },
+    {
+      "question": "Which of the following is a React Hook rule?",
+      "options": [
+        "Hooks can be called inside loops and conditions",
+        "Hooks can only be called at the top level of functional components",
+        "Hooks can be used in class components",
+        "Hooks should only be used in the render method"
+      ],
+      "correctIndex": 1,
+      "explanation": "Hooks must be called at the top level (not inside loops, conditions, or nested functions) to ensure they are called in the same order on every render."
+    },
+    {
+      "question": "What is the purpose of the key prop when rendering lists?",
+      "options": [
+        "Styling the list items",
+        "Helping React identify which items have changed, been added, or removed",
+        "Sorting the list items",
+        "Passing data to child components"
+      ],
+      "correctIndex": 1,
+      "explanation": "Keys help React track elements efficiently during reconciliation, minimizing unnecessary DOM operations when the list changes."
+    },
+    {
+      "question": "What does useEffect return if you want to clean up side effects?",
+      "options": [
+        "A boolean value",
+        "A cleanup function",
+        "A promise",
+        "Nothing — cleanup is automatic"
+      ],
+      "correctIndex": 1,
+      "explanation": "Returning a cleanup function from useEffect runs before the component unmounts or before the effect runs again (when dependencies change)."
+    },
+    {
+      "question": "How can you conditionally render content in JSX?",
+      "options": [
+        "Using if/else inside JSX tags",
+        "Using ternary operator or && operator",
+        "Using a switch statement inside JSX",
+        "Using for loops"
+      ],
+      "correctIndex": 1,
+      "explanation": "You can use the ternary operator (`condition ? <A/> : <B/>`) or logical AND (`condition && <Component/>`) for conditional rendering in JSX."
+    },
+    {
+      "question": "What is React Reconciliation?",
+      "options": [
+        "The process of syncing Virtual DOM with the real DOM",
+        "Merging props and state",
+        "Converting JSX to JavaScript",
+        "Updating component lifecycle methods"
+      ],
+      "correctIndex": 0,
+      "explanation": "Reconciliation is the algorithm React uses to diff the previous and current Virtual DOM trees and update only the changed parts of the real DOM."
+    }
+  ]
+}

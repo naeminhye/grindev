@@ -12,12 +12,22 @@ import vi from "@/i18n/vi.json";
 import ja from "@/i18n/ja.json";
 import ko from "@/i18n/ko.json";
 import zh from "@/i18n/zh.json";
+import th from "@/i18n/th.json";
+import fr from "@/i18n/fr.json";
 
-export type Locale = "en" | "vi" | "ja" | "ko" | "zh";
+export type Locale = "en" | "vi" | "ja" | "ko" | "zh" | "th" | "fr";
 
 type Translations = typeof en;
 
-const translations: Record<Locale, Translations> = { en, vi, ja, ko, zh };
+const translations: Record<Locale, Translations> = {
+  en,
+  vi,
+  ja,
+  ko,
+  zh,
+  th,
+  fr,
+};
 
 interface I18nContextValue {
   locale: Locale;

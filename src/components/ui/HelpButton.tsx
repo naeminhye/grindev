@@ -68,8 +68,15 @@ const SECTIONS: Section[] = [
 export function HelpButton() {
   const { t } = useI18n();
 
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const tFunc = (key: string) => (mounted ? t(key) : "");
 
   useEffect(() => {
     function handleHelpKey(e: KeyboardEvent) {
@@ -104,7 +111,8 @@ export function HelpButton() {
           "border-zinc-700 bg-[hsl(var(--surface-raised))] text-zinc-500 cursor-pointer",
           "hover:border-lime-500/50 hover:text-lime-400 hover:bg-zinc-700",
         )}
-        title={t("help.buttonTitle")}
+        title={tFunc("help.buttonTitle")}
+        aria-label={tFunc("help.buttonTitle")}
       >
         <i className="ri-question-line" />
       </button>
@@ -126,10 +134,10 @@ export function HelpButton() {
                 </div>
                 <div>
                   <h2 className="font-heading font-bold text-base tracking-tight">
-                    {t("help.title")}
+                    {tFunc("help.title")}
                   </h2>
                   <p className="text-xs font-mono text-zinc-500 mt-0.5">
-                    {t("help.subtitle")}
+                    {tFunc("help.subtitle")}
                   </p>
                 </div>
               </div>
@@ -137,7 +145,7 @@ export function HelpButton() {
               <button
                 onClick={() => setOpen(false)}
                 className="p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-[hsl(var(--surface-raised))] rounded transition-colors"
-                title={t("common.close")}
+                title={tFunc("common.close")}
               >
                 <i className="ri-close-line text-base" />
               </button>
@@ -224,7 +232,7 @@ export function HelpButton() {
                           className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                         >
                           <i className="ri-arrow-left-line" />
-                          {t("help.previous")}
+                          {tFunc("help.previous")}
                         </button>
 
                         <span className="text-xs font-mono text-zinc-600">
@@ -240,7 +248,7 @@ export function HelpButton() {
                           disabled={activeSection === SECTIONS.length - 1}
                           className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                         >
-                          {t("help.next")}
+                          {tFunc("help.next")}
                           <i className="ri-arrow-right-line" />
                         </button>
                       </div>
@@ -252,18 +260,18 @@ export function HelpButton() {
 
             <div className="px-6 py-3 border-t border-border shrink-0 flex items-center justify-between">
               <p className="text-xs font-mono text-zinc-600">
-                {t("help.tipPrefix")}{" "}
+                {tFunc("help.tipPrefix")}{" "}
                 <kbd className="px-1.5 py-0.5 bg-[hsl(var(--surface-raised))] border border-zinc-700 rounded text-zinc-400">
                   ?
                 </kbd>{" "}
-                {t("help.tipSuffix")}
+                {tFunc("help.tipSuffix")}
               </p>
 
               <button
                 onClick={() => setOpen(false)}
                 className="px-4 py-1.5 bg-lime-400 text-zinc-950 font-mono text-xs font-bold rounded hover:bg-lime-300 transition-colors"
               >
-                {t("help.gotIt")}
+                {tFunc("help.gotIt")}
               </button>
             </div>
           </div>

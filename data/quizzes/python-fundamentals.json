@@ -1,0 +1,95 @@
+{
+  "title": "Python Fundamentals",
+  "topic": "PYTHON",
+  "difficulty": "EASY",
+  "questions": [
+    {
+      "question": "What is the output of the following code?",
+      "code": "print(type([1, 2, 3]))",
+      "options": [
+        "<class 'list'>",
+        "<class 'array'>",
+        "<class 'tuple'>",
+        "<class 'dict'>"
+      ],
+      "correctIndex": 0,
+      "explanation": "Square brackets `[]` create a list in Python. The `type()` function returns `<class 'list'>`."
+    },
+    {
+      "question": "Which of the following is used to create a tuple?",
+      "options": ["[]", "{}", "()", "set()"],
+      "correctIndex": 2,
+      "explanation": "Parentheses `()` are used to create tuples. They are immutable sequences."
+    },
+    {
+      "question": "What will be the output?",
+      "code": "x = 5\nprint(x > 3 and x < 10)",
+      "options": ["True", "False", "5", "Error"],
+      "correctIndex": 0,
+      "explanation": "The `and` operator returns True because both conditions (x > 3 and x < 10) are true."
+    },
+    {
+      "question": "How do you create a dictionary in Python?",
+      "options": ["[]", "()", "{}", "dict[]"],
+      "correctIndex": 2,
+      "explanation": "Curly braces `{}` are used to create dictionaries with key-value pairs."
+    },
+    {
+      "question": "What does the `len()` function return for a string?",
+      "options": [
+        "The last character",
+        "The number of characters in the string",
+        "The memory size of the string",
+        "The first character"
+      ],
+      "correctIndex": 1,
+      "explanation": "`len()` returns the number of items (characters for strings, elements for lists/tuples, etc.)."
+    },
+    {
+      "question": "What is the correct way to start a function definition?",
+      "options": [
+        "func myFunction():",
+        "function myFunction():",
+        "def myFunction():",
+        "define myFunction():"
+      ],
+      "correctIndex": 2,
+      "explanation": "Python uses the `def` keyword followed by the function name and parentheses to define functions."
+    },
+    {
+      "question": "What will this code output?",
+      "code": "fruits = ['apple', 'banana', 'cherry']\nprint(fruits[1])",
+      "options": ["apple", "banana", "cherry", "Error"],
+      "correctIndex": 1,
+      "explanation": "List indexing in Python starts at 0, so index 1 returns the second item: 'banana'."
+    },
+    {
+      "question": "Which of these is a mutable data type in Python?",
+      "options": ["tuple", "string", "list", "int"],
+      "correctIndex": 2,
+      "explanation": "Lists are mutable (can be changed after creation), while tuples, strings, and integers are immutable."
+    },
+    {
+      "question": "What does the `range(5)` function generate?",
+      "options": [
+        "Numbers from 1 to 5",
+        "Numbers from 0 to 4",
+        "Numbers from 0 to 5",
+        "Numbers from 1 to 4"
+      ],
+      "correctIndex": 1,
+      "explanation": "`range(5)` generates numbers from 0 up to (but not including) 5: 0, 1, 2, 3, 4."
+    },
+    {
+      "question": "How do you check if a key exists in a dictionary?",
+      "options": [
+        "if key in dict",
+        "if dict.has_key(key)",
+        "if key exists in dict",
+        "if dict[key]"
+      ],
+      "correctIndex": 0,
+      "explanation": "The `in` keyword is the standard and efficient way to check for key existence in a dictionary."
+    }
+  ]
+}

@@ -17,6 +17,7 @@ interface ProblemPanelProps {
   hintContents: Record<number, string>;
   hintLoading: number | null;
   onBuyHint: (tier: number) => void;
+  hintDiscount?: number;
 }
 
 export function ProblemPanel({
@@ -27,6 +28,7 @@ export function ProblemPanel({
   hintContents,
   hintLoading,
   onBuyHint,
+  hintDiscount,
 }: ProblemPanelProps) {
   const { t } = useI18n();
   const examples = (problem.examples ?? []) as ProblemExample[];
@@ -158,6 +160,11 @@ export function ProblemPanel({
             4: t("hints.tier4"),
           };
 
+          const effectiveCost = Math.max(
+            0,
+            tier.cost - ((hintDiscount ?? 0 > 0) ? 1 : 0),
+          );
+
           return (
             <div
               key={tier.tier}
@@ -200,7 +207,17 @@ export function ProblemPanel({
                       <i className="ri-loader-4-line animate-spin" />
                     ) : (
                       <>
-                        <i className="ri-star-fill" /> {tier.cost}
+                        <i className="ri-star-fill" />
+                        {hintDiscount ? (
+                          <>
+                            <span className="line-through text-zinc-600 text-[10px]">
+                              {tier.cost}
+                            </span>
+                            <span>{effectiveCost}</span>
+                          </>
+                        ) : (
+                          tier.cost
+                        )}
                       </>
                     )}
                   </button>
