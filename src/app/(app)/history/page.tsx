@@ -458,7 +458,8 @@ export default function HistoryPage() {
                       </span>
                       {attempt.stars > 0 && (
                         <span className="text-xs font-mono text-yellow-400">
-                          +{attempt.stars}⭐
+                          +{attempt.stars}
+                          <i className="ri-star-fill text-yellow-400 text-base ml-1" />
                         </span>
                       )}
                       <span className="text-xs font-mono text-zinc-600">
@@ -503,12 +504,21 @@ function EmptyState({
 
 function formatDate(iso: string, locale: string): string {
   const date = new Date(iso);
-  const diffDays = Math.floor(
-    (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
+  const now = new Date();
+
+  // Compare calendar dates in local timezone, not elapsed hours
+  const dateStr = date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const todayStr = now.toLocaleDateString("en-CA");
+  const yesterdayStr = new Date(now.getTime() - 86400000).toLocaleDateString(
+    "en-CA",
   );
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
+
+  if (dateStr === todayStr) return "Today";
+  if (dateStr === yesterdayStr) return "Yesterday";
+
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
   if (diffDays < 7) return `${diffDays}d ago`;
+
   const localeMap: Record<string, string> = { en: "en-US", vi: "vi-VN" };
   return date.toLocaleDateString(localeMap[locale] ?? "en-US", {
     month: "short",

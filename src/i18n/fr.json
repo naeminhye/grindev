@@ -429,6 +429,18 @@
         "title": "Passer le problème",
         "desc": "Pas envie du problème du jour ? Passe-le et reçois un problème aléatoire de toute la banque.",
         "stock": "Usage unique"
+      },
+      "hintDiscount": {
+        "title": "Réduction sur les indices",
+        "desc": "Réduit le coût de tous les indices de 1 étoile pour un problème. S’applique automatiquement au prochain problème."
+      },
+      "doubleStars": {
+        "title": "Étoiles doublées",
+        "desc": "Gagnez deux fois plus d’étoiles sur le prochain problème résolu. Valable uniquement pour la prochaine soumission."
+      },
+      "secondChance": {
+        "title": "Deuxième chance",
+        "desc": "Mauvaise journée ? Réinitialisez le nombre de tentatives sur un problème échoué et réessayez proprement."
       }
     },
     "confirm": {
@@ -443,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "Gel de série acheté ! Tu as maintenant {count} gel(s).",
-      "problemSkipped": "Problème passé ! Va sur Aujourd'hui pour voir ton nouveau problème."
+      "problemSkipped": "Problème passé ! Va sur Aujourd'hui pour voir ton nouveau problème.",
+      "itemPurchased": "{item} acheté !"
     },
     "comingSoon": {
       "title": "Bientôt disponible",
@@ -465,13 +478,25 @@
         "noProblemBonus": "Bonus de jour sans problème",
         "streakMilestone": "Bonus de palier de série",
         "firstSolveBonus": "Bonus de première résolution",
-        "adminAdjustment": "Ajustement admin"
+        "adminAdjustment": "Ajustement admin",
+        "problemSkipUsed": "Saut de problème utilisé",
+        "quizReward": "Récompense de quiz",
+        "hintDiscountPurchase": "Réduction sur les indices",
+        "doubleStarsPurchase": "Étoiles doublées",
+        "extraAttemptPurchase": "Deuxième chance"
       }
     },
     "date": {
       "today": "Aujourd'hui",
       "yesterday": "Hier",
       "daysAgo": "il y a {count} j"
+    },
+    "starsCount": "{count} étoiles",
+    "owned": "Vous en avez {count}",
+    "needMore": "Pas assez",
+    "badges": {
+      "mostPopular": "Le plus populaire",
+      "oneTimeUse": "Usage unique"
     }
   },
   "ai": {

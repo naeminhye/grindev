@@ -418,7 +418,7 @@
     "buy": "Buy",
     "buying": "Buying...",
     "confirmLabel": "Confirm",
-    "needMoreStars": "Need more ⭐",
+    "needMoreStars": "Need more",
     "items": {
       "streakFreeze": {
         "title": "Streak Freeze",
@@ -429,6 +429,18 @@
         "title": "Problem Skip",
         "desc": "Not feeling today's problem? Skip it and get a random problem from the full problem bank instead.",
         "stock": "One-time use"
+      },
+      "hintDiscount": {
+        "title": "Hint Discount",
+        "desc": "Reduce the cost of all hints by 1 star for one problem. Applied automatically on your next problem."
+      },
+      "doubleStars": {
+        "title": "Double Stars",
+        "desc": "Earn double stars on your next solved problem. Applies to the next submission only."
+      },
+      "secondChance": {
+        "title": "Second Chance",
+        "desc": "Had a bad day? Reset your attempt count on a previously failed problem and try again cleanly."
       }
     },
     "confirm": {
@@ -443,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "Streak freeze purchased! You now have {count} freeze(s).",
-      "problemSkipped": "Problem skipped! Check Today for your new problem."
+      "problemSkipped": "Problem skipped! Check Today for your new problem.",
+      "itemPurchased": "{item} purchased!"
     },
     "comingSoon": {
       "title": "Coming soon",
@@ -465,13 +478,25 @@
         "noProblemBonus": "No problem day bonus",
         "streakMilestone": "Streak milestone bonus",
         "firstSolveBonus": "First solve bonus",
-        "adminAdjustment": "Admin adjustment"
+        "adminAdjustment": "Admin adjustment",
+        "problemSkipUsed": "Problem skip used",
+        "quizReward": "Quiz reward",
+        "hintDiscountPurchase": "Hint Discount",
+        "doubleStarsPurchase": "Double Stars",
+        "extraAttemptPurchase": "Second Chance"
       }
     },
     "date": {
       "today": "Today",
       "yesterday": "Yesterday",
       "daysAgo": "{count}d ago"
+    },
+    "starsCount": "{count} stars",
+    "owned": "You have {count}",
+    "needMore": "Need more",
+    "badges": {
+      "mostPopular": "Most popular",
+      "oneTimeUse": "One-time use"
     }
   },
   "ai": {

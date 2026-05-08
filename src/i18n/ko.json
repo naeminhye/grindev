@@ -429,6 +429,18 @@
         "title": "문제 스킵",
         "desc": "오늘 문제가 끌리지 않나요? 스킵하고 전체 문제 은행에서 무작위 문제를 받아보세요.",
         "stock": "일회용"
+      },
+      "hintDiscount": {
+        "title": "힌트 할인",
+        "desc": "문제 하나에서 모든 힌트 비용을 별 1개씩 줄입니다. 다음 문제에 자동으로 적용됩니다."
+      },
+      "doubleStars": {
+        "title": "별 2배",
+        "desc": "다음에 푼 문제에서 별을 두 배로 획득합니다. 다음 제출에만 적용됩니다."
+      },
+      "secondChance": {
+        "title": "두 번째 기회",
+        "desc": "오늘 컨디션이 별로였나요? 이전에 실패한 문제의 시도 횟수를 초기화하고 다시 깔끔하게 도전하세요."
       }
     },
     "confirm": {
@@ -443,7 +455,8 @@
     },
     "messages": {
       "streakFreezePurchased": "연속 기록 보호권을 구매했어요! 현재 {count}개를 보유 중입니다.",
-      "problemSkipped": "문제를 스킵했어요! 오늘 페이지에서 새 문제를 확인하세요."
+      "problemSkipped": "문제를 스킵했어요! 오늘 페이지에서 새 문제를 확인하세요.",
+      "itemPurchased": "{item} 구매 완료!"
     },
     "comingSoon": {
       "title": "곧 공개됩니다",
@@ -465,13 +478,25 @@
         "noProblemBonus": "문제 없는 날 보너스",
         "streakMilestone": "연속 기록 달성 보너스",
         "firstSolveBonus": "첫 풀이 보너스",
-        "adminAdjustment": "관리자 조정"
+        "adminAdjustment": "관리자 조정",
+        "problemSkipUsed": "문제 건너뛰기 사용",
+        "quizReward": "퀴즈 보상",
+        "hintDiscountPurchase": "힌트 할인",
+        "doubleStarsPurchase": "별 2배",
+        "extraAttemptPurchase": "두 번째 기회"
       }
     },
     "date": {
       "today": "오늘",
       "yesterday": "어제",
       "daysAgo": "{count}일 전"
+    },
+    "starsCount": "별 {count}개",
+    "owned": "{count}개 보유 중",
+    "needMore": "별 부족",
+    "badges": {
+      "mostPopular": "가장 인기",
+      "oneTimeUse": "1회 사용"
     }
   },
   "ai": {

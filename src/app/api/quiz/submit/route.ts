@@ -34,7 +34,13 @@ export async function POST(req: Request) {
   }
 
   const { quizId, answers, isMakeup, makeupDate } = parsed.data;
-  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
   const today = getTodayInTz(timeZone);
 
   const quiz = await prisma.quiz.findUnique({

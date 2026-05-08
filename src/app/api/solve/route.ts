@@ -32,7 +32,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
 
   const { problemId, code, language, challengeMode, timeExpired, submit } =
     parsed.data;

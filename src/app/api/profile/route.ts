@@ -6,7 +6,12 @@ import type { ProfileStats } from "@/types";
 import { getTodayInTz } from "@/lib/streak";
 
 export async function GET(req: Request) {
-  const timeZone = req.headers.get("x-timezone") ?? "UTC";
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
   const today = getTodayInTz(timeZone);
 
   const { userId, error } = await getAuthUserId();

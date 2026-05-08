@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { runCode } from "@/lib/piston";
 import { calculateStarDelta } from "@/lib/challenge";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { getTodayUTC } from "@/lib/streak";
+import { getTodayInTz, getTodayUTC } from "@/lib/streak";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
 import { STAR_REWARD_DEFAULTS } from "@/lib/game-config";
@@ -28,7 +28,13 @@ export async function POST(
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { date } = await params;
-  const today = getTodayUTC();
+  const timeZone =
+    (req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
+  const today = getTodayInTz(timeZone);
 
   if (date >= today) {
     return NextResponse.json(

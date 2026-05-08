@@ -1,18 +1,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { StarCount } from "@/components/ui/StarCount";
 import { StreakBadge } from "@/components/streak/StreakBadge";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
-import { NoProblemScreen } from "@/components/ui/NoProblemScreen";
 import { QuizPanel } from "@/components/quiz/QuizPanel";
 import { QuizResultModal } from "@/components/quiz/QuizResultModal";
 import {
   QuizTopicSelector,
   type QuizTopic,
+  type TopicAvailability,
 } from "@/components/quiz/QuizTopicSelector";
-import { MakeupCard } from "@/components/problem/MakeupCard";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { QuizAnswer, QuizSubmitResponse } from "@/types";
@@ -31,15 +29,18 @@ const TOPIC_LABELS: Record<string, string> = {
 };
 
 type QuizData = {
-  quiz: {
+  quiz?: {
     id: string;
     title: string;
     topic: string;
     difficulty: "EASY" | "MEDIUM" | "HARD";
     questions: any[];
   };
-  alreadySolved: boolean;
+  noQuizToday?: boolean;
+  reason?: string;
+  topicAvailability: TopicAvailability[];
   allTopicsDone: boolean;
+  usedFallback: boolean;
   userStats: {
     currentStreak: number;
     longestStreak: number;
@@ -48,18 +49,10 @@ type QuizData = {
   };
 };
 
-type PageState =
-  | "loading"
-  | "topic-select"
-  | "ready"
-  | "submitting"
-  | "solved"
-  | "error";
+type PageState = "loading" | "topic-select" | "ready" | "submitting" | "error";
 
 export default function QuizTodayPage() {
   const { t } = useI18n();
-  const router = useRouter();
-
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [pageState, setPageState] = useState<PageState>("loading");
   const [stars, setStars] = useState(0);
@@ -68,8 +61,15 @@ export default function QuizTodayPage() {
   const [preferredTopic, setPreferredTopic] = useState<QuizTopic | null>(null);
   const [savingTopic, setSavingTopic] = useState(false);
   const [totalSolvedToday, setTotalSolvedToday] = useState(0);
+  const [quizKey, setQuizKey] = useState(0); // force QuizPanel remount on new quiz
 
-  // ── Load quiz + settings ──────────────────────────────────────────────
+  async function loadQuiz() {
+    const res = await fetch("/api/daily-quiz").then((r) => r.json());
+    setQuizData(res);
+    setStars(res.userStats?.stars ?? 0);
+    return res;
+  }
+
   useEffect(() => {
     Promise.all([
       fetch("/api/daily-quiz").then((r) => r.json()),
@@ -79,22 +79,22 @@ export default function QuizTodayPage() {
         setPreferredTopic(settingsRes.preferredQuizTopic ?? null);
         setStars(quizRes.userStats?.stars ?? 0);
         setQuizData(quizRes);
-        // Always show topic selector first so user can change before starting
         setPageState("topic-select");
       })
       .catch(() => setPageState("error"));
   }, []);
 
-  // ── Start quiz with current topic ────────────────────────────────────
   async function handleStartQuiz() {
     setPageState("loading");
-    const res = await fetch("/api/daily-quiz").then((r) => r.json());
-    setQuizData(res);
-    setStars(res.userStats?.stars ?? stars);
-    setPageState("ready");
+    const res = await loadQuiz();
+    if (res.noQuizToday || !res.quiz) {
+      setPageState("topic-select");
+    } else {
+      setPageState("ready");
+      setQuizKey((k) => k + 1);
+    }
   }
 
-  // ── Save topic preference + reload quiz ──────────────────────────────
   async function handleTopicChange(topic: QuizTopic | null) {
     setPreferredTopic(topic);
     setSavingTopic(true);
@@ -104,42 +104,33 @@ export default function QuizTodayPage() {
       body: JSON.stringify({ preferredQuizTopic: topic }),
     });
     setSavingTopic(false);
-    // Reload quiz with new topic
-    const res = await fetch("/api/daily-quiz").then((r) => r.json());
+    const res = await loadQuiz();
     setQuizData(res);
-    setStars(res.userStats?.stars ?? stars);
   }
 
-  // ── Submit answers ───────────────────────────────────────────────────
   const handleSubmit = useCallback(
     async (answers: QuizAnswer[]) => {
-      if (!quizData || pageState === "submitting") return;
+      if (!quizData?.quiz || pageState === "submitting") return;
       setPageState("submitting");
-
       try {
         const res = await fetch("/api/quiz/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ quizId: quizData.quiz.id, answers }),
         });
-
         if (!res.ok) {
           const err = await res.json();
           alert(err.error);
           setPageState("ready");
           return;
         }
-
         const submitResult: QuizSubmitResponse = await res.json();
         setResult(submitResult);
-        setTotalSolvedToday((n) => n + 1);
-
-        if (submitResult.starDelta > 0) {
+        if (submitResult.starDelta > 0)
           setStars((s) => s + submitResult.starDelta);
-        }
-
+        if (submitResult.passed) setTotalSolvedToday((n) => n + 1);
         setShowResultModal(true);
-        setPageState(submitResult.passed ? "solved" : "ready");
+        setPageState("ready");
       } catch {
         setPageState("ready");
       }
@@ -147,16 +138,14 @@ export default function QuizTodayPage() {
     [quizData, pageState],
   );
 
-  // ── After modal confirm — offer next quiz ────────────────────────────
   function handleModalConfirm() {
     setShowResultModal(false);
     if (result?.passed) {
-      setPageState("topic-select"); // go back to topic select to pick next
+      // Reload availability then go back to topic select
+      loadQuiz().then(() => setPageState("topic-select"));
     }
-    // If failed, stay on ready (QuizPanel resets internally or user retries)
   }
 
-  // ── Loading ───────────────────────────────────────────────────────────
   if (pageState === "loading") {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -174,7 +163,7 @@ export default function QuizTodayPage() {
         <div className="text-center space-y-3">
           <i className="ri-error-warning-line text-4xl text-red-400" />
           <p className="font-mono text-sm text-zinc-400">
-            No quizzes available.
+            Failed to load quiz.
           </p>
         </div>
       </div>
@@ -182,13 +171,16 @@ export default function QuizTodayPage() {
   }
 
   const userStats = quizData?.userStats;
+  const availability = quizData?.topicAvailability ?? [];
 
-  // ── Topic selection screen ────────────────────────────────────────────
+  // ── Topic selection ───────────────────────────────────────────────────
   if (pageState === "topic-select") {
+    const quiz = quizData?.quiz;
+    const noQuiz = quizData?.noQuizToday || !quiz;
+
     return (
       <div className="flex-1 flex flex-col overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
+        <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2">
           <div className="flex items-center gap-2">
             <i className="ri-questionnaire-line text-lime-400" />
             <h1 className="font-heading font-bold text-sm md:text-base">
@@ -218,35 +210,54 @@ export default function QuizTodayPage() {
             </div>
           )}
 
-          {/* Preview of next quiz */}
-          {quizData?.quiz && (
+          {/* Next quiz preview */}
+          {!noQuiz && quiz && (
             <div className="p-4 rounded-md bg-zinc-900 border border-border space-y-2">
               <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
                 Next quiz
               </p>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-mono text-sm font-bold text-foreground">
-                  {quizData.quiz.title}
+                  {quiz.title}
                 </span>
-                <DifficultyBadge difficulty={quizData.quiz.difficulty} />
+                <DifficultyBadge difficulty={quiz.difficulty} />
                 <span className="text-xs font-mono text-blue-400 border border-blue-500/20 bg-blue-500/10 px-1.5 py-0.5 rounded">
-                  {TOPIC_LABELS[quizData.quiz.topic] ?? quizData.quiz.topic}
+                  {TOPIC_LABELS[quiz.topic] ?? quiz.topic}
                 </span>
                 <span className="text-xs font-mono text-zinc-500">
-                  {quizData.quiz.questions.length} questions
+                  {quiz.questions.length} questions
                 </span>
               </div>
-              {quizData.allTopicsDone && (
+              {quizData?.usedFallback && (
+                <p className="text-xs font-mono text-yellow-400 flex items-center gap-1.5">
+                  <i className="ri-information-line" />
+                  No quizzes left in your preferred topic — showing from other
+                  topics.
+                </p>
+              )}
+              {quizData?.allTopicsDone && (
                 <p className="text-xs font-mono text-yellow-400 flex items-center gap-1.5">
                   <i className="ri-trophy-line" />
-                  You've completed all quizzes in your preferred topic! Showing
-                  from other topics.
+                  You've completed all available quizzes! Showing repeats.
                 </p>
               )}
             </div>
           )}
 
-          {/* Topic selector */}
+          {/* No quiz at all */}
+          {noQuiz && (
+            <div className="p-4 rounded-md bg-zinc-900 border border-border text-center space-y-2 py-8">
+              <i className="ri-questionnaire-line text-3xl text-zinc-600" />
+              <p className="font-mono text-sm text-zinc-400">
+                No quizzes available for this topic.
+              </p>
+              <p className="text-xs font-mono text-zinc-600">
+                Try selecting a different topic below.
+              </p>
+            </div>
+          )}
+
+          {/* Topic selector with availability */}
           <div className="space-y-4">
             <div>
               <h2 className="font-heading font-bold text-base">Choose Topic</h2>
@@ -263,40 +274,45 @@ export default function QuizTodayPage() {
               value={preferredTopic}
               onChange={handleTopicChange}
               variant="compact"
+              availability={availability}
             />
           </div>
 
           {/* Start button */}
           <button
             onClick={handleStartQuiz}
-            className="w-full py-3.5 bg-lime-400 text-zinc-950 font-heading font-bold text-base rounded-lg hover:bg-lime-300 active:scale-95 transition-all flex items-center justify-center gap-2"
+            disabled={noQuiz}
+            className={cn(
+              "w-full py-3.5 font-heading font-bold text-base rounded-lg flex items-center justify-center gap-2 transition-all",
+              noQuiz
+                ? "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700"
+                : "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95",
+            )}
           >
             <i className="ri-play-fill" />
-            Start Quiz
+            {noQuiz ? "No Quiz Available" : "Start Quiz"}
           </button>
         </div>
       </div>
     );
   }
 
-  if (!quizData) return null;
-
-  const { quiz, userStats: stats } = quizData;
+  // ── Quiz in progress ──────────────────────────────────────────────────
+  if (!quizData?.quiz) return null;
+  const { quiz } = quizData;
 
   return (
     <>
       {showResultModal && result && (
         <QuizResultModal result={result} onConfirm={handleModalConfirm} />
       )}
-
       <div className="h-[calc(100dvh-3.5rem)] flex flex-col overflow-hidden">
-        {/* Header */}
         <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
           <div className="flex items-center gap-2 min-w-0">
             <button
               onClick={() => setPageState("topic-select")}
               className="text-zinc-500 hover:text-foreground transition-colors shrink-0"
-              title="Change topic"
+              title="Back to topic selection"
             >
               <i className="ri-arrow-left-line" />
             </button>
@@ -310,12 +326,12 @@ export default function QuizTodayPage() {
             </span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {stats && <StreakBadge streak={stats.currentStreak} />}
+            {userStats && <StreakBadge streak={userStats.currentStreak} />}
             <StarCount stars={stars} />
           </div>
         </div>
-
         <QuizPanel
+          key={quizKey}
           quiz={quiz}
           isSolved={false}
           onSubmit={handleSubmit}

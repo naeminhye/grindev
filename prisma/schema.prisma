@@ -186,6 +186,10 @@ enum StarTransactionReason {
   FIRST_SOLVE_BONUS
   ADMIN_ADJUSTMENT
   QUIZ_REWARD
+  HINT_DISCOUNT_PURCHASE
+  HINT_DISCOUNT_USED
+  DOUBLE_STARS_PURCHASE
+  EXTRA_ATTEMPT_PURCHASE
 }
 
 /////////////////////////////////////////////////////

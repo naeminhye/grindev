@@ -1,11 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { StarCount } from "@/components/ui/StarCount";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/lib/utils";
-import { STREAK_FREEZE_COST, PROBLEM_SKIP_COST } from "@/lib/stars";
 import { useI18n } from "@/lib/i18n";
+
+// type ShopItem = {
+//   id: string;
+//   name: string;
+//   description: string;
+//   cost: number;
+//   icon: string;
+//   iconBg: string;
+//   badge?: string;
+//   owned?: number;
+// };
+type ShopItem = {
+  id: string;
+  nameKey: string;
+  descriptionKey: string;
+  cost: number;
+  icon: string;
+  iconBg: string;
+  badgeKey?: string;
+  owned?: number;
+};
 
 type Transaction = {
   id: string;
@@ -14,216 +32,229 @@ type Transaction = {
   createdAt: string;
 };
 
-type UserStats = {
-  stars: number;
-  streakFreezeCount: number;
-  currentStreak: number;
-};
+const SHOP_ITEMS: ShopItem[] = [
+  {
+    id: "streak-freeze",
+    nameKey: "shop.items.streakFreeze.title",
+    descriptionKey: "shop.items.streakFreeze.desc",
+    cost: 20,
+    icon: "ri-shield-flash-line",
+    iconBg: "bg-blue-500/20 text-blue-400",
+    badgeKey: "shop.badges.mostPopular",
+  },
+  {
+    id: "problem-skip",
+    nameKey: "shop.items.problemSkip.title",
+    descriptionKey: "shop.items.problemSkip.desc",
+    cost: 10,
+    icon: "ri-skip-forward-fill",
+    iconBg: "bg-purple-500/20 text-purple-400",
+    badgeKey: "shop.items.problemSkip.stock",
+  },
+  {
+    id: "hint-discount",
+    nameKey: "shop.items.hintDiscount.title",
+    descriptionKey: "shop.items.hintDiscount.desc",
+    cost: 5,
+    icon: "ri-lightbulb-flash-line",
+    iconBg: "bg-yellow-500/20 text-yellow-400",
+    badgeKey: "shop.badges.oneTimeUse",
+  },
+  {
+    id: "double-stars",
+    nameKey: "shop.items.doubleStars.title",
+    descriptionKey: "shop.items.doubleStars.desc",
+    cost: 15,
+    icon: "ri-star-smile-line",
+    iconBg: "bg-lime-500/20 text-lime-400",
+    badgeKey: "shop.badges.oneTimeUse",
+  },
+  {
+    id: "extra-attempt",
+    nameKey: "shop.items.secondChance.title",
+    descriptionKey: "shop.items.secondChance.desc",
+    cost: 8,
+    icon: "ri-restart-line",
+    iconBg: "bg-orange-500/20 text-orange-400",
+    badgeKey: "shop.badges.oneTimeUse",
+  },
+];
 
-const REASON_LABELS: Record<string, { labelKey: string; icon: string }> = {
+const REASON_LABELS: Record<
+  string,
+  { labelKey: string; icon: string; color: string }
+> = {
   SOLVE_CLEAN_NORMAL: {
     labelKey: "shop.transactions.reasons.solveCleanNormal",
     icon: "ri-shield-star-line",
+    color: "text-lime-400",
   },
   SOLVE_CLEAN_HARD: {
     labelKey: "shop.transactions.reasons.solveCleanHard",
-    icon: "ri-shield-star-fill",
+    icon: "ri-sword-line",
+    color: "text-orange-400",
   },
   SOLVE_HINTS_NORMAL: {
     labelKey: "shop.transactions.reasons.solveHintsNormal",
     icon: "ri-lightbulb-line",
+    color: "text-yellow-400",
   },
   SOLVE_HINTS_HARD: {
     labelKey: "shop.transactions.reasons.solveHintsHard",
-    icon: "ri-lightbulb-fill",
+    icon: "ri-lightbulb-line",
+    color: "text-yellow-400",
   },
   HINT_PURCHASE: {
     labelKey: "shop.transactions.reasons.hintPurchase",
-    icon: "ri-eye-line",
+    icon: "ri-lightbulb-line",
+    color: "text-zinc-400",
   },
   MAKEUP_COST: {
     labelKey: "shop.transactions.reasons.makeupCost",
     icon: "ri-history-line",
+    color: "text-zinc-400",
   },
   MAKEUP_REWARD: {
     labelKey: "shop.transactions.reasons.makeupReward",
     icon: "ri-history-line",
+    color: "text-lime-400",
   },
   STREAK_FREEZE_PURCHASE: {
     labelKey: "shop.transactions.reasons.streakFreezePurchase",
     icon: "ri-shield-flash-line",
+    color: "text-blue-400",
   },
   PROBLEM_SKIP: {
     labelKey: "shop.transactions.reasons.problemSkip",
+    icon: "ri-skip-forward-fill",
+    color: "text-purple-400",
+  },
+  PROBLEM_SKIP_USED: {
+    labelKey: "shop.transactions.reasons.problemSkipUsed",
     icon: "ri-skip-forward-line",
+    color: "text-zinc-400",
   },
   DAILY_LOGIN_BONUS: {
     labelKey: "shop.transactions.reasons.dailyLoginBonus",
     icon: "ri-calendar-check-line",
+    color: "text-lime-400",
   },
   NO_PROBLEM_BONUS: {
     labelKey: "shop.transactions.reasons.noProblemBonus",
-    icon: "ri-gift-line",
+    icon: "ri-calendar-close-line",
+    color: "text-lime-400",
   },
-  STREAK_MILESTONE: {
-    labelKey: "shop.transactions.reasons.streakMilestone",
-    icon: "ri-trophy-line",
-  },
-  FIRST_SOLVE_BONUS: {
-    labelKey: "shop.transactions.reasons.firstSolveBonus",
-    icon: "ri-award-line",
+  QUIZ_REWARD: {
+    labelKey: "shop.transactions.reasons.quizReward",
+    icon: "ri-questionnaire-line",
+    color: "text-lime-400",
   },
   ADMIN_ADJUSTMENT: {
     labelKey: "shop.transactions.reasons.adminAdjustment",
-    icon: "ri-settings-line",
+    icon: "ri-admin-line",
+    color: "text-zinc-400",
+  },
+  HINT_DISCOUNT_PURCHASE: {
+    labelKey: "shop.transactions.reasons.hintDiscountPurchase",
+    icon: "ri-lightbulb-flash-line",
+    color: "text-yellow-400",
+  },
+  DOUBLE_STARS_PURCHASE: {
+    labelKey: "shop.transactions.reasons.doubleStarsPurchase",
+    icon: "ri-star-smile-line",
+    color: "text-lime-400",
+  },
+  EXTRA_ATTEMPT_PURCHASE: {
+    labelKey: "shop.transactions.reasons.extraAttemptPurchase",
+    icon: "ri-restart-line",
+    color: "text-orange-400",
   },
 };
 
 export default function ShopPage() {
   const { t, locale } = useI18n();
 
-  const [stats, setStats] = useState<UserStats | null>(null);
+  const [stars, setStars] = useState(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [buying, setBuying] = useState<string | null>(null);
-  const [confirmItem, setConfirmItem] = useState<
-    "STREAK_FREEZE" | "PROBLEM_SKIP" | null
-  >(null);
-  const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(
-    null,
-  );
+  const [ownedCounts, setOwnedCounts] = useState<Record<string, number>>({});
+  const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/daily").then((r) => r.json()),
-      fetch("/api/stars").then((r) => r.json()),
-    ]).then(([daily, starsData]) => {
-      setStats({
-        stars: daily.userStats?.stars ?? 0,
-        streakFreezeCount: daily.userStats?.streakFreezeCount ?? 0,
-        currentStreak: daily.userStats?.currentStreak ?? 0,
+    fetch("/api/shop")
+      .then((r) => r.json())
+      .then((d) => {
+        setStars(d.stars ?? 0);
+        setTransactions(d.transactions ?? []);
+        setOwnedCounts(d.owned ?? {});
       });
-      setTransactions(starsData.transactions ?? []);
-      setLoading(false);
-    });
   }, []);
 
-  async function handleBuy(item: "STREAK_FREEZE" | "PROBLEM_SKIP") {
-    setBuying(item);
+  async function handlePurchase(item: ShopItem) {
+    if (stars < item.cost || purchasing) return;
+    setPurchasing(item.id);
     setMessage(null);
 
-    const res = await fetch("/api/shop", {
+    const res = await fetch("/api/shop/purchase", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ item }),
+      body: JSON.stringify({ itemId: item.id }),
     });
 
     const data = await res.json();
-    setBuying(null);
-    setConfirmItem(null);
+    if (res.ok) {
+      setStars(data.stars);
+      setOwnedCounts((prev) => ({
+        ...prev,
+        [item.id]: (prev[item.id] ?? 0) + 1,
+      }));
+      setTransactions((prev) => [data.transaction, ...prev]);
+      setMessage({
+        text: `✓ ${t("shop.messages.itemPurchased").replace(
+          "{item}",
+          t(item.nameKey),
+        )}`,
+        type: "success",
+      });
+    } else {
+      setMessage({ text: `✗ ${data.error}`, type: "error" });
+    }
+    setPurchasing(null);
+    setTimeout(() => setMessage(null), 3000);
+  }
 
-    if (!res.ok) {
-      setMessage({ text: data.error, ok: false });
-      return;
+  function formatDate(iso: string) {
+    const d = new Date(iso);
+    const diff = Math.floor((Date.now() - d.getTime()) / 86400000);
+
+    if (diff === 0) return t("shop.date.today");
+    if (diff === 1) return t("shop.date.yesterday");
+
+    if (diff < 7) {
+      return t("shop.date.daysAgo").replace("{count}", String(diff));
     }
 
-    setStats((s) =>
-      s
-        ? {
-            ...s,
-            stars: data.stars,
-            streakFreezeCount:
-              data.streakFreezeCount ??
-              s.streakFreezeCount + (item === "STREAK_FREEZE" ? 1 : 0),
-          }
-        : s,
-    );
+    const localeMap: Record<string, string> = {
+      en: "en-US",
+      vi: "vi-VN",
+      ko: "ko-KR",
+      ja: "ja-JP",
+      zh: "zh-CN",
+      th: "th-TH",
+      fr: "fr-FR",
+    };
 
-    setMessage({
-      text:
-        item === "STREAK_FREEZE"
-          ? t("shop.messages.streakFreezePurchased").replace(
-              "{count}",
-              String(data.streakFreezeCount),
-            )
-          : t("shop.messages.problemSkipped"),
-      ok: true,
+    return d.toLocaleDateString(localeMap[locale] ?? "en-US", {
+      month: "short",
+      day: "numeric",
     });
-
-    // Refresh transactions
-    fetch("/api/stars")
-      .then((r) => r.json())
-      .then((d) => setTransactions(d.transactions ?? []));
   }
-
-  if (loading) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <i className="ri-loader-4-line animate-spin text-lime-400 text-xl" />
-      </div>
-    );
-  }
-
-  const shopItems = [
-    {
-      id: "STREAK_FREEZE" as const,
-      icon: "ri-shield-flash-line",
-      color: "text-blue-400",
-      bg: "bg-blue-500/10 border-blue-500/20",
-      title: t("shop.items.streakFreeze.title"),
-      desc: t("shop.items.streakFreeze.desc"),
-      cost: STREAK_FREEZE_COST,
-      stock: stats
-        ? t("shop.items.streakFreeze.stock").replace(
-            "{count}",
-            String(stats.streakFreezeCount),
-          )
-        : "",
-      canBuy: (stats?.stars ?? 0) >= STREAK_FREEZE_COST,
-    },
-    {
-      id: "PROBLEM_SKIP" as const,
-      icon: "ri-skip-forward-line",
-      color: "text-purple-400",
-      bg: "bg-purple-500/10 border-purple-500/20",
-      title: t("shop.items.problemSkip.title"),
-      desc: t("shop.items.problemSkip.desc"),
-      cost: PROBLEM_SKIP_COST,
-      stock: t("shop.items.problemSkip.stock"),
-      canBuy: (stats?.stars ?? 0) >= PROBLEM_SKIP_COST,
-    },
-  ];
-
-  const confirmConfig =
-    confirmItem === "STREAK_FREEZE"
-      ? {
-          title: t("shop.confirm.streakFreeze.title"),
-          message: t("shop.confirm.streakFreeze.message").replace(
-            "{cost}",
-            String(STREAK_FREEZE_COST),
-          ),
-        }
-      : {
-          title: t("shop.confirm.problemSkip.title"),
-          message: t("shop.confirm.problemSkip.message").replace(
-            "{cost}",
-            String(PROBLEM_SKIP_COST),
-          ),
-        };
 
   return (
     <div className="max-w-2xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-8 w-full">
-      {confirmItem && (
-        <ConfirmDialog
-          title={confirmConfig.title}
-          message={confirmConfig.message}
-          confirmLabel={buying ? t("shop.buying") : t("shop.confirmLabel")}
-          variant="warning"
-          onConfirm={() => handleBuy(confirmItem)}
-          onCancel={() => !buying && setConfirmItem(null)}
-        />
-      )}
-
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -234,169 +265,184 @@ export default function ShopPage() {
             {t("shop.desc")}
           </p>
         </div>
-        {stats && <StarCount stars={stats.stars} />}
+        <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-yellow-500/20 bg-yellow-500/10">
+          <i className="ri-star-fill text-yellow-400" />
+          <span className="font-heading font-bold text-yellow-400">
+            {t("shop.starsCount").replace("{count}", String(stars))}
+          </span>
+        </div>
       </div>
 
-      {/* Message */}
       {message && (
         <div
           className={cn(
-            "flex items-center gap-2 p-3 rounded-md border text-xs font-mono",
-            message.ok
+            "flex items-center gap-2 px-4 py-3 rounded-md border text-sm font-mono",
+            message.type === "success"
               ? "bg-lime-500/10 border-lime-500/20 text-lime-400"
               : "bg-red-500/10 border-red-500/20 text-red-400",
           )}
         >
           <i
-            className={message.ok ? "ri-check-line" : "ri-error-warning-line"}
+            className={
+              message.type === "success"
+                ? "ri-check-line"
+                : "ri-error-warning-line"
+            }
           />
           {message.text}
         </div>
       )}
 
-      {/* Shop items */}
-      <div className="space-y-3">
+      {/* Available items */}
+      <section className="space-y-3">
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
           {t("shop.available")}
         </h2>
-        {shopItems.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-4 p-5 bg-[hsl(var(--surface))] border border-border rounded-md hover:border-zinc-600 transition-colors"
-          >
+        {SHOP_ITEMS.map((item) => {
+          const canAfford = stars >= item.cost;
+          const owned = ownedCounts[item.id] ?? 0;
+          const isPurchasing = purchasing === item.id;
+
+          return (
             <div
+              key={item.id}
               className={cn(
-                "w-12 h-12 rounded-md flex items-center justify-center shrink-0 border",
-                item.bg,
+                "flex items-start gap-4 p-4 rounded-md border transition-colors",
+                canAfford
+                  ? "bg-zinc-900 border-border"
+                  : "bg-zinc-900/50 border-border opacity-70",
               )}
             >
-              <i className={cn(item.icon, item.color, "text-2xl")} />
-            </div>
-
-            <div className="flex-1 min-w-0 space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono font-bold text-sm">
-                  {item.title}
-                </span>
-                <span className="text-xs font-mono text-zinc-600">
-                  {item.stock}
-                </span>
-              </div>
-              <p className="font-mono text-xs text-zinc-500 leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-
-            <div className="flex flex-col items-end gap-2 shrink-0">
-              <span className="flex items-center gap-1 font-mono text-sm text-yellow-400 font-bold">
-                <i className="ri-star-fill text-xs" /> {item.cost}
-              </span>
-              <button
-                onClick={() => setConfirmItem(item.id)}
-                disabled={!item.canBuy || buying !== null}
+              {/* Icon */}
+              <div
                 className={cn(
-                  "px-4 py-1.5 rounded text-xs font-mono font-bold transition-all",
-                  item.canBuy
-                    ? "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95"
-                    : "bg-[hsl(var(--surface-raised))] text-zinc-600 border border-zinc-700 cursor-not-allowed",
+                  "w-12 h-12 rounded-lg flex items-center justify-center shrink-0 text-xl",
+                  item.iconBg,
                 )}
               >
-                {!item.canBuy ? t("shop.needMoreStars") : t("shop.buy")}{" "}
-              </button>
+                <i className={item.icon} />
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0 space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-heading font-bold text-sm text-foreground">
+                    {t(item.nameKey)}
+                  </span>
+
+                  {item.badgeKey && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500 border border-zinc-700">
+                      {t(item.badgeKey)}
+                    </span>
+                  )}
+
+                  {owned > 0 && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-lime-500/10 text-lime-400 border border-lime-500/20">
+                      {t("shop.owned").replace("{count}", String(owned))}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs font-mono text-zinc-400 leading-relaxed">
+                  {t(item.descriptionKey)}
+                </p>
+              </div>
+
+              {/* Buy button */}
+              <div className="flex flex-col items-end gap-2 shrink-0">
+                <div className="flex items-center gap-1 text-sm font-mono font-bold text-yellow-400">
+                  <i className={canAfford ? "ri-star-fill" : "ri-star-line"} />
+                  {item.cost}
+                </div>
+                <button
+                  onClick={() => handlePurchase(item)}
+                  disabled={!canAfford || !!purchasing}
+                  className={cn(
+                    "px-3 py-1.5 rounded text-xs font-mono font-bold transition-all",
+                    canAfford && !purchasing
+                      ? "bg-lime-400 text-zinc-950 hover:bg-lime-300 active:scale-95"
+                      : "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700",
+                  )}
+                >
+                  {isPurchasing ? (
+                    <i className="ri-loader-4-line animate-spin" />
+                  ) : canAfford ? (
+                    t("shop.buy")
+                  ) : (
+                    t("shop.needMore")
+                  )}
+                  {!canAfford && <i className="ri-star-line ml-1 text-xs" />}
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          );
+        })}
+      </section>
 
       {/* Coming soon */}
-      <div className="space-y-3">
+      <section className="space-y-3">
         <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
           {t("shop.comingSoon.title")}
         </h2>
-        <div className="p-5 bg-[hsl(var(--surface))]/50 border border-dashed border-zinc-800 rounded-md text-center space-y-2">
-          <i className="ri-store-2-line text-2xl text-zinc-700" />
-          <p className="font-mono text-xs text-zinc-600">
+        <div className="p-6 rounded-md border border-dashed border-zinc-700 text-center space-y-2">
+          <i className="ri-store-2-line text-3xl text-zinc-700" />
+
+          <p className="text-xs font-mono text-zinc-500">
             {t("shop.comingSoon.desc")}
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* Transaction history */}
+      {/* Recent transactions */}
       {transactions.length > 0 && (
-        <div className="space-y-3">
+        <section className="space-y-3">
           <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-400">
             {t("shop.transactions.title")}
           </h2>
           <div className="space-y-1.5">
             {transactions.slice(0, 20).map((tx) => {
               const meta = REASON_LABELS[tx.reason] ?? {
-                labelKey: tx.reason,
+                label: tx.reason,
                 icon: "ri-exchange-line",
+                color: "text-zinc-400",
               };
               return (
                 <div
                   key={tx.id}
-                  className="flex items-center gap-3 px-4 py-3 bg-[hsl(var(--surface))] border border-border rounded-md"
+                  className="flex items-center gap-3 px-4 py-3 rounded-md bg-zinc-900 border border-border"
                 >
                   <i
-                    className={cn(
-                      meta.icon,
-                      "text-sm shrink-0",
-                      tx.amount >= 0 ? "text-lime-400" : "text-zinc-500",
-                    )}
+                    className={cn(meta.icon, meta.color, "text-sm shrink-0")}
                   />
-                  <span className="font-mono text-xs text-zinc-400 flex-1 truncate">
+                  <span className="font-mono text-sm text-zinc-300 flex-1">
                     {meta.labelKey.startsWith("shop.")
                       ? t(meta.labelKey)
                       : meta.labelKey}
                   </span>
                   <span
                     className={cn(
-                      "font-mono text-sm font-bold shrink-0",
-                      tx.amount > 0
-                        ? "text-lime-400"
-                        : tx.amount < 0
-                          ? "text-red-400"
-                          : "text-zinc-600",
+                      "font-heading font-bold text-sm flex items-center gap-1",
+                      tx.amount > 0 ? "text-lime-400" : "text-red-400",
                     )}
                   >
-                    {tx.amount > 0
-                      ? `+${tx.amount}`
-                      : tx.amount === 0
-                        ? "—"
-                        : tx.amount}
+                    {tx.amount > 0 ? "+" : ""}
+                    {tx.amount}
+                    <i
+                      className={
+                        tx.amount > 0
+                          ? "ri-star-fill text-yellow-400 text-xs"
+                          : "ri-star-line text-red-400 text-xs"
+                      }
+                    />
                   </span>
-                  <span className="font-mono text-[10px] text-zinc-700 shrink-0">
-                    {formatDate(tx.createdAt, t, locale)}
+                  <span className="text-xs font-mono text-zinc-600 shrink-0">
+                    {formatDate(tx.createdAt)}
                   </span>
                 </div>
               );
             })}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );
-}
-
-function formatDate(
-  iso: string,
-  t: (key: string) => string,
-  locale: string,
-): string {
-  const date = new Date(iso);
-  const diffDays = Math.floor(
-    (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
-  );
-
-  if (diffDays === 0) return t("shop.date.today");
-  if (diffDays === 1) return t("shop.date.yesterday");
-  if (diffDays < 7) {
-    return t("shop.date.daysAgo").replace("{count}", String(diffDays));
-  }
-
-  return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
-    month: "short",
-    day: "numeric",
-  });
 }

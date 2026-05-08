@@ -5,22 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-// const ADMIN_MENUS = [
-//   { href: "/admin", label: "Dashboard", icon: "ri-dashboard-line" },
-//   {
-//     href: "/admin/problems/new",
-//     label: "New Problem",
-//     icon: "ri-add-circle-line",
-//   },
-//   { href: "/admin/schedule", label: "Schedule", icon: "ri-calendar-line" },
-//   {
-//     href: "/admin/quiz-schedule",
-//     label: "Quiz Schedule",
-//     icon: "ri-questionnaire-line",
-//   },
-//   { href: "/admin/config", label: "Config", icon: "ri-settings-3-line" },
-// ] as const;
-
 const ADMIN_MENUS = [
   { href: "/admin", label: "Dashboard", icon: "ri-dashboard-line" },
   {
@@ -36,7 +20,7 @@ const ADMIN_MENUS = [
     icon: "ri-calendar-check-line",
   },
   { href: "/admin/config", label: "Config", icon: "ri-settings-3-line" },
-];
+] as const;
 
 export function AdminNav() {
   const pathname = usePathname();

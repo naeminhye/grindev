@@ -67,6 +67,7 @@ export default function DSATodayPage() {
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [hardGatePassed, setHardGatePassed] = useState(false);
   const [preferredDifficulty, setPreferredDifficulty] = useState("ANY");
+  const [hintDiscount, setHintDiscount] = useState(0);
 
   const hasStartedTyping = useRef(false);
 
@@ -110,6 +111,7 @@ export default function DSATodayPage() {
         setPageState(dailyData.alreadySolved ? "solved" : "ready");
         setSkipCount((dailyData as any).skipCount ?? 0);
         setDiffNoteVisible(true);
+        setHintDiscount(dailyData.hintDiscount ?? 0);
         if (dailyData.alreadySolved) setModeLocked(true);
       })
       .catch((err) => {
@@ -542,6 +544,7 @@ export default function DSATodayPage() {
             hintContents={hintContents}
             hintLoading={hintLoading}
             onBuyHint={handleBuyHint}
+            hintDiscount={hintDiscount}
           />
 
           {/* Code panel */}

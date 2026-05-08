@@ -121,7 +121,7 @@ export function AIExplain({ problem }: AIExplainProps) {
                   {t("ai.title")}
                 </h2>
                 <span className="text-[10px] font-mono text-zinc-600 border border-zinc-800 px-1.5 py-0.5 rounded">
-                  {t("ai.poweredBy", { model: "Claude" })}
+                  {t("ai.poweredBy", { model: "GrinDevAI" })}
                 </span>
               </div>
               <button

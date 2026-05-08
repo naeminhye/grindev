@@ -84,6 +84,7 @@ export type DailyResponse = {
   userStats: UserStats;
   skipCount: number;
   hardTimeLimits: { EASY: number; MEDIUM: number; HARD: number };
+  hintDiscount: number;
 };
 
 export type NoProblemResponse = {
