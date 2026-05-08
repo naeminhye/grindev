@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "ヒント割引",
         "doubleStarsPurchase": "スター2倍",
         "extraAttemptPurchase": "セカンドチャンス",
-        "hintDiscountUsed": "ヒント割引を使用"
+        "hintDiscountUsed": "ヒント割引を使用",
+        "aiCodeReview": "AIコードレビュー",
+        "aiExplain": "AI問題解説"
       }
     },
     "date": {

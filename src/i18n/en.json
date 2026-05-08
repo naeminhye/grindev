@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "Hint Discount",
         "doubleStarsPurchase": "Double Stars",
         "extraAttemptPurchase": "Second Chance",
-        "hintDiscountUsed": "Hint discount used"
+        "hintDiscountUsed": "Hint discount used",
+        "aiCodeReview": "AI Code Review",
+        "aiExplain": "AI Problem Explanation"
       }
     },
     "date": {

@@ -4,16 +4,6 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 
-// type ShopItem = {
-//   id: string;
-//   name: string;
-//   description: string;
-//   cost: number;
-//   icon: string;
-//   iconBg: string;
-//   badge?: string;
-//   owned?: number;
-// };
 type ShopItem = {
   id: string;
   nameKey: string;
@@ -175,12 +165,12 @@ const REASON_LABELS: Record<
     color: "text-yellow-400",
   },
   AI_EXPLAIN: {
-    labelKey: "AI Explanation",
+    labelKey: "shop.transactions.reasons.aiExplain",
     icon: "ri-sparkling-line",
     color: "text-blue-400",
   },
   AI_CODE_REVIEW: {
-    labelKey: "AI Code Review",
+    labelKey: "shop.transactions.reasons.aiCodeReview",
     icon: "ri-code-ai-line",
     color: "text-purple-400",
   },

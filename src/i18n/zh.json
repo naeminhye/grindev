@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "提示折扣",
         "doubleStarsPurchase": "双倍星星",
         "extraAttemptPurchase": "第二次机会",
-        "hintDiscountUsed": "已使用提示折扣"
+        "hintDiscountUsed": "已使用提示折扣",
+        "aiCodeReview": "AI 代码评审",
+        "aiExplain": "AI 题目讲解"
       }
     },
     "date": {

@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "Réduction sur les indices",
         "doubleStarsPurchase": "Étoiles doublées",
         "extraAttemptPurchase": "Deuxième chance",
-        "hintDiscountUsed": "Réduction sur les indices utilisée"
+        "hintDiscountUsed": "Réduction sur les indices utilisée",
+        "aiCodeReview": "Revue de code IA",
+        "aiExplain": "Explication IA du problème"
       }
     },
     "date": {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
@@ -32,6 +32,8 @@ export default function MakeupPage() {
   const { t } = useI18n();
   const { date } = useParams<{ date: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
 
   const [data, setData] = useState<MakeupProblemResponse | null>(null);
   const [code, setCode] = useState("");
@@ -53,7 +55,7 @@ export default function MakeupPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/makeup/${date}`, { signal: controller.signal })
+    fetch(`/api/makeup/${date}?slug=${slug}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((d: MakeupProblemResponse) => {
         setData(d);
@@ -71,7 +73,7 @@ export default function MakeupPage() {
         setPageState("error");
       });
     return () => controller.abort();
-  }, [date]);
+  }, [date, searchParams]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -227,7 +229,7 @@ export default function MakeupPage() {
             No problem found for this date.
           </p>
           <button
-            onClick={() => router.push("/today")}
+            onClick={() => router.push(`/today?t=${Date.now()}`)}
             className="text-xs font-mono text-lime-400 hover:underline"
           >
             {t("makeup.back")}
@@ -261,7 +263,7 @@ export default function MakeupPage() {
       <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border shrink-0 gap-2 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <button
-            onClick={() => router.push("/today")}
+            onClick={() => router.push(`/today?t=${Date.now()}`)}
             className="text-zinc-500 hover:text-foreground transition-colors shrink-0"
           >
             <i className="ri-arrow-left-line" />
@@ -361,7 +363,7 @@ export default function MakeupPage() {
                     </span>
                   )}
                   <button
-                    onClick={() => router.push("/today")}
+                    onClick={() => router.push(`/today?t=${Date.now()}`)}
                     className="ml-auto text-xs font-mono text-zinc-400 hover:text-foreground transition-colors"
                   >
                     {t("makeup.backShort")}

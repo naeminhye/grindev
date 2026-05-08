@@ -119,12 +119,19 @@ export async function GET(req: Request) {
   }
 
   // Makeup days
-  const pastDates = getMakeupDates(30);
+  const pastDates = [today, ...getMakeupDates(30)];
   const allPastSlots = await prisma.dailyProblem.findMany({
     where: { date: { in: pastDates } },
     include: {
       problem: {
-        select: { id: true, title: true, difficulty: true, topics: true },
+        select: {
+          id: true,
+          title: true,
+          difficulty: true,
+          topics: true,
+          slug: true,
+          deletedAt: true,
+        },
       },
     },
   });
@@ -142,35 +149,31 @@ export async function GET(req: Request) {
   });
   const solvedProblemIds = new Set(existingSolves.map((s) => s.problemId));
 
-  const makeupByDate = new Map<string, (typeof allPastSlots)[0]>();
-  for (const [date, slots] of slotsByDate) {
-    const availableDiffs = slots.map((s) => s.difficulty);
-    const bestDiff = pickBestDifficulty(
-      user?.preferredDifficulty ?? "ANY",
-      availableDiffs,
-    );
-    const bestSlot = slots.find((s) => s.difficulty === bestDiff);
-    if (bestSlot) makeupByDate.set(date, bestSlot);
+  const solvedDates = new Set<string>();
+  for (const slot of allPastSlots) {
+    if (solvedProblemIds.has(slot.problemId)) {
+      solvedDates.add(slot.date);
+    }
   }
 
-  const makeupDays = [...makeupByDate.values()]
-    .map((s) => {
-      const dateSlotIds = allPastSlots
-        .filter((slot) => slot.date === s.date)
-        .map((slot) => slot.problemId);
-      const alreadySolved = dateSlotIds.some((id) => solvedProblemIds.has(id));
-      return {
-        date: s.date,
-        daysAgo: getDaysAgo(s.date),
-        problemId: s.problemId,
-        problemTitle: s.problem.title,
-        difficulty: s.problem.difficulty,
-        topics: s.problem.topics,
-        starCost: getMakeupCost(getDaysAgo(s.date)),
-        alreadySolved,
-      };
-    })
-    .sort((a, b) => a.daysAgo - b.daysAgo);
+  const makeupDays = allPastSlots
+    .filter((s) => s.problem && !s.problem.deletedAt)
+    .map((s) => ({
+      date: s.date,
+      daysAgo: getDaysAgo(s.date),
+      problemId: s.problemId,
+      problemSlug: s.problem.slug,
+      problemTitle: s.problem.title,
+      difficulty: s.problem.difficulty,
+      topics: s.problem.topics,
+      starCost: getMakeupCost(getDaysAgo(s.date)),
+      alreadySolved: solvedProblemIds.has(s.problemId),
+      dateHasAnySolved: solvedDates.has(s.date),
+    }))
+    .sort(
+      (a, b) =>
+        a.daysAgo - b.daysAgo || a.difficulty.localeCompare(b.difficulty),
+    );
 
   const freshUser = await prisma.user.findUnique({ where: { id: userId } });
 

@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "ส่วนลดคำใบ้",
         "doubleStarsPurchase": "ดาวสองเท่า",
         "extraAttemptPurchase": "โอกาสครั้งที่สอง",
-        "hintDiscountUsed": "ใช้ส่วนลดคำใบ้แล้ว"
+        "hintDiscountUsed": "ใช้ส่วนลดคำใบ้แล้ว",
+        "aiCodeReview": "AI รีวิวโค้ด",
+        "aiExplain": "AI อธิบายโจทย์"
       }
     },
     "date": {

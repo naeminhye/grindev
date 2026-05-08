@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "Giảm giá gợi ý",
         "doubleStarsPurchase": "Nhân đôi sao",
         "extraAttemptPurchase": "Cơ hội thứ hai",
-        "hintDiscountUsed": "Đã dùng giảm giá gợi ý"
+        "hintDiscountUsed": "Đã dùng giảm giá gợi ý",
+        "aiCodeReview": "AI review code",
+        "aiExplain": "AI giải thích bài toán"
       }
     },
     "date": {

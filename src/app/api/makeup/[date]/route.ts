@@ -2,19 +2,23 @@ import { getAuthUserId } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { getTodayUTC } from "@/lib/streak";
+import { getTodayInTz, getTodayUTC } from "@/lib/streak";
 import { type MakeupProblemResponse, type HintData } from "@/types";
 import { parseProblemExamples } from "@/lib/problem-utils";
 import { DEFAULT_EXPLAIN_COST } from "../../ai/explain/route";
+import { Difficulty } from "@prisma/client";
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ date: string }> },
 ) {
+  const { searchParams } = new URL(_req.url);
+
   const { userId, error } = await getAuthUserId();
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { date } = await params;
+  const slug = searchParams.get("slug");
 
   // Validate date format
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -22,7 +26,14 @@ export async function GET(
   }
 
   // Can't makeup today or future
-  const today = getTodayUTC();
+  const timeZone =
+    (_req.headers.get("x-timezone") ??
+      decodeURIComponent(
+        _req.headers.get("cookie")?.match(/tz=([^;]+)/)?.[1] ?? "",
+      )) ||
+    "UTC";
+  const today = getTodayInTz(timeZone);
+
   if (date >= today) {
     return NextResponse.json(
       { error: "Can only make up past problems" },
@@ -31,7 +42,7 @@ export async function GET(
   }
 
   const daily = await prisma.dailyProblem.findFirst({
-    where: { date },
+    where: { date, problem: slug ? { slug } : undefined },
     include: { problem: true },
   });
 

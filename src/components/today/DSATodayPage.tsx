@@ -39,6 +39,7 @@ import { MakeupCard } from "@/components/problem/MakeupCard";
 import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 import { DEFAULT_REVIEW_COST } from "@/app/api/ai/review/route";
 import { DEFAULT_EXPLAIN_COST } from "@/app/api/ai/explain/route";
+import { MakeupDay } from "@/lib/makeup";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -73,6 +74,7 @@ export default function DSATodayPage() {
   const [hintDiscount, setHintDiscount] = useState(0);
   const [reviewCost, setReviewCost] = useState(DEFAULT_REVIEW_COST);
   const [explainCost, setExplainCost] = useState(DEFAULT_EXPLAIN_COST);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   const hasStartedTyping = useRef(false);
 
@@ -119,6 +121,8 @@ export default function DSATodayPage() {
         setHintDiscount(dailyData.hintDiscount ?? 0);
         setReviewCost(dailyData.reviewCost ?? DEFAULT_REVIEW_COST);
         setExplainCost(dailyData.explainCost ?? DEFAULT_EXPLAIN_COST);
+
+        setCurrentStreak(dailyData.userStats.currentStreak);
         if (dailyData.alreadySolved) setModeLocked(true);
       })
       .catch((err) => {
@@ -128,16 +132,6 @@ export default function DSATodayPage() {
     return () => controller.abort();
   }, []);
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-  //     if (hasStartedTyping.current && pageState === "ready") {
-  //       e.preventDefault();
-  //       e.returnValue = "";
-  //     }
-  //   };
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-  //   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  // }, [pageState]);
   useReloadWarning(hasStartedTyping.current);
 
   const handleCodeChange = useCallback(
@@ -308,7 +302,45 @@ export default function DSATodayPage() {
 
   // ── Solved / makeup section ───────────────────────────────────────────
   if (isSolved) {
-    const unsolvedMakeups = daily.makeupDays.filter((d) => !d.alreadySolved);
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: tz });
+
+    const unsolvedByDate = new Map<string, MakeupDay>();
+    const slotsByDate = new Map<string, MakeupDay[]>();
+
+    // Group all unsolved slots by date
+    for (const day of daily.makeupDays) {
+      if (day.alreadySolved) continue;
+      if (day.daysAgo === 0) continue;
+      if (day.dateHasAnySolved) continue;
+
+      if (!slotsByDate.has(day.date)) slotsByDate.set(day.date, []);
+      slotsByDate.get(day.date)!.push(day);
+    }
+
+    // Pick one slot per date
+    for (const [date, slots] of slotsByDate) {
+      if (preferredDifficulty !== "ANY") {
+        // Prefer matching difficulty, fall back to first available
+        const match = slots.find((s) => s.difficulty === preferredDifficulty);
+        unsolvedByDate.set(date, match ?? slots[0]);
+      } else {
+        // Pick random
+        unsolvedByDate.set(
+          date,
+          slots[Math.floor(Math.random() * slots.length)],
+        );
+      }
+    }
+
+    const unsolvedMakeups = [...unsolvedByDate.values()].sort(
+      (a, b) => a.daysAgo - b.daysAgo,
+    );
+
+    const completedItems: MakeupDay[] = daily.makeupDays.filter(
+      (d) => d.alreadySolved,
+    );
+
     return (
       <div className="flex-1 flex flex-col">
         {showSuccessModal && solveResult && (
@@ -331,7 +363,7 @@ export default function DSATodayPage() {
               {t("today.solved")}
             </p>
             <p className="text-xs font-mono text-zinc-400 mt-0.5">
-              {t("today.streakDays", { count: userStats.currentStreak })}
+              {t("today.streakDays", { count: currentStreak })}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -388,27 +420,27 @@ export default function DSATodayPage() {
                     key={day.date}
                     day={day}
                     userStars={stars}
-                    onStart={() => router.push(`/makeup/${day.date}`)}
+                    onStart={() =>
+                      router.push(`/makeup/${day.date}?slug=${day.problemSlug}`)
+                    }
                   />
                 ))}
               </div>
             </>
           )}
-          {daily.makeupDays.filter((d) => d.alreadySolved).length > 0 && (
+          {completedItems.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-mono text-zinc-600 uppercase tracking-widest">
                 {t("makeup.completed")}
               </p>
-              {daily.makeupDays
-                .filter((d) => d.alreadySolved)
-                .map((day) => (
-                  <MakeupCard
-                    key={day.date}
-                    day={day}
-                    userStars={stars}
-                    completed
-                  />
-                ))}
+              {completedItems.map((day) => (
+                <MakeupCard
+                  key={`${day.date}-${day.difficulty}`}
+                  day={day}
+                  userStars={stars}
+                  completed
+                />
+              ))}
             </div>
           )}
         </div>

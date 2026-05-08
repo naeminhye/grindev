@@ -484,7 +484,9 @@
         "hintDiscountPurchase": "힌트 할인",
         "doubleStarsPurchase": "별 2배",
         "extraAttemptPurchase": "두 번째 기회",
-        "hintDiscountUsed": "힌트 할인 사용"
+        "hintDiscountUsed": "힌트 할인 사용",
+        "aiCodeReview": "AI 코드 리뷰",
+        "aiExplain": "AI 문제 설명"
       }
     },
     "date": {
