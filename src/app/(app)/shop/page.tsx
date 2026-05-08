@@ -169,6 +169,21 @@ const REASON_LABELS: Record<
     icon: "ri-restart-line",
     color: "text-orange-400",
   },
+  HINT_DISCOUNT_USED: {
+    labelKey: "shop.transactions.reasons.hintDiscountUsed",
+    icon: "ri-lightbulb-flash-line",
+    color: "text-yellow-400",
+  },
+  AI_EXPLAIN: {
+    labelKey: "AI Explanation",
+    icon: "ri-sparkling-line",
+    color: "text-blue-400",
+  },
+  AI_CODE_REVIEW: {
+    labelKey: "AI Code Review",
+    icon: "ri-code-ai-line",
+    color: "text-purple-400",
+  },
 };
 
 export default function ShopPage() {
@@ -414,7 +429,7 @@ export default function ShopPage() {
                     className={cn(meta.icon, meta.color, "text-sm shrink-0")}
                   />
                   <span className="font-mono text-sm text-zinc-300 flex-1">
-                    {meta.labelKey.startsWith("shop.")
+                    {meta?.labelKey?.startsWith("shop.")
                       ? t(meta.labelKey)
                       : meta.labelKey}
                   </span>

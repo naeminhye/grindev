@@ -208,6 +208,11 @@ export async function GET(req: Request) {
       where: { userId, reason: "HINT_DISCOUNT_USED" as any },
     }));
 
+  const [explainCostConfig, reviewCostConfig] = await Promise.all([
+    prisma.appConfig.findUnique({ where: { key: "AI_EXPLAIN_COST" } }),
+    prisma.appConfig.findUnique({ where: { key: "AI_CODE_REVIEW_COST" } }),
+  ]);
+
   const response: DailyResponse = {
     problem: {
       id: problem.id,
@@ -238,6 +243,8 @@ export async function GET(req: Request) {
     skipCount,
     hardTimeLimits,
     hintDiscount: Math.max(0, hintDiscountOwned),
+    explainCost: explainCostConfig ? parseInt(explainCostConfig.value) : 5,
+    reviewCost: reviewCostConfig ? parseInt(reviewCostConfig.value) : 5,
   };
 
   return NextResponse.json(response);

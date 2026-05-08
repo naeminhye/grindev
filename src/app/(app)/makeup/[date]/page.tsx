@@ -21,6 +21,9 @@ import type {
   SolveResponse,
   HintResponse,
 } from "@/types";
+import { DEFAULT_EXPLAIN_COST } from "@/app/api/ai/explain/route";
+import { DEFAULT_REVIEW_COST } from "@/app/api/ai/review/route";
+import { AICodeReview } from "@/components/problem/AICodeReview";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -42,6 +45,9 @@ export default function MakeupPage() {
   const [starDelta, setStarDelta] = useState<number | null>(null);
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [hintDiscount, setHintDiscount] = useState(0);
+  const [explainCost, setExplainCost] = useState(DEFAULT_EXPLAIN_COST);
+  const [reviewCost, setReviewCost] = useState(DEFAULT_REVIEW_COST);
 
   const hasStartedTyping = useRef(false);
 
@@ -55,6 +61,9 @@ export default function MakeupPage() {
         setStars(d.userStats.stars);
         setHintsUnlocked(d.hintsUnlocked);
         setHintContents(d.unlockedHintContents ?? {});
+        setHintDiscount((d as any).hintDiscount ?? 0);
+        setExplainCost((d as any).explainCost ?? 5);
+        setReviewCost((d as any).reviewCost ?? 5);
         setPageState(d.alreadySolved ? "solved" : "ready");
       })
       .catch((err) => {
@@ -297,6 +306,9 @@ export default function MakeupPage() {
           hintContents={hintContents}
           hintLoading={hintLoading}
           onBuyHint={handleBuyHint}
+          hintDiscount={hintDiscount}
+          onStarsChange={setStars}
+          explainCost={explainCost}
         />
 
         {/* Code panel */}
@@ -364,6 +376,22 @@ export default function MakeupPage() {
                   solveResult={solveResult}
                   starDelta={starDelta}
                   showStreakInfo={false}
+                />
+              </div>
+            )}
+
+            {solveResult && (
+              <div className="px-3 md:px-4 pt-2">
+                <AICodeReview
+                  problemId={problem.id}
+                  problemTitle={problem.title}
+                  problemDescription={problem.description}
+                  code={code}
+                  language="JAVASCRIPT"
+                  passed={solveResult.passed}
+                  stars={stars}
+                  onStarsChange={setStars}
+                  reviewCost={reviewCost}
                 />
               </div>
             )}

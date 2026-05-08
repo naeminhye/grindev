@@ -483,7 +483,8 @@
         "quizReward": "クイズ報酬",
         "hintDiscountPurchase": "ヒント割引",
         "doubleStarsPurchase": "スター2倍",
-        "extraAttemptPurchase": "セカンドチャンス"
+        "extraAttemptPurchase": "セカンドチャンス",
+        "hintDiscountUsed": "ヒント割引を使用"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "時間切れペナルティ（ハードモード）",
         "desc": "ハードモードのタイマーが切れたときに差し引かれる星"
+      },
+      "aiFeatures": {
+        "title": "AI機能",
+        "desc": "AI機能を利用する際にユーザーへ請求されるスター費用です。リクエストに失敗した場合、スターは返金されます。",
+        "items": {
+          "explain": {
+            "label": "AI問題解説",
+            "desc": "DSA問題が何を求めているかを説明し、アプローチのヒントを示します"
+          },
+          "codeReview": {
+            "label": "AIコードレビュー",
+            "desc": "提出されたコードの正確性、計算量、スタイルをレビューします"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "クイズスター報酬",
+        "desc": "クイズの正答率に応じて付与されるスターです。",
+        "items": {
+          "perfect": "100%スコア",
+          "great": "80–99%スコア",
+          "pass": "60–79%スコア",
+          "passThreshold": "合格ライン (%)"
+        }
       }
     }
   }

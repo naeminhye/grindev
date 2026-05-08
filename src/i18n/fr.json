@@ -483,7 +483,8 @@
         "quizReward": "Récompense de quiz",
         "hintDiscountPurchase": "Réduction sur les indices",
         "doubleStarsPurchase": "Étoiles doublées",
-        "extraAttemptPurchase": "Deuxième chance"
+        "extraAttemptPurchase": "Deuxième chance",
+        "hintDiscountUsed": "Réduction sur les indices utilisée"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "Pénalité de temps écoulé (Mode difficile)",
         "desc": "Étoiles retirées lorsque le minuteur du mode difficile arrive à zéro"
+      },
+      "aiFeatures": {
+        "title": "Fonctionnalités IA",
+        "desc": "Coût en étoiles facturé aux utilisateurs pour les fonctionnalités alimentées par l’IA. Les étoiles sont remboursées si la requête échoue.",
+        "items": {
+          "explain": {
+            "label": "Explication IA du problème",
+            "desc": "Explique ce qu’un problème DSA demande et suggère une approche"
+          },
+          "codeReview": {
+            "label": "Revue de code IA",
+            "desc": "Analyse le code soumis pour sa justesse, sa complexité et son style"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "Récompenses en étoiles du quiz",
+        "desc": "Étoiles attribuées selon le pourcentage de score au quiz.",
+        "items": {
+          "perfect": "Score de 100 %",
+          "great": "Score de 80–99 %",
+          "pass": "Score de 60–79 %",
+          "passThreshold": "Seuil de réussite (%)"
+        }
       }
     }
   }

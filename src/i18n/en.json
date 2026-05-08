@@ -483,7 +483,8 @@
         "quizReward": "Quiz reward",
         "hintDiscountPurchase": "Hint Discount",
         "doubleStarsPurchase": "Double Stars",
-        "extraAttemptPurchase": "Second Chance"
+        "extraAttemptPurchase": "Second Chance",
+        "hintDiscountUsed": "Hint discount used"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "Time expired penalty (Hard Mode)",
         "desc": "Stars deducted when Hard Mode timer runs out"
+      },
+      "aiFeatures": {
+        "title": "AI Features",
+        "desc": "Star cost charged to users for AI-powered features. Stars are refunded if the request fails.",
+        "items": {
+          "explain": {
+            "label": "AI Problem Explanation",
+            "desc": "Explain what a DSA problem is asking and hint at the approach"
+          },
+          "codeReview": {
+            "label": "AI Code Review",
+            "desc": "Review submitted code for correctness, complexity, and style"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "Quiz Star Rewards",
+        "desc": "Stars awarded based on quiz score percentage.",
+        "items": {
+          "perfect": "100% score",
+          "great": "80–99% score",
+          "pass": "60–79% score",
+          "passThreshold": "Pass threshold (%)"
+        }
       }
     }
   }

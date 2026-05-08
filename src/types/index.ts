@@ -85,6 +85,8 @@ export type DailyResponse = {
   skipCount: number;
   hardTimeLimits: { EASY: number; MEDIUM: number; HARD: number };
   hintDiscount: number;
+  explainCost: number;
+  reviewCost: number;
 };
 
 export type NoProblemResponse = {
@@ -105,6 +107,9 @@ export type MakeupProblemResponse = {
   unlockedHintContents: Record<number, string>;
   makeupRewardGivenToday: boolean;
   userStats: UserStats;
+  hintDiscount?: number;
+  explainCost?: number;
+  reviewCost?: number;
 };
 
 export type ProfileStats = {

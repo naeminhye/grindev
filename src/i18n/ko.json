@@ -483,7 +483,8 @@
         "quizReward": "퀴즈 보상",
         "hintDiscountPurchase": "힌트 할인",
         "doubleStarsPurchase": "별 2배",
-        "extraAttemptPurchase": "두 번째 기회"
+        "extraAttemptPurchase": "두 번째 기회",
+        "hintDiscountUsed": "힌트 할인 사용"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "시간 초과 페널티(하드 모드)",
         "desc": "하드 모드 타이머가 끝났을 때 차감되는 별"
+      },
+      "aiFeatures": {
+        "title": "AI 기능",
+        "desc": "AI 기반 기능에 대해 사용자에게 부과되는 별 비용입니다. 요청이 실패하면 별은 환불됩니다.",
+        "items": {
+          "explain": {
+            "label": "AI 문제 설명",
+            "desc": "DSA 문제가 무엇을 요구하는지 설명하고 접근 방향을 힌트로 제공합니다"
+          },
+          "codeReview": {
+            "label": "AI 코드 리뷰",
+            "desc": "제출한 코드의 정확성, 복잡도, 스타일을 검토합니다"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "퀴즈 별 보상",
+        "desc": "퀴즈 점수 비율에 따라 지급되는 별입니다.",
+        "items": {
+          "perfect": "100% 점수",
+          "great": "80–99% 점수",
+          "pass": "60–79% 점수",
+          "passThreshold": "통과 기준 (%)"
+        }
       }
     }
   }

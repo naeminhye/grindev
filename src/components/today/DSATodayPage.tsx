@@ -19,6 +19,7 @@ import {
   DifficultyReloadBanner,
   useReloadWarning,
 } from "@/components/ui/ReloadWarning";
+import { AICodeReview } from "@/components/problem/AICodeReview";
 
 import { useTimer } from "@/hooks/useTimer";
 import { getMonacoLanguage } from "@/lib/languages";
@@ -36,6 +37,8 @@ import type { ChallengeMode } from "@/lib/challenge";
 import { MakeupCard } from "@/components/problem/MakeupCard";
 
 import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
+import { DEFAULT_REVIEW_COST } from "@/app/api/ai/review/route";
+import { DEFAULT_EXPLAIN_COST } from "@/app/api/ai/explain/route";
 
 type PageState = "loading" | "ready" | "running" | "solved" | "error";
 type MobileTab = "problem" | "code";
@@ -68,6 +71,8 @@ export default function DSATodayPage() {
   const [hardGatePassed, setHardGatePassed] = useState(false);
   const [preferredDifficulty, setPreferredDifficulty] = useState("ANY");
   const [hintDiscount, setHintDiscount] = useState(0);
+  const [reviewCost, setReviewCost] = useState(DEFAULT_REVIEW_COST);
+  const [explainCost, setExplainCost] = useState(DEFAULT_EXPLAIN_COST);
 
   const hasStartedTyping = useRef(false);
 
@@ -112,6 +117,8 @@ export default function DSATodayPage() {
         setSkipCount((dailyData as any).skipCount ?? 0);
         setDiffNoteVisible(true);
         setHintDiscount(dailyData.hintDiscount ?? 0);
+        setReviewCost(dailyData.reviewCost ?? DEFAULT_REVIEW_COST);
+        setExplainCost(dailyData.explainCost ?? DEFAULT_EXPLAIN_COST);
         if (dailyData.alreadySolved) setModeLocked(true);
       })
       .catch((err) => {
@@ -545,6 +552,8 @@ export default function DSATodayPage() {
             hintLoading={hintLoading}
             onBuyHint={handleBuyHint}
             hintDiscount={hintDiscount}
+            onStarsChange={setStars}
+            explainCost={explainCost}
           />
 
           {/* Code panel */}
@@ -575,6 +584,20 @@ export default function DSATodayPage() {
                 JavaScript
                 <span className="text-zinc-600 text-[10px]">only</span>
               </div>
+
+              {solveResult && (
+                <AICodeReview
+                  problemId={problem.id}
+                  problemTitle={problem.title}
+                  problemDescription={problem.description}
+                  code={code}
+                  language="JAVASCRIPT"
+                  passed={solveResult.passed}
+                  stars={stars}
+                  onStarsChange={setStars}
+                  reviewCost={reviewCost}
+                />
+              )}
             </div>
 
             <div className="min-h-0 overflow-hidden">

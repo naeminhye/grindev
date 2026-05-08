@@ -483,7 +483,8 @@
         "quizReward": "Thưởng quiz",
         "hintDiscountPurchase": "Giảm giá gợi ý",
         "doubleStarsPurchase": "Nhân đôi sao",
-        "extraAttemptPurchase": "Cơ hội thứ hai"
+        "extraAttemptPurchase": "Cơ hội thứ hai",
+        "hintDiscountUsed": "Đã dùng giảm giá gợi ý"
       }
     },
     "date": {
@@ -534,6 +535,30 @@
       "timeExpiredPenalty": {
         "title": "Phạt khi hết giờ (Chế độ khó)",
         "desc": "Số sao bị trừ khi bộ đếm giờ chế độ khó chạy hết"
+      },
+      "aiFeatures": {
+        "title": "Tính năng AI",
+        "desc": "Chi phí sao người dùng phải trả cho các tính năng dùng AI. Sao sẽ được hoàn lại nếu yêu cầu thất bại.",
+        "items": {
+          "explain": {
+            "label": "AI giải thích bài toán",
+            "desc": "Giải thích đề bài DSA đang yêu cầu gì và gợi ý hướng tiếp cận"
+          },
+          "codeReview": {
+            "label": "AI review code",
+            "desc": "Review code đã nộp về độ đúng, độ phức tạp và phong cách code"
+          }
+        }
+      },
+      "quizRewards": {
+        "title": "Sao thưởng Quiz",
+        "desc": "Sao được thưởng dựa trên phần trăm điểm quiz.",
+        "items": {
+          "perfect": "Điểm 100%",
+          "great": "Điểm 80–99%",
+          "pass": "Điểm 60–79%",
+          "passThreshold": "Ngưỡng đạt (%)"
+        }
       }
     }
   }

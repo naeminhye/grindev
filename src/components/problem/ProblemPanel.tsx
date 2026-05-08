@@ -18,6 +18,8 @@ interface ProblemPanelProps {
   hintLoading: number | null;
   onBuyHint: (tier: number) => void;
   hintDiscount?: number;
+  explainCost?: number;
+  onStarsChange: (stars: number) => void;
 }
 
 export function ProblemPanel({
@@ -29,6 +31,8 @@ export function ProblemPanel({
   hintLoading,
   onBuyHint,
   hintDiscount,
+  explainCost,
+  onStarsChange,
 }: ProblemPanelProps) {
   const { t } = useI18n();
   const examples = (problem.examples ?? []) as ProblemExample[];
@@ -197,9 +201,9 @@ export function ProblemPanel({
                     onClick={() => onBuyHint(tier.tier)}
                     disabled={isLoading || stars < tier.cost}
                     className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors",
+                      "flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors min-w-[56px] justify-center",
                       stars >= tier.cost
-                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700"
+                        ? "bg-[hsl(var(--surface-raised))] hover:bg-zinc-700 text-yellow-400 border border-zinc-700 cursor-pointer"
                         : "bg-[hsl(var(--surface))] text-zinc-600 border border-zinc-800 cursor-not-allowed",
                     )}
                   >
@@ -234,7 +238,12 @@ export function ProblemPanel({
           );
         })}
         <div className="border-t border-border my-3" />
-        <AIExplain problem={problem} />
+        <AIExplain
+          problem={problem}
+          stars={stars}
+          onStarsChange={onStarsChange}
+          explainCost={explainCost}
+        />
       </div>
     </aside>
   );
