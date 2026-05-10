@@ -1,11 +1,14 @@
-import { getAuthUserId } from "@/lib/auth-helper";
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { subDays, format } from "date-fns";
-import type { ProfileStats } from "@/types";
-import { getTodayInTz } from "@/lib/streak";
+// src/app/api/profile/route.ts
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { getAuthUserId } from '@/lib/auth-helper'
+import { getMakeupDates, getDaysAgo } from '@/lib/makeup'
+import { getTodayInTz } from '@/lib/streak'
 
 export async function GET(req: Request) {
+  const { userId, error } = await getAuthUserId()
+  if (error) return error
+
   const timeZone =
     (req.headers.get("x-timezone") ??
       decodeURIComponent(
@@ -14,111 +17,166 @@ export async function GET(req: Request) {
     "UTC";
   const today = getTodayInTz(timeZone);
 
-  const { userId, error } = await getAuthUserId();
-  if (error) return NextResponse.json({ error }, { status: 401 });
-
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-
   const solves = await prisma.solve.findMany({
     where: { userId, passed: true },
-    select: {
-      cleanSolve: true,
-      challengeMode: true,
-      isMakeup: true,
-      makeupDate: true,
-      solvedAt: true,
-      problem: { select: { topics: true, difficulty: true } },
+    include: {
+      problem: { select: { difficulty: true, topics: true } },
     },
-    orderBy: { solvedAt: "desc" },
-  });
+    orderBy: { solvedAt: 'desc' },
+  })
 
-  // Get ALL solves (passed) with their dates
-  const allSolves = await prisma.solve.findMany({
+  type SolveWithProblem = (typeof solves)[number]
+
+  const quizAttempts = await prisma.quizAttempt.findMany({
     where: { userId, passed: true },
-    select: {
-      cleanSolve: true,
-      challengeMode: true,
-      isMakeup: true,
-      makeupDate: true,
-      solvedAt: true,
-      attempts: true,
-      problem: { select: { topics: true, difficulty: true } },
+    include: {
+      quiz: { select: { difficulty: true, topic: true } },
     },
-    orderBy: { solvedAt: "desc" },
-  });
+    orderBy: { solvedAt: 'desc' },
+  })
 
-  // Topic breakdown
-  const topicMap: Record<string, number> = {};
+  type QuizAttemptWithQuiz = (typeof quizAttempts)[number]
+
+  const [user] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        currentStreak: true,
+        longestStreak: true,
+        stars: true,
+        challengeMode: true,
+        practiceMode: true,
+      },
+    }),
+    prisma.solve.findMany({
+      where: { userId, passed: true },
+      include: {
+        problem: { select: { difficulty: true, topics: true } },
+      },
+      orderBy: { solvedAt: 'desc' },
+    }),
+    prisma.quizAttempt.findMany({
+      where: { userId, passed: true },
+      include: {
+        quiz: { select: { difficulty: true, topic: true } },
+      },
+      orderBy: { solvedAt: 'desc' },
+    }),
+  ])
+
+  // ── DSA stats ─────────────────────────────────────────────────────────
+  const totalSolves = solves.length
+  const cleanSolves = solves.filter((s) => s.cleanSolve).length
+  const hardModeSolves = solves.filter((s) => s.challengeMode === 'HARD').length
+  const totalAttempts = solves.reduce((sum, s) => sum + s.attempts, 0)
+
+  const topicMap = new Map<string, number>()
   for (const s of solves) {
-    for (const topic of s.problem.topics ?? []) {
-      topicMap[topic] = (topicMap[topic] ?? 0) + 1;
+    for (const topic of s.problem.topics as string[]) {
+      topicMap.set(topic, (topicMap.get(topic) ?? 0) + 1)
     }
   }
-  const topicBreakdown = Object.entries(topicMap)
+  const topicBreakdown = [...topicMap.entries()]
     .map(([topic, count]) => ({ topic, count }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
 
-  // Difficulty breakdown
-  const diffMap: Record<string, number> = {};
+  const diffMap = new Map<string, number>()
   for (const s of solves) {
-    diffMap[s.problem.difficulty] = (diffMap[s.problem.difficulty] ?? 0) + 1;
+    const d = s.problem.difficulty
+    diffMap.set(d, (diffMap.get(d) ?? 0) + 1)
   }
-  const difficultyBreakdown = Object.entries(diffMap).map(
-    ([difficulty, count]) => ({ difficulty, count }),
-  );
+  const difficultyBreakdown = [...diffMap.entries()].map(([difficulty, count]) => ({ difficulty, count }))
 
-  // Last 30 days activity
-  const recentActivity = [];
+  // ── Quiz stats ────────────────────────────────────────────────────────
+  const totalQuizzes = quizAttempts.length
+  const perfectQuizzes = quizAttempts.filter((a) => a.score === a.total).length
+  const totalQuizScore = quizAttempts.reduce((sum, a) => sum + a.score, 0)
+  const totalQuizQuestions = quizAttempts.reduce((sum, a) => sum + a.total, 0)
+  const avgScore = totalQuizzes > 0
+    ? Math.round((totalQuizScore / totalQuizQuestions) * 100)
+    : 0
 
-  // Regular solves — use solvedAt date
-  const regularSolvedDates = new Set(
-    allSolves
+  const quizTopicMap = new Map<string, number>()
+  for (const a of quizAttempts) {
+    const topic = a.quiz.topic
+    quizTopicMap.set(topic, (quizTopicMap.get(topic) ?? 0) + 1)
+  }
+  const quizTopicBreakdown = [...quizTopicMap.entries()]
+    .map(([topic, count]) => ({ topic, count }))
+    .sort((a, b) => b.count - a.count)
+
+  const quizDiffMap = new Map<string, number>()
+  for (const a of quizAttempts) {
+    const d = a.quiz.difficulty
+    quizDiffMap.set(d, (quizDiffMap.get(d) ?? 0) + 1)
+  }
+  const quizDifficultyBreakdown = [...quizDiffMap.entries()].map(([difficulty, count]) => ({ difficulty, count }))
+
+  // ── Activity (last 26 weeks = 182 days) ───────────────────────────────
+  const totalDays = 26 * 7
+  const pastDates: string[] = []
+  for (let i = 0; i < totalDays; i++) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    pastDates.push(d.toLocaleDateString('en-CA', { timeZone }))
+  }
+  const allDates = [...new Set([today, ...pastDates])]
+
+  // Dates with a normal DSA solve
+  const dsaSolvedDates = new Set(
+    solves
       .filter((s) => !s.isMakeup)
-      .map((s) => format(new Date(s.solvedAt), "yyyy-MM-dd")),
-  );
+      .map((s) => new Date(s.solvedAt).toLocaleDateString('en-CA', { timeZone }))
+  )
 
-  console.log("regular dates:", [...regularSolvedDates]);
-  console.log("today UTC:", format(new Date(), "yyyy-MM-dd"));
-
-  // Makeup solves — use makeupDate (the original missed day)
-  const makeupDates = new Set(
-    allSolves
+  // Dates with a makeup solve (use makeupDate)
+  const makeupSolvedDates = new Set(
+    solves
       .filter((s) => s.isMakeup && s.makeupDate)
-      .map((s) => s.makeupDate!),
-  );
+      .map((s) => s.makeupDate!)
+  )
 
-  // Build heatmap — a day is "solved" if regular solve on that day
-  // OR if user did a makeup for that day
-  for (let i = 29; i >= 0; i--) {
-    const date = format(subDays(today, i), "yyyy-MM-dd");
-    const isSolvedRegular = regularSolvedDates.has(date);
-    const isMakeup = makeupDates.has(date) && !isSolvedRegular;
-    recentActivity.push({
-      date,
-      solved: isSolvedRegular,
-      isMakeup,
-    });
-  }
+  // Dates with a quiz solve
+  const quizSolvedDates = new Set(
+    quizAttempts
+      .filter((a) => !a.isMakeup)
+      .map((a) => new Date(a.solvedAt).toLocaleDateString('en-CA', { timeZone }))
+  )
 
-  const totalAttempts = allSolves.reduce((sum, s) => sum + s.attempts, 0);
+  const recentActivity = allDates.map((date) => ({
+    date,
+    solved: dsaSolvedDates.has(date) || quizSolvedDates.has(date),
+    isMakeup: makeupSolvedDates.has(date) && !dsaSolvedDates.has(date),
+    hasDSA: dsaSolvedDates.has(date),
+    hasQuiz: quizSolvedDates.has(date),
+    hasMakeup: makeupSolvedDates.has(date),
+  }))
 
-  const stats: ProfileStats = {
-    totalSolves: solves.length,
-    cleanSolves: solves.filter((s) => s.cleanSolve).length,
-    hardModeSolves: solves.filter((s) => s.challengeMode === "HARD").length,
+  return NextResponse.json({
+    // User
+    currentStreak: user?.currentStreak ?? 0,
+    longestStreak: user?.longestStreak ?? 0,
+    stars: user?.stars ?? 0,
+    challengeMode: user?.challengeMode ?? 'NORMAL',
+    practiceMode: user?.practiceMode ?? 'DSA',
+
+    // DSA stats
+    totalSolves,
+    cleanSolves,
+    hardModeSolves,
     totalAttempts,
-    currentStreak: user.currentStreak,
-    longestStreak: user.longestStreak,
-    stars: user.stars,
-    challengeMode: user.challengeMode as "NORMAL" | "HARD",
     topicBreakdown,
     difficultyBreakdown,
-    recentActivity,
-    makeupSolves: solves.filter((s) => s.isMakeup).length,
-    streakFreezeCount: 0,
-  };
 
-  return NextResponse.json(stats);
+    // Quiz stats
+    totalQuizzes,
+    perfectQuizzes,
+    avgScore,
+    quizTopicBreakdown,
+    quizDifficultyBreakdown,
+
+    // Heatmap
+    recentActivity,
+  })
 }

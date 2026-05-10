@@ -174,6 +174,8 @@ const REASON_LABELS: Record<
     icon: "ri-code-ai-line",
     color: "text-purple-400",
   },
+  // TODO: add translation
+  REPORT_ACCEPTED: { labelKey: 'Report accepted', icon: 'ri-flag-line', color: 'text-lime-400' },
 };
 
 export default function ShopPage() {

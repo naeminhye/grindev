@@ -43,20 +43,20 @@ export default function AdminConfigPage() {
     setConfig((c) =>
       c
         ? {
-            ...c,
-            starRewards:
-              key in STAR_REWARD_DEFAULTS
-                ? { ...c.starRewards, [key]: value }
-                : c.starRewards,
-            timeLimits:
-              key in TIME_LIMIT_DEFAULTS
-                ? { ...c.timeLimits, [key]: value }
-                : c.timeLimits,
-            aiCosts:
-              key in AI_COST_DEFAULTS
-                ? { ...c.aiCosts, [key]: value }
-                : c.aiCosts,
-          }
+          ...c,
+          starRewards:
+            key in STAR_REWARD_DEFAULTS
+              ? { ...c.starRewards, [key]: value }
+              : c.starRewards,
+          timeLimits:
+            key in TIME_LIMIT_DEFAULTS
+              ? { ...c.timeLimits, [key]: value }
+              : c.timeLimits,
+          aiCosts:
+            key in AI_COST_DEFAULTS
+              ? { ...c.aiCosts, [key]: value }
+              : c.aiCosts,
+        }
         : c,
     );
     setDirty((d) => ({ ...d, [key]: value }));
@@ -322,6 +322,8 @@ export default function AdminConfigPage() {
               color: "text-purple-400",
               descKey: "admin.config.aiFeatures.items.codeReview.desc",
             },
+            // TODO: add translation
+            { key: 'REPORT_ACCEPTED_REWARD', labelKey: 'Report accepted reward', icon: 'ri-flag-line', color: 'text-lime-400', descKey: 'Stars awarded when a problem report is marked as Resolved' },
           ].map(({ key, labelKey, icon, color, descKey }) => (
             <div
               key={key}

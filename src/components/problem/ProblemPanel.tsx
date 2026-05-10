@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { HINT_TIERS } from "@/lib/hints";
 import { ProblemMarkdownSection } from "@/components/problem/ProblemMarkdownSection";
+import { ReportProblemButton } from '@/components/problem/ReportProblemButton'
 import type { PublicProblem, ProblemExample } from "@/types";
 import { AIExplain } from "@/components/problem/AIExplain";
 
@@ -64,6 +65,10 @@ export function ProblemPanel({
             {problem.description}
           </ReactMarkdown>
         </ProblemMarkdownSection>
+
+        <div className="px-4 md:px-6 pb-3 flex justify-end">
+          <ReportProblemButton problemId={problem.id} problemTitle={problem.title} />
+        </div>
 
         {examples.length > 0 && (
           <section className="space-y-4">

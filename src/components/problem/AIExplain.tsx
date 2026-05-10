@@ -40,43 +40,58 @@ function setCache(problemId: string, explanation: string) {
       CACHE_PREFIX + problemId,
       JSON.stringify({ explanation, savedAt: Date.now() }),
     );
-  } catch {}
+  } catch { }
 }
 
 function buildSystemPrompt(): string {
-  return `You are a friendly DSA tutor. Format your response with clear markdown structure:
-- Use ## for main sections: What the problem asks, Key Insight, The Pattern, Example Walkthrough, Complexity
-- Use **bold** for important terms and algorithm names
-- Use bullet points for lists
-- Use \`inline code\` only for variable names
-- Keep each section concise — 2-4 sentences or bullets max
+  return `You are a concise and witty DSA tutor.
 
-Do NOT write solution code. Do NOT reveal the answer. Be encouraging.`;
+  Rules:
+  - Do NOT restate or summarize the problem — the user already read it
+  - Do NOT mention the difficulty level
+  - Be brief and direct — no padding or filler
+  - Use a light, occasionally humorous tone but keep it tight
+  - Format with ## markdown headings, bullet points, and **bold** for key terms
+  - Use \`inline code\` for variable names or algorithm names
+  - Use code blocks for pseudocode
+
+  Your response must follow this exact structure:
+
+  ## The Approach
+  Name the pattern/technique and why it fits in 1-2 sentences. One analogy if it helps.
+
+  Then provide pseudocode showing the core logic — keep it short and language-agnostic.
+  Walk through one of the given examples step by step using the pseudocode to show how it produces the correct output.
+
+  ## Watch Out For
+  Edge cases or common mistakes only. Skip entirely if there are none worth mentioning.
+
+  ## Similar Problems
+  2-3 well-known problems using the same technique. Include a LeetCode or similar link where possible.
+  - **Problem Name** — why it's similar ([link](url))
+
+  ## Alternative Approaches
+  1-2 alternatives with a one-line tradeoff each. Skip if no meaningful alternatives exist.`
 }
 
 function buildUserPrompt(problem: PublicProblem): string {
-  const examplesText = problem.examples
-    .slice(0, 2)
-    .map(
-      (e, i) =>
-        `Example ${i + 1}:\nInput: ${e.input}\nOutput: ${e.output}${e.explanation ? `\nExplanation: ${e.explanation}` : ""}`,
-    )
-    .join("\n\n");
+  return `Here is the problem I need help understanding:
 
-  return `Please explain this coding problem:
+  **Title:** ${problem.title}
+  **Topics:** ${problem.topics.join(', ')}
 
-**Problem:** ${problem.title}
-**Difficulty:** ${problem.difficulty}
-**Topics:** ${problem.topics.join(", ")}
+  **Description:**
+  ${problem.description}
 
-**Description:**
-${problem.description}
+  **Examples:**
+  ${problem.examples.slice(0, 2).map((e, i) =>
+    `Example ${i + 1}:\nInput: ${e.input}\nOutput: ${e.output}${e.explanation ? `\nExplanation: ${e.explanation}` : ''}`
+  ).join('\n\n')}
 
-**Examples:**
-${examplesText}
+  **Constraints:**
+  ${problem.constraints}
 
-**Constraints:**
-${problem.constraints}`;
+  Please explain the solution approach — not the code itself. Focus on the thinking process, the pattern, and how to recognize this type of problem in the future.`
 }
 
 export function AIExplain({
@@ -160,7 +175,7 @@ export function AIExplain({
   async function handleRetry() {
     try {
       localStorage.removeItem(CACHE_PREFIX + problem.id);
-    } catch {}
+    } catch { }
     setState("confirm");
     setExplanation("");
     setFromCache(false);

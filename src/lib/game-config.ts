@@ -68,6 +68,7 @@ export async function getTimeLimit(
 export const AI_COST_DEFAULTS = {
   AI_EXPLAIN_COST: 5,
   AI_CODE_REVIEW_COST: 5,
+  REPORT_ACCEPTED_REWARD: 5
 } as const;
 
 export const allKeys = [

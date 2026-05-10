@@ -20,6 +20,7 @@ const ADMIN_MENUS = [
     icon: "ri-calendar-check-line",
   },
   { href: "/admin/config", label: "Config", icon: "ri-settings-3-line" },
+  { href: '/admin/reports', label: 'Reports', icon: 'ri-flag-line' }
 ] as const;
 
 export function AdminNav() {
