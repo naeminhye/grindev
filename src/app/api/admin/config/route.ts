@@ -19,7 +19,7 @@ export async function GET() {
   });
 
   const configMap = Object.fromEntries(
-    configs.map((c) => [c.key, parseInt(c.value)]),
+    configs.map((c: { key: any; value: string; }) => [c.key, parseInt(c.value)]),
   );
 
   // Merge with defaults

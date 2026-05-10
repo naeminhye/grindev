@@ -32,6 +32,7 @@ model User {
   quizAttempts       QuizAttempt[]
   practiceMode       PracticeMode      @default(DSA)
   preferredQuizTopic QuizTopic?
+  problemReports    ProblemReport[]
 }
 
 model StarTransaction {
@@ -62,8 +63,9 @@ model Problem {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @default(now()) @updatedAt
 
-  dailySlots DailyProblem[]
-  solves     Solve[]
+  dailySlots  DailyProblem[]
+  solves      Solve[]
+  reports     ProblemReport[]
 }
 
 model DailyProblem {
@@ -192,6 +194,7 @@ enum StarTransactionReason {
   EXTRA_ATTEMPT_PURCHASE
   AI_EXPLAIN
   AI_CODE_REVIEW
+  REPORT_ACCEPTED
 }
 
 /////////////////////////////////////////////////////
@@ -254,4 +257,35 @@ enum QuizTopic {
 enum PracticeMode {
   DSA
   QUIZ
+}
+
+model ProblemReport {
+  id          String       @id @default(cuid())
+  userId      String
+  problemId   String
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(OPEN)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([userId, problemId])
+}
+
+enum ReportReason {
+  WRONG_TEST_CASE
+  WRONG_EXPECTED_OUTPUT
+  UNCLEAR_DESCRIPTION
+  BROKEN_STARTER_CODE
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  DISMISSED
 }
