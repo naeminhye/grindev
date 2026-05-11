@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAdminUserId } from '@/lib/admin-auth'
+import { StarTransactionReason } from '@prisma/client'
 
 export async function GET(req: Request) {
     const { error } = await getAdminUserId()
@@ -58,7 +59,7 @@ export async function PATCH(req: Request) {
                 data: {
                     userId: existing.userId,
                     amount: reward,
-                    reason: 'REPORT_ACCEPTED' as any,
+                    reason: StarTransactionReason.REPORT_ACCEPTED,
                 },
             })
             console.log(`[reports] awarded ${reward} stars to ${existing.userId}`)

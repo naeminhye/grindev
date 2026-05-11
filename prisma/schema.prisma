@@ -1,5 +1,5 @@
-// npx prisma generate # generates the Prisma Client based on the schema
-// npx prisma db push # pushes the schema to the database (creates tables, etc.)
+// pnpm prisma generate # generates the Prisma Client based on the schema
+// pnpm prisma db push # pushes the schema to the database (creates tables, etc.)
 // npx tsx prisma/seed.ts   # re-seeds if seed.ts is modified
 // npx tsx --env-file=.env.local prisma/seed.ts # re-seeds with .env.local (e.g. for different DB connection string)
 
@@ -33,6 +33,7 @@ model User {
   practiceMode       PracticeMode      @default(DSA)
   preferredQuizTopic QuizTopic?
   problemReports    ProblemReport[]
+  codeRedemptions   StarCodeRedemption[]
 }
 
 model StarTransaction {
@@ -195,6 +196,7 @@ enum StarTransactionReason {
   AI_EXPLAIN
   AI_CODE_REVIEW
   REPORT_ACCEPTED
+  STAR_CODE_REDEMPTION
 }
 
 /////////////////////////////////////////////////////
@@ -288,4 +290,27 @@ enum ReportStatus {
   REVIEWING
   RESOLVED
   DISMISSED
+}
+
+model StarCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  stars       Int
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   String
+  note        String?
+  redemptions StarCodeRedemption[]
+}
+
+model StarCodeRedemption {
+  id         String   @id @default(cuid())
+  codeId     String
+  userId     String
+  redeemedAt DateTime @default(now())
+  code StarCode @relation(fields: [codeId], references: [id])
+  user User    @relation(fields: [userId], references: [id])
+  @@unique([codeId, userId])
 }

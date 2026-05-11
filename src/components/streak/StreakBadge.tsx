@@ -30,7 +30,7 @@ export function StreakBadge({ streak, className }: StreakBadgeProps) {
         )}
       />
       <span className="font-heading font-bold tabular-nums">{streak}</span>
-      <span className="text-xs text-zinc-500">
+      <span className="hidden md:inline text-xs text-zinc-500">
         {streak === 1 ? "day" : "days"}
       </span>
     </div>

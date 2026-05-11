@@ -178,6 +178,8 @@ const REASON_LABELS: Record<
     icon: "ri-flag-line",
     color: "text-lime-400"
   },
+  // TODO: add transs
+  STAR_CODE_REDEMPTION: { labelKey: 'Code redeemed', icon: 'ri-coupon-line', color: 'text-lime-400' },
 };
 
 type Tab = 'SHOP' | 'HISTORY'

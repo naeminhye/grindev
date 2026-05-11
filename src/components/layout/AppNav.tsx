@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { HelpButton } from "@/components/ui/HelpButton";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { StreakBadge } from "@/components/streak/StreakBadge";
+import { StarCount } from '@/components/ui/StarCount'
+import { RedeemCodeButton } from '@/components/ui/RedeemCodeButton'
 import { useI18n } from "@/lib/i18n";
 import { APP_MENUS } from "@/lib/menus";
 import { useEffect, useState } from "react";
@@ -15,17 +17,20 @@ interface AppNavProps {
   userImage: string | null;
   streak: number;
   isAdmin: boolean;
+  stars: number;
 }
 
-export function AppNav({ userName, userImage, streak, isAdmin }: AppNavProps) {
+export function AppNav({ userName, userImage, streak, isAdmin, stars }: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
+  const [currentStars, setCurrentStars] = useState(stars)
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => { setCurrentStars(stars) }, [stars])
 
   async function handleSignOut() {
     // Clear AI explain cache for this user before signing out
@@ -90,6 +95,8 @@ export function AppNav({ userName, userImage, streak, isAdmin }: AppNavProps) {
           </Link>
         )}
         <StreakBadge streak={streak} />
+        <StarCount stars={currentStars} />
+        <RedeemCodeButton onStarsChange={setCurrentStars} />
         <HelpButton />
         <SignOutButton signOut={handleSignOut} />
       </div>

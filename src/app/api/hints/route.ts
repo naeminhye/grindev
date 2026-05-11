@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { getAuthUserId } from '@/lib/auth-helper'
 import { getTodayInTz } from '@/lib/streak'
+import { StarTransactionReason } from '@prisma/client'
 
 const schema = z.object({
   problemId: z.string().min(1),
@@ -46,10 +47,10 @@ export async function POST(req: Request) {
   // Count passes purchased today vs used today
   const [passesToday, passesUsedToday] = await Promise.all([
     prisma.starTransaction.count({
-      where: { userId, reason: 'HINT_DISCOUNT_PURCHASE', createdAt: { gte: new Date(today + 'T00:00:00') } },
+      where: { userId, reason: StarTransactionReason.HINT_DISCOUNT_PURCHASE, createdAt: { gte: new Date(today + 'T00:00:00') } },
     }),
     prisma.starTransaction.count({
-      where: { userId, reason: 'HINT_DISCOUNT_USED' as any, createdAt: { gte: new Date(today + 'T00:00:00') } },
+      where: { userId, reason: StarTransactionReason.HINT_DISCOUNT_USED, createdAt: { gte: new Date(today + 'T00:00:00') } },
     }),
   ])
   const hasActivePass = passesToday > passesUsedToday

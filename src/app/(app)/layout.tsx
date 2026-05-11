@@ -18,7 +18,10 @@ export default async function AppLayout({
   const [user, adminCheck] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { currentStreak: true },
+      select: {
+        currentStreak: true,
+        stars: true,
+      },
     }),
     isAdmin(session.user.email ?? ""),
   ]);
@@ -31,6 +34,7 @@ export default async function AppLayout({
         userImage={session.user?.image ?? null}
         streak={user?.currentStreak ?? 0}
         isAdmin={adminCheck}
+        stars={user?.stars ?? 0}
       />
       <main className="flex-1 flex flex-col pb-16 md:pb-0">{children}</main>
       {/* Mobile bottom nav */}
