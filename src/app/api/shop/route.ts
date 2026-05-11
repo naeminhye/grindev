@@ -42,19 +42,38 @@ export async function GET() {
       }),
     ]);
 
-    const [hintDiscountBought, hintDiscountUsed] = await Promise.all([
+    // const [hintDiscountBought, hintDiscountUsed] = await Promise.all([
+    //   prisma.starTransaction.count({
+    //     where: { userId, reason: "HINT_DISCOUNT_PURCHASE" },
+    //   }),
+    //   prisma.starTransaction.count({
+    //     where: { userId, reason: "HINT_DISCOUNT_USED" as any },
+    //   }),
+    // ]);
+
+    const [hintPassBought, hintPassUsed] = await Promise.all([
       prisma.starTransaction.count({
-        where: { userId, reason: "HINT_DISCOUNT_PURCHASE" },
+        where: {
+          userId,
+          reason: 'HINT_DISCOUNT_PURCHASE',
+          createdAt: { gte: new Date(new Date().toLocaleDateString('en-CA') + 'T00:00:00') },
+        },
       }),
       prisma.starTransaction.count({
-        where: { userId, reason: "HINT_DISCOUNT_USED" as any },
+        where: {
+          userId,
+          reason: 'HINT_DISCOUNT_USED' as any,
+          createdAt: { gte: new Date(new Date().toLocaleDateString('en-CA') + 'T00:00:00') },
+        },
       }),
-    ]);
+    ])
+
 
     const owned: Record<string, number> = {
       "streak-freeze": user?.streakFreezeCount ?? 0,
       "problem-skip": Math.max(0, skipPurchased - skipUsed),
-      "hint-discount": Math.max(0, hintDiscountBought - hintDiscountUsed),
+      // "hint-discount": Math.max(0, hintDiscountBought - hintDiscountUsed),
+      'hint-discount': Math.max(0, hintPassBought - hintPassUsed),
       "double-stars": doubleStars,
       "extra-attempt": extraAttempt,
     };

@@ -413,93 +413,80 @@
   },
   "shop": {
     "title": "星星商店",
-    "desc": "用星星购买强化道具。",
-    "available": "可购买",
+    "desc": "使用星星购买增强道具。",
+    "available": "商店",
     "buy": "购买",
-    "buying": "购买中...",
-    "confirmLabel": "确认",
-    "needMoreStars": "需要更多 ⭐",
+    "needMore": "星星不足",
+    "starsCount": "{count} 颗星",
+    "owned": "已拥有 {count}",
     "items": {
       "streakFreeze": {
-        "title": "连续保护",
-        "desc": "保护你的连续天数，允许错过一天。即使跳过一天，连续记录也会保留。",
-        "stock": "你有 {count} 个保护"
+        "title": "连胜冻结",
+        "desc": "即使漏掉一天也能保持你的连胜记录。"
       },
       "problemSkip": {
-        "title": "题目跳过",
-        "desc": "今天不想做这题？跳过它，从完整题库中获得一道随机题。",
-        "stock": "一次性使用"
+        "title": "跳过题目",
+        "desc": "跳过今天的题目并随机获取一道新题。"
       },
       "hintDiscount": {
-        "title": "提示折扣",
-        "desc": "在一道题中，所有提示费用减少 1 颗星。会自动应用到下一道题。"
+        "title": "提示全天券",
+        "desc": "今日所有提示立享5折优惠。"
       },
       "doubleStars": {
         "title": "双倍星星",
-        "desc": "下一道解出的题目可获得双倍星星。仅适用于下一次提交。"
+        "desc": "下一道题解决后可获得双倍星星奖励。"
       },
       "secondChance": {
         "title": "第二次机会",
-        "desc": "状态不好？重置一道曾经失败题目的尝试次数，再次挑战干净解题。"
+        "desc": "重置失败题目的尝试次数，重新开始挑战。"
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "购买连续保护",
-        "message": "花费 {cost}⭐ 购买一个连续保护？下次错过一天时会自动启用。"
-      },
-      "problemSkip": {
-        "title": "跳过今日题目",
-        "message": "花费 {cost}⭐，用一道随机题替换今天安排的题目吗？"
-      }
+    "badges": {
+      "mostPopular": "最火热",
+      "oneTimeUse": "一次性",
+      "dayPass": "全天券"
     },
     "messages": {
-      "streakFreezePurchased": "连续保护购买成功！你现在有 {count} 个保护。",
-      "problemSkipped": "题目已跳过！到今日页面查看新题吧。",
-      "itemPurchased": "已购买 {item}！"
+      "itemPurchased": "已成功购买 {item}！"
     },
     "comingSoon": {
       "title": "即将推出",
       "desc": "更多赚取和花费星星的方式即将到来 — 包括星星包、订阅和专属功能。"
     },
-    "transactions": {
-      "title": "最近交易",
-      "reasons": {
-        "solveCleanNormal": "纯净解题（普通）",
-        "solveCleanHard": "纯净解题（困难）",
-        "solveHintsNormal": "使用提示解题",
-        "solveHintsHard": "困难使用提示解题",
-        "hintPurchase": "已解锁提示",
-        "makeupCost": "补题尝试",
-        "makeupReward": "补题奖励",
-        "streakFreezePurchase": "购买连续保护",
-        "problemSkip": "题目跳过",
-        "dailyLoginBonus": "每日登录奖励",
-        "noProblemBonus": "无题日奖励",
-        "streakMilestone": "连续里程碑奖励",
-        "firstSolveBonus": "首次解题奖励",
-        "adminAdjustment": "管理员调整",
-        "problemSkipUsed": "已使用题目跳过",
-        "quizReward": "测验奖励",
-        "hintDiscountPurchase": "提示折扣",
-        "doubleStarsPurchase": "双倍星星",
-        "extraAttemptPurchase": "第二次机会",
-        "hintDiscountUsed": "已使用提示折扣",
-        "aiCodeReview": "AI 代码评审",
-        "aiExplain": "AI 题目讲解"
-      }
+    "history": {
+      "balance": "当前余额",
+      "totalEarned": "累计获得",
+      "totalSpent": "累计消耗",
+      "empty": "暂无交易记录。"
     },
     "date": {
       "today": "今天",
-      "yesterday": "昨天",
-      "daysAgo": "{count}天前"
+      "yesterday": "昨天"
     },
-    "starsCount": "{count} 颗星",
-    "owned": "你有 {count}",
-    "needMore": "还差一些",
-    "badges": {
-      "mostPopular": "最受欢迎",
-      "oneTimeUse": "一次性使用"
+    "transactions": {
+      "title": "历史",
+      "reasons": {
+        "solveCleanNormal": "完成解题",
+        "solveCleanHard": "完成解题 (困难)",
+        "solveHintsNormal": "提示辅助解题",
+        "solveHintsHard": "提示辅助解题 (困难)",
+        "hintPurchase": "购买提示",
+        "hintDiscountPurchase": "购买全天券",
+        "makeupCost": "补卡消耗",
+        "makeupReward": "补卡奖励",
+        "streakFreezePurchase": "购买连胜冻结",
+        "problemSkip": "购买跳题券",
+        "problemSkipUsed": "使用跳题券",
+        "dailyLoginBonus": "每日登录奖励",
+        "noProblemBonus": "休息日奖励",
+        "quizReward": "测验奖励",
+        "doubleStarsPurchase": "购买双倍星星",
+        "extraAttemptPurchase": "购买重试机会",
+        "aiExplain": "AI 解析",
+        "aiCodeReview": "AI 代码评审",
+        "reportAccepted": "举报已采纳",
+        "adminAdjustment": "管理员调整"
+      }
     }
   },
   "ai": {

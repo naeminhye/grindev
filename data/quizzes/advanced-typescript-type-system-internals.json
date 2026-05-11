@@ -1,0 +1,97 @@
+{
+    "title": "Advanced TypeScript: Type System & Internals",
+    "topic": "TYPESCRIPT",
+    "difficulty": "HARD",
+    "questions": [
+        {
+            "question": "What is the main difference between `infer` in conditional types vs `infer` in template literal types?",
+            "options": [
+                "`infer` only works inside conditional types",
+                "Template literal `infer` can only extract string literals, not unions",
+                "Both behave identically in all contexts",
+                "`infer` in template literals extracts from string patterns while conditional `infer` works on any type"
+            ],
+            "correctIndex": 3,
+            "explanation": "Conditional `infer` is used for type extraction in `extends` conditions. In template literal types, `infer` extracts substrings matching the pattern."
+        },
+        {
+            "question": "Which statement about declaration merging is correct?",
+            "options": [
+                "Interfaces cannot merge with classes",
+                "Namespaces can merge with functions, classes, and enums",
+                "Type aliases can be merged using declaration merging",
+                "Only one module augmentation per file is allowed"
+            ],
+            "correctIndex": 1,
+            "explanation": "TypeScript supports declaration merging for interfaces, namespaces, enums, and classes. Namespaces are particularly flexible and can merge with functions, classes, and other namespaces."
+        },
+        {
+            "question": "What does the `satisfies` operator do in this example?",
+            "code": "type Color = 'red' | 'green' | 'blue';\nconst myColor = 'red' satisfies Color;",
+            "options": [
+                "It narrows the type of myColor to 'red'",
+                "It checks if the value matches the type without changing the inferred type",
+                "It throws a compile error if the value doesn't match",
+                "It converts the literal type into the union type"
+            ],
+            "correctIndex": 1,
+            "explanation": "`satisfies` validates that a value matches a type while preserving the original literal/narrow type for inference, unlike type annotations which widen the type."
+        },
+        {
+            "question": "Which utility type would you use to create a type that makes all properties of T mutable again?",
+            "options": [
+                "Mutable<T>",
+                "MutableRequired<T>",
+                "-readonly [K in keyof T]",
+                "Writable<T>"
+            ],
+            "correctIndex": 2,
+            "explanation": "The mapped type syntax `-readonly [K in keyof T]: T[K]` removes the readonly modifier from all properties."
+        },
+        {
+            "question": "What is a key limitation of using branded types in TypeScript?",
+            "options": [
+                "They are erased at runtime and provide no actual safety",
+                "Branded types cannot be used with primitive values",
+                "You cannot create unions of branded types",
+                "Branding affects assignability in both directions"
+            ],
+            "correctIndex": 0,
+            "explanation": "Branded types (e.g. `string & { __brand: 'Email' }`) are a compile-time only pattern. They help catch errors during development but are completely erased at runtime."
+        },
+        {
+            "question": "What happens with this recursive conditional type?",
+            "code": "type DeepFlatten<T> = T extends readonly any[] ? {\n  [K in keyof T]: DeepFlatten<T[K]>\n} : T;",
+            "options": [
+                "It will cause a 'type instantiation is excessively deep' error on deeply nested arrays",
+                "It flattens only one level of nesting",
+                "It works perfectly for any depth due to tail recursion optimization",
+                "It only works on tuples, not regular arrays"
+            ],
+            "correctIndex": 0,
+            "explanation": "Without proper termination conditions or using `infer` for flattening, recursive conditional types on large or deeply nested structures often hit TypeScript's recursion depth limit."
+        },
+        {
+            "question": "How do you properly type a function that accepts any class constructor?",
+            "options": [
+                "new (...args: any[]) => any",
+                "abstract new (...args: any[]) => any",
+                "Function",
+                "Constructor<T>"
+            ],
+            "correctIndex": 0,
+            "explanation": "The pattern `new (...args: any[]) => any` (or with generics) is the standard way to type a constructor function in TypeScript."
+        },
+        {
+            "question": "What is the purpose of the `noUncheckedIndexedAccess` compiler option?",
+            "options": [
+                "It forces checking of array/object access using index signatures",
+                "It removes null/undefined from indexed access results",
+                "It enables stricter checking for optional properties",
+                "It prevents using string indexes on arrays"
+            ],
+            "correctIndex": 0,
+            "explanation": "When enabled, accessing properties via index signatures (obj[key]) returns `T | undefined`, forcing developers to handle potential undefined values."
+        }
+    ]
+}

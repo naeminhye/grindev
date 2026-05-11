@@ -412,94 +412,81 @@
     }
   },
   "shop": {
-    "title": "Boutique d'étoiles",
-    "desc": "Dépense tes étoiles en bonus.",
-    "available": "Disponible",
+    "title": "Boutique d'Étoiles",
+    "desc": "Dépensez vos étoiles pour des bonus.",
+    "available": "Boutique",
     "buy": "Acheter",
-    "buying": "Achat...",
-    "confirmLabel": "Confirmer",
-    "needMoreStars": "Besoin de plus de ⭐",
+    "needMore": "Étoiles insuffisantes",
+    "starsCount": "{count} étoiles",
+    "owned": "Vous en avez {count}",
     "items": {
       "streakFreeze": {
-        "title": "Gel de série",
-        "desc": "Protège ta série pour un jour manqué. Ta série reste intacte même si tu sautes un jour.",
-        "stock": "Tu as {count} gel(s)"
+        "title": "Gel de Série",
+        "desc": "Protégez votre série pour un jour manqué."
       },
       "problemSkip": {
-        "title": "Passer le problème",
-        "desc": "Pas envie du problème du jour ? Passe-le et reçois un problème aléatoire de toute la banque.",
-        "stock": "Usage unique"
+        "title": "Passer l'Exercice",
+        "desc": "Remplacez l'exercice du jour par un autre aléatoire."
       },
       "hintDiscount": {
-        "title": "Réduction sur les indices",
-        "desc": "Réduit le coût de tous les indices de 1 étoile pour un problème. S’applique automatiquement au prochain problème."
+        "title": "Pass Indices",
+        "desc": "50% de réduction sur tous les indices jusqu'à minuit."
       },
       "doubleStars": {
-        "title": "Étoiles doublées",
-        "desc": "Gagnez deux fois plus d’étoiles sur le prochain problème résolu. Valable uniquement pour la prochaine soumission."
+        "title": "Double Étoiles",
+        "desc": "Gagnez le double d'étoiles sur votre prochain succès."
       },
       "secondChance": {
-        "title": "Deuxième chance",
-        "desc": "Mauvaise journée ? Réinitialisez le nombre de tentatives sur un problème échoué et réessayez proprement."
+        "title": "Seconde Chance",
+        "desc": "Réinitialisez vos tentatives sur un exercice échoué."
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "Acheter un gel de série",
-        "message": "Dépenser {cost}⭐ pour un gel de série ? Il s'activera automatiquement la prochaine fois que tu manques un jour."
-      },
-      "problemSkip": {
-        "title": "Passer le problème du jour",
-        "message": "Dépenser {cost}⭐ pour obtenir un problème aléatoire au lieu de celui prévu aujourd'hui ?"
-      }
+    "badges": {
+      "mostPopular": "Populaire",
+      "oneTimeUse": "Usage unique",
+      "dayPass": "Pass journalier"
     },
     "messages": {
-      "streakFreezePurchased": "Gel de série acheté ! Tu as maintenant {count} gel(s).",
-      "problemSkipped": "Problème passé ! Va sur Aujourd'hui pour voir ton nouveau problème.",
       "itemPurchased": "{item} acheté !"
     },
     "comingSoon": {
       "title": "Bientôt disponible",
       "desc": "Plus de façons de gagner et dépenser des étoiles arrivent — packs d'étoiles, abonnements et fonctionnalités exclusives."
     },
-    "transactions": {
-      "title": "Transactions récentes",
-      "reasons": {
-        "solveCleanNormal": "Résolution propre (Normal)",
-        "solveCleanHard": "Résolution propre (Difficile)",
-        "solveHintsNormal": "Résolution avec indices",
-        "solveHintsHard": "Résolution difficile avec indices",
-        "hintPurchase": "Indice débloqué",
-        "makeupCost": "Tentative de rattrapage",
-        "makeupReward": "Récompense de rattrapage",
-        "streakFreezePurchase": "Gel de série acheté",
-        "problemSkip": "Problème passé",
-        "dailyLoginBonus": "Bonus de connexion quotidien",
-        "noProblemBonus": "Bonus de jour sans problème",
-        "streakMilestone": "Bonus de palier de série",
-        "firstSolveBonus": "Bonus de première résolution",
-        "adminAdjustment": "Ajustement admin",
-        "problemSkipUsed": "Saut de problème utilisé",
-        "quizReward": "Récompense de quiz",
-        "hintDiscountPurchase": "Réduction sur les indices",
-        "doubleStarsPurchase": "Étoiles doublées",
-        "extraAttemptPurchase": "Deuxième chance",
-        "hintDiscountUsed": "Réduction sur les indices utilisée",
-        "aiCodeReview": "Revue de code IA",
-        "aiExplain": "Explication IA du problème"
-      }
+    "history": {
+      "balance": "Solde actuel",
+      "totalEarned": "Total gagné",
+      "totalSpent": "Total dépensé",
+      "empty": "Aucune transaction."
     },
     "date": {
       "today": "Aujourd'hui",
-      "yesterday": "Hier",
-      "daysAgo": "il y a {count} j"
+      "yesterday": "Hier"
     },
-    "starsCount": "{count} étoiles",
-    "owned": "Vous en avez {count}",
-    "needMore": "Pas assez",
-    "badges": {
-      "mostPopular": "Le plus populaire",
-      "oneTimeUse": "Usage unique"
+    "transactions": {
+      "title": "Historique",
+      "reasons": {
+        "solveCleanNormal": "Succès direct",
+        "solveCleanHard": "Succès direct (Difficile)",
+        "solveHintsNormal": "Succès avec indices",
+        "solveHintsHard": "Succès avec indices (Difficile)",
+        "hintPurchase": "Indice acheté",
+        "hintDiscountPurchase": "Pass Indices acheté",
+        "makeupCost": "Coût de rattrapage",
+        "makeupReward": "Récompense rattrapage",
+        "streakFreezePurchase": "Achat Gel de Série",
+        "problemSkip": "Achat Pass Exercice",
+        "problemSkipUsed": "Pass Exercice utilisé",
+        "dailyLoginBonus": "Bonus de connexion",
+        "noProblemBonus": "Bonus jour de repos",
+        "quizReward": "Récompense Quiz",
+        "doubleStarsPurchase": "Achat Double Étoiles",
+        "extraAttemptPurchase": "Achat Seconde Chance",
+        "aiExplain": "Explication IA",
+        "aiCodeReview": "Revue de code IA",
+        "reportAccepted": "Signalement accepté",
+        "adminAdjustment": "Ajustement administrateur"
+      }
     }
   },
   "ai": {

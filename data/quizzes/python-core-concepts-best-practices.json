@@ -1,0 +1,96 @@
+{
+    "title": "Python Core Concepts & Best Practices",
+    "topic": "PYTHON",
+    "difficulty": "MEDIUM",
+    "questions": [
+        {
+            "question": "What is the key difference between list and tuple in Python?",
+            "options": [
+                "Lists are faster than tuples",
+                "Tuples are mutable while lists are immutable",
+                "Lists are mutable, tuples are immutable",
+                "Tuples cannot contain duplicate elements"
+            ],
+            "correctIndex": 2,
+            "explanation": "Lists are mutable (can be changed after creation), while tuples are immutable. This makes tuples hashable and suitable for use as dictionary keys."
+        },
+        {
+            "question": "What will this code output?",
+            "code": "def func(x, lst=[]):\n    lst.append(x)\n    return lst\n\nprint(func(1))\nprint(func(2))",
+            "options": [
+                "[1]\n[2]",
+                "[1]\n[1, 2]",
+                "[1, 2]\n[1, 2]",
+                "Error"
+            ],
+            "correctIndex": 1,
+            "explanation": "Default arguments are evaluated only once at function definition. The same list object is reused across calls, leading to unexpected behavior."
+        },
+        {
+            "question": "Which statement about Python generators is correct?",
+            "options": [
+                "Generators are less memory efficient than lists",
+                "A generator can only be iterated once",
+                "Generators execute all code immediately when created",
+                "yield returns a value and terminates the function"
+            ],
+            "correctIndex": 1,
+            "explanation": "Generators are lazy and memory-efficient. Once exhausted (fully iterated), they cannot be reused unless recreated."
+        },
+        {
+            "question": "What does the @property decorator do?",
+            "options": [
+                "Turns a method into a class attribute",
+                "Allows a method to be accessed like an attribute",
+                "Makes a variable private",
+                "Improves performance of function calls"
+            ],
+            "correctIndex": 1,
+            "explanation": "@property allows you to define getter methods that can be accessed like regular attributes, enabling data validation and computed properties."
+        },
+        {
+            "question": "What is the correct way to handle file opening safely?",
+            "options": [
+                "file = open('data.txt'); ... ; file.close()",
+                "with open('data.txt') as file: ...",
+                "try: file = open(...) finally: file.close()",
+                "Both B and C are good practices"
+            ],
+            "correctIndex": 3,
+            "explanation": "The 'with' statement (context manager) is the most Pythonic and safest way. It automatically closes the file even if exceptions occur."
+        },
+        {
+            "question": "What is the purpose of *args and **kwargs?",
+            "options": [
+                "To declare global and local variables",
+                "To accept any number of positional and keyword arguments",
+                "To unpack lists and dictionaries",
+                "To define default parameters"
+            ],
+            "correctIndex": 1,
+            "explanation": "*args collects extra positional arguments into a tuple, while **kwargs collects extra keyword arguments into a dictionary."
+        },
+        {
+            "question": "Which of the following is true about Python's GIL?",
+            "options": [
+                "It allows true parallel execution of threads",
+                "It prevents multiple native threads from executing Python bytecodes simultaneously",
+                "It only affects multiprocessing",
+                "It improves performance for CPU-bound tasks"
+            ],
+            "correctIndex": 1,
+            "explanation": "The Global Interpreter Lock (GIL) ensures only one thread executes Python bytecode at a time, limiting CPU-bound performance in multi-threading."
+        },
+        {
+            "question": "What does list comprehension do better than a traditional for loop?",
+            "options": [
+                "Always runs faster",
+                "Produces more readable and concise code for simple transformations",
+                "Uses less memory in all cases",
+                "Automatically handles exceptions"
+            ],
+            "correctIndex": 1,
+            "explanation": "List comprehensions are more Pythonic and concise for creating lists through simple transformations and filtering."
+        }
+    ]
+}

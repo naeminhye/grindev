@@ -412,94 +412,81 @@
     }
   },
   "shop": {
-    "title": "별 상점",
-    "desc": "별로 파워업을 구매하세요.",
-    "available": "구매 가능",
+    "title": "스타 상점",
+    "desc": "스타를 사용하여 아이템을 구매하세요.",
+    "available": "상점",
     "buy": "구매",
-    "buying": "구매 중...",
-    "confirmLabel": "확인",
-    "needMoreStars": "⭐가 더 필요해요",
+    "needMore": "부족함",
+    "starsCount": "스타 {count}개",
+    "owned": "{count}개 보유",
     "items": {
       "streakFreeze": {
-        "title": "연속 기록 보호권",
-        "desc": "하루를 놓쳐도 연속 기록을 보호합니다. 하루 쉬어도 기록이 유지됩니다.",
-        "stock": "보유 중: 보호권 {count}개"
+        "title": "스트릭 프리즈",
+        "desc": "하루를 건너뛰어도 스트릭을 유지해줍니다."
       },
       "problemSkip": {
-        "title": "문제 스킵",
-        "desc": "오늘 문제가 끌리지 않나요? 스킵하고 전체 문제 은행에서 무작위 문제를 받아보세요.",
-        "stock": "일회용"
+        "title": "문제 건너뛰기",
+        "desc": "오늘의 문제를 무작위의 다른 문제로 변경합니다."
       },
       "hintDiscount": {
-        "title": "힌트 할인",
-        "desc": "문제 하나에서 모든 힌트 비용을 별 1개씩 줄입니다. 다음 문제에 자동으로 적용됩니다."
+        "title": "힌트 일일권",
+        "desc": "오늘 하루 모든 힌트 비용이 50% 할인됩니다."
       },
       "doubleStars": {
-        "title": "별 2배",
-        "desc": "다음에 푼 문제에서 별을 두 배로 획득합니다. 다음 제출에만 적용됩니다."
+        "title": "더블 스타",
+        "desc": "다음 문제 해결 시 두 배의 스타를 획득합니다."
       },
       "secondChance": {
-        "title": "두 번째 기회",
-        "desc": "오늘 컨디션이 별로였나요? 이전에 실패한 문제의 시도 횟수를 초기화하고 다시 깔끔하게 도전하세요."
+        "title": "세컨드 찬스",
+        "desc": "실패한 문제의 시도 횟수를 초기화하고 다시 도전합니다."
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "연속 기록 보호권 구매",
-        "message": "{cost}⭐를 사용해 연속 기록 보호권을 구매할까요? 다음에 하루를 놓치면 자동으로 활성화됩니다."
-      },
-      "problemSkip": {
-        "title": "오늘 문제 스킵",
-        "message": "{cost}⭐를 사용해 오늘 예정된 문제 대신 무작위 문제를 받을까요?"
-      }
+    "badges": {
+      "mostPopular": "인기",
+      "oneTimeUse": "1회용",
+      "dayPass": "일일권"
     },
     "messages": {
-      "streakFreezePurchased": "연속 기록 보호권을 구매했어요! 현재 {count}개를 보유 중입니다.",
-      "problemSkipped": "문제를 스킵했어요! 오늘 페이지에서 새 문제를 확인하세요.",
       "itemPurchased": "{item} 구매 완료!"
     },
     "comingSoon": {
       "title": "곧 공개됩니다",
       "desc": "별을 얻고 사용할 더 많은 방법이 준비 중입니다 — 별 패키지, 구독, 전용 기능까지."
     },
-    "transactions": {
-      "title": "최근 거래",
-      "reasons": {
-        "solveCleanNormal": "클린 풀이(일반)",
-        "solveCleanHard": "클린 풀이(하드)",
-        "solveHintsNormal": "힌트 사용 풀이",
-        "solveHintsHard": "하드 힌트 풀이",
-        "hintPurchase": "힌트 잠금 해제",
-        "makeupCost": "보충 시도",
-        "makeupReward": "보충 보상",
-        "streakFreezePurchase": "연속 기록 보호권 구매",
-        "problemSkip": "문제 스킵",
-        "dailyLoginBonus": "일일 로그인 보너스",
-        "noProblemBonus": "문제 없는 날 보너스",
-        "streakMilestone": "연속 기록 달성 보너스",
-        "firstSolveBonus": "첫 풀이 보너스",
-        "adminAdjustment": "관리자 조정",
-        "problemSkipUsed": "문제 건너뛰기 사용",
-        "quizReward": "퀴즈 보상",
-        "hintDiscountPurchase": "힌트 할인",
-        "doubleStarsPurchase": "별 2배",
-        "extraAttemptPurchase": "두 번째 기회",
-        "hintDiscountUsed": "힌트 할인 사용",
-        "aiCodeReview": "AI 코드 리뷰",
-        "aiExplain": "AI 문제 설명"
-      }
+    "history": {
+      "balance": "현재 잔액",
+      "totalEarned": "총 획득",
+      "totalSpent": "총 소비",
+      "empty": "거래 내역이 없습니다."
     },
     "date": {
       "today": "오늘",
-      "yesterday": "어제",
-      "daysAgo": "{count}일 전"
+      "yesterday": "어제"
     },
-    "starsCount": "별 {count}개",
-    "owned": "{count}개 보유 중",
-    "needMore": "별 부족",
-    "badges": {
-      "mostPopular": "가장 인기",
-      "oneTimeUse": "1회 사용"
+    "transactions": {
+      "title": "내역",
+      "reasons": {
+        "solveCleanNormal": "문제 해결",
+        "solveCleanHard": "문제 해결 (어려움)",
+        "solveHintsNormal": "힌트 사용 해결",
+        "solveHintsHard": "힌트 사용 해결 (어려움)",
+        "hintPurchase": "힌트 구매",
+        "hintDiscountPurchase": "힌트 일일권 구매",
+        "makeupCost": "보충 학습 비용",
+        "makeupReward": "보충 학습 보상",
+        "streakFreezePurchase": "스트릭 프리즈 구매",
+        "problemSkip": "문제 건너뛰기 구매",
+        "problemSkipUsed": "문제 건너뛰기 사용",
+        "dailyLoginBonus": "일일 로그인 보너스",
+        "noProblemBonus": "휴식일 보너스",
+        "quizReward": "퀴즈 보상",
+        "doubleStarsPurchase": "더블 스타 구매",
+        "extraAttemptPurchase": "재도전 구매",
+        "aiExplain": "AI 설명",
+        "aiCodeReview": "AI 코드 리뷰",
+        "reportAccepted": "신고 승인됨",
+        "adminAdjustment": "관리자 조정"
+      }
     }
   },
   "ai": {

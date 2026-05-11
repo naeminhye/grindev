@@ -8,6 +8,7 @@ import { StreakBadge } from "@/components/streak/StreakBadge";
 import { useI18n } from "@/lib/i18n";
 import { APP_MENUS } from "@/lib/menus";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 
 interface AppNavProps {
   userName: string;
@@ -24,6 +25,19 @@ export function AppNav({ userName, userImage, streak, isAdmin }: AppNavProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+
+  async function handleSignOut() {
+    // Clear AI explain cache for this user before signing out
+    const session = await fetch('/api/auth/session').then(r => r.json())
+    if (session?.user?.id) {
+      const prefix = `grindev_ai_explain_${session.user.id}_`
+      Object.keys(localStorage)
+        .filter(k => k.startsWith(prefix))
+        .forEach(k => localStorage.removeItem(k))
+    }
+    await signOut({ callbackUrl: '/sign-in' })
+  }
 
   return (
     <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
@@ -77,7 +91,7 @@ export function AppNav({ userName, userImage, streak, isAdmin }: AppNavProps) {
         )}
         <StreakBadge streak={streak} />
         <HelpButton />
-        <SignOutButton />
+        <SignOutButton signOut={handleSignOut} />
       </div>
     </nav>
   );

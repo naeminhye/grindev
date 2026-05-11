@@ -1,0 +1,100 @@
+{
+    "title": "Advanced JavaScript: Internals & Performance",
+    "topic": "JAVASCRIPT",
+    "difficulty": "HARD",
+    "questions": [
+        {
+            "question": "Which statement about WeakRef and FinalizationRegistry is correct?",
+            "code": "",
+            "options": [
+                "WeakRef prevents garbage collection of the referenced object",
+                "FinalizationRegistry callbacks are guaranteed to run before the object is collected",
+                "Both WeakRef and FinalizationRegistry are primarily used for performance optimization in hot paths",
+                "FinalizationRegistry callbacks run asynchronously and have no guaranteed execution timing"
+            ],
+            "correctIndex": 3,
+            "explanation": "FinalizationRegistry callbacks are scheduled asynchronously by the engine with no timing guarantees and may never run (e.g. process exit). WeakRef allows observation of collection but does not prevent it."
+        },
+        {
+            "question": "What is the output of this code involving iterators and generators?",
+            "code": "function* gen() {\n  yield 1;\n  return 2;\n}\nconst it = gen();\nconsole.log(it.next());\nconsole.log(it.next());\nconsole.log(it.next());",
+            "options": [
+                "{value: 1, done: false} {value: 2, done: true} {value: undefined, done: true}",
+                "{value: 1, done: false} {value: undefined, done: true} {value: undefined, done: true}",
+                "{value: 1, done: false} {value: 2, done: false} {value: undefined, done: true}",
+                "{value: undefined, done: true} {value: 2, done: true} {value: undefined, done: true}"
+            ],
+            "correctIndex": 0,
+            "explanation": "The first next() yields 1 (done false). The second next() returns the return value 2 with done true. Subsequent calls return {value: undefined, done: true}."
+        },
+        {
+            "question": "In terms of the JavaScript event loop, which task queue has the highest priority?",
+            "options": [
+                "Macrotask queue (setTimeout, setInterval)",
+                "Microtask queue (Promise.then, queueMicrotask)",
+                "Animation callbacks (requestAnimationFrame)",
+                "Render steps"
+            ],
+            "correctIndex": 1,
+            "explanation": "Microtasks have higher priority than macrotasks. After each macrotask (or script), the event loop exhausts the entire microtask queue before proceeding to the next macrotask."
+        },
+        {
+            "question": "What is the key behavioral difference when using Proxy with the 'has' trap?",
+            "code": "",
+            "options": [
+                "The 'has' trap affects the 'in' operator but not Object.prototype.hasOwnProperty",
+                "The 'has' trap is only triggered for own properties, not inherited ones",
+                "The 'has' trap can prevent prototype chain lookup entirely when it returns false",
+                "Using 'delete' on a Proxy always triggers the 'deleteProperty' trap regardless of the 'has' trap"
+            ],
+            "correctIndex": 2,
+            "explanation": "When the 'has' trap returns false, the 'in' operator returns false immediately without continuing up the prototype chain, effectively hiding inherited properties."
+        },
+        {
+            "question": "Which optimization technique or behavior is true for modern V8 JavaScript engines?",
+            "options": [
+                "Object properties in 'dictionary mode' are faster than hidden classes",
+                "Using 'with' statement helps the engine optimize property access",
+                "Polymorphic function calls (different hidden classes) are deoptimized to megamorphic state",
+                "Inline caches for property access work best with monomorphic call sites"
+            ],
+            "correctIndex": 3,
+            "explanation": "V8 uses hidden classes (maps) for optimization. Monomorphic (single shape) call sites allow efficient inline caches. Megamorphic state (many shapes) leads to slower generic lookups."
+        },
+        {
+            "question": "What happens when you use a Symbol as a key in a WeakMap?",
+            "code": "",
+            "options": [
+                "It behaves the same as using a string key",
+                "The entry is automatically removed when the Symbol is garbage collected",
+                "Symbols are always strongly referenced in WeakMap keys",
+                "It throws a TypeError because only objects are allowed as WeakMap keys"
+            ],
+            "correctIndex": 3,
+            "explanation": "WeakMap keys must be objects (including functions, arrays, etc.). Symbols are primitive values, so using one as a key throws a TypeError."
+        },
+        {
+            "question": "Consider this async generator code. What is the correct way to consume all yielded values?",
+            "code": "async function* fetchPages() {\n  for (let i = 0; i < 3; i++) {\n    yield await fetchData(i);\n  }\n}",
+            "options": [
+                "for (const page of fetchPages()) { ... }",
+                "for await (const page of fetchPages()) { ... }",
+                "fetchPages().then(pages => pages.forEach(...))",
+                "fetchPages().next().then(result => ...)"
+            ],
+            "correctIndex": 1,
+            "explanation": "Async generators must be consumed with 'for await...of' to properly handle the promises returned by each next() call."
+        },
+        {
+            "question": "What is a major downside of using 'new Function()' compared to other dynamic code execution methods?",
+            "options": [
+                "It cannot access variables from the surrounding scope",
+                "It bypasses CSP restrictions more easily than eval",
+                "It creates a new function with its own lexical scope but shares the global object",
+                "It is always faster than eval because of JIT compilation"
+            ],
+            "correctIndex": 0,
+            "explanation": "Unlike eval(), which runs in the current lexical scope, new Function() creates a function in the global scope only, preventing access to local variables."
+        }
+    ]
+}

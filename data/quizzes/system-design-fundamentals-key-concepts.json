@@ -1,0 +1,95 @@
+{
+    "title": "System Design Fundamentals & Key Concepts",
+    "topic": "SYSTEM_DESIGN",
+    "difficulty": "MEDIUM",
+    "questions": [
+        {
+            "question": "What does the CAP theorem state about distributed systems?",
+            "options": [
+                "A system can only guarantee two out of Consistency, Availability, and Partition tolerance",
+                "A system must choose between SQL and NoSQL",
+                "Consistency is always more important than Availability",
+                "Partition tolerance is optional in modern cloud systems"
+            ],
+            "correctIndex": 0,
+            "explanation": "CAP theorem states that in the presence of network partitions, a distributed system can only provide two of the three guarantees: Consistency, Availability, and Partition Tolerance."
+        },
+        {
+            "question": "Which is the most common strategy to handle high read traffic?",
+            "options": [
+                "Vertical scaling only",
+                "Database sharding",
+                "Read replicas / caching",
+                "Using only write-optimized databases"
+            ],
+            "correctIndex": 2,
+            "explanation": "Read replicas and caching (e.g. Redis) are the most common and effective ways to scale read-heavy workloads without overloading the primary database."
+        },
+        {
+            "question": "What is the purpose of a Load Balancer?",
+            "options": [
+                "To store session data",
+                "To distribute incoming traffic across multiple servers",
+                "To encrypt all requests",
+                "To cache static assets"
+            ],
+            "correctIndex": 1,
+            "explanation": "A load balancer distributes incoming network traffic across multiple backend servers to improve scalability, reliability, and availability."
+        },
+        {
+            "question": "What is eventual consistency?",
+            "options": [
+                "All nodes see the same data at the same time",
+                "Reads always return the most recent write",
+                "Replicas may temporarily be out of sync but will converge eventually",
+                "Data is never replicated"
+            ],
+            "correctIndex": 2,
+            "explanation": "Eventual consistency means that if no new updates are made, all replicas will eventually become consistent. It's a common trade-off for high availability and partition tolerance."
+        },
+        {
+            "question": "Which component is most critical when designing a URL shortening service like TinyURL?",
+            "options": [
+                "Using a relational database for storage",
+                "Implementing a robust collision-resistant short key generation",
+                "Using WebSockets for real-time updates",
+                "Storing full original URLs in the cache"
+            ],
+            "correctIndex": 1,
+            "explanation": "Generating unique, collision-free short keys (base62 encoding, custom ID generation, or hash-based) is one of the core technical challenges in URL shorteners."
+        },
+        {
+            "question": "What is the main benefit of using a Message Queue (e.g., Kafka, RabbitMQ)?",
+            "options": [
+                "Immediate response to users",
+                "Decoupling services and handling asynchronous processing",
+                "Replacing the need for a database",
+                "Storing user session data"
+            ],
+            "correctIndex": 1,
+            "explanation": "Message queues enable asynchronous communication between services, improve fault tolerance, and help handle traffic spikes by decoupling producers and consumers."
+        },
+        {
+            "question": "What is API Rate Limiting primarily used for?",
+            "options": [
+                "Improving API performance",
+                "Preventing abuse and ensuring fair usage",
+                "Encrypting API payloads",
+                "Converting REST APIs to GraphQL"
+            ],
+            "correctIndex": 1,
+            "explanation": "Rate limiting protects APIs from abuse, DDoS attacks, and ensures fair resource allocation among users by restricting the number of requests in a given time window."
+        },
+        {
+            "question": "In microservices architecture, what is the role of a Service Mesh?",
+            "options": [
+                "To manage database connections",
+                "To handle service-to-service communication, observability, and security",
+                "To replace API Gateways",
+                "To store all business logic"
+            ],
+            "correctIndex": 1,
+            "explanation": "A service mesh (e.g. Istio, Linkerd) handles cross-cutting concerns like traffic management, security (mTLS), retries, circuit breaking, and observability between microservices."
+        }
+    ]
+}
