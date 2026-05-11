@@ -485,7 +485,8 @@
         "aiExplain": "AI อธิบาย",
         "aiCodeReview": "AI ตรวจโค้ด",
         "reportAccepted": "การรายงานได้รับการยอมรับ",
-        "adminAdjustment": "การปรับปรุงโดยผู้ดูแล"
+        "adminAdjustment": "การปรับปรุงโดยผู้ดูแล",
+        "hintDiscountUsed": "ใช้ส่วนลดคำใบ้แล้ว"
       }
     }
   },

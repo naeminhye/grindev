@@ -485,7 +485,8 @@
         "aiExplain": "AI 解析",
         "aiCodeReview": "AI 代码评审",
         "reportAccepted": "举报已采纳",
-        "adminAdjustment": "管理员调整"
+        "adminAdjustment": "管理员调整",
+        "hintDiscountUsed": "已使用提示折扣"
       }
     }
   },

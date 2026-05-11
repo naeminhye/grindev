@@ -485,7 +485,8 @@
         "aiExplain": "AI解説",
         "aiCodeReview": "AIコードレビュー",
         "reportAccepted": "通報が承認されました",
-        "adminAdjustment": "管理者調整"
+        "adminAdjustment": "管理者調整",
+        "hintDiscountUsed": "ヒント割引を使用"
       }
     }
   },

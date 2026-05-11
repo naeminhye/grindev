@@ -485,7 +485,8 @@
         "aiExplain": "Explication IA",
         "aiCodeReview": "Revue de code IA",
         "reportAccepted": "Signalement accepté",
-        "adminAdjustment": "Ajustement administrateur"
+        "adminAdjustment": "Ajustement administrateur",
+        "hintDiscountUsed": "Réduction sur les indices utilisée"
       }
     }
   },

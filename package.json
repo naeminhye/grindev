@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
