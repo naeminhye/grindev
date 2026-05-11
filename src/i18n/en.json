@@ -414,25 +414,23 @@
   "shop": {
     "title": "Star Shop",
     "desc": "Spend stars on power-ups.",
-    "available": "Available",
+    "available": "Shop",
     "buy": "Buy",
-    "buying": "Buying...",
-    "confirmLabel": "Confirm",
-    "needMoreStars": "Need more",
+    "needMore": "Need more",
+    "starsCount": "{count} stars",
+    "owned": "You have {count}",
     "items": {
       "streakFreeze": {
         "title": "Streak Freeze",
-        "desc": "Protect your streak for one missed day. Your streak stays intact even if you skip a day.",
-        "stock": "You have {count} freeze(s)"
+        "desc": "Protect your streak for one missed day. Your streak stays intact even if you skip a day."
       },
       "problemSkip": {
         "title": "Problem Skip",
-        "desc": "Not feeling today's problem? Skip it and get a random problem from the full problem bank instead.",
-        "stock": "One-time use"
+        "desc": "Not feeling today's problem? Skip it and get a random problem from the full problem bank instead."
       },
       "hintDiscount": {
-        "title": "Hint Discount",
-        "desc": "Reduce the cost of all hints by 1 star for one problem. Applied automatically on your next problem."
+        "title": "Hint Day Pass",
+        "desc": "50% off all hints for today. Applies to every hint you buy for the rest of the day."
       },
       "doubleStars": {
         "title": "Double Stars",
@@ -443,63 +441,53 @@
         "desc": "Had a bad day? Reset your attempt count on a previously failed problem and try again cleanly."
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "Buy Streak Freeze",
-        "message": "Spend {cost}⭐ for a streak freeze? It will activate automatically the next time you miss a day."
-      },
-      "problemSkip": {
-        "title": "Skip Today's Problem",
-        "message": "Spend {cost}⭐ to get a random problem instead of today's scheduled one?"
-      }
+    "badges": {
+      "mostPopular": "Most popular",
+      "oneTimeUse": "One-time use",
+      "dayPass": "Day pass"
     },
     "messages": {
-      "streakFreezePurchased": "Streak freeze purchased! You now have {count} freeze(s).",
-      "problemSkipped": "Problem skipped! Check Today for your new problem.",
       "itemPurchased": "{item} purchased!"
     },
     "comingSoon": {
       "title": "Coming soon",
       "desc": "More ways to earn and spend stars are coming — including star packs, subscriptions, and exclusive features."
     },
-    "transactions": {
-      "title": "Recent transactions",
-      "reasons": {
-        "solveCleanNormal": "Clean solve (Normal)",
-        "solveCleanHard": "Clean solve (Hard)",
-        "solveHintsNormal": "Solve with hints",
-        "solveHintsHard": "Hard solve with hints",
-        "hintPurchase": "Hint unlocked",
-        "makeupCost": "Make-up attempt",
-        "makeupReward": "Make-up reward",
-        "streakFreezePurchase": "Streak freeze purchased",
-        "problemSkip": "Problem skip",
-        "dailyLoginBonus": "Daily login bonus",
-        "noProblemBonus": "No problem day bonus",
-        "streakMilestone": "Streak milestone bonus",
-        "firstSolveBonus": "First solve bonus",
-        "adminAdjustment": "Admin adjustment",
-        "problemSkipUsed": "Problem skip used",
-        "quizReward": "Quiz reward",
-        "hintDiscountPurchase": "Hint Discount",
-        "doubleStarsPurchase": "Double Stars",
-        "extraAttemptPurchase": "Second Chance",
-        "hintDiscountUsed": "Hint discount used",
-        "aiCodeReview": "AI Code Review",
-        "aiExplain": "AI Problem Explanation"
-      }
+    "history": {
+      "balance": "Current balance",
+      "totalEarned": "Total earned",
+      "totalSpent": "Total spent",
+      "empty": "No transactions yet."
     },
     "date": {
       "today": "Today",
-      "yesterday": "Yesterday",
-      "daysAgo": "{count}d ago"
+      "yesterday": "Yesterday"
     },
-    "starsCount": "{count} stars",
-    "owned": "You have {count}",
-    "needMore": "Need more",
-    "badges": {
-      "mostPopular": "Most popular",
-      "oneTimeUse": "One-time use"
+    "transactions": {
+      "title": "History",
+      "reasons": {
+        "solveCleanNormal": "Clean solve",
+        "solveCleanHard": "Clean solve (Hard)",
+        "solveHintsNormal": "Solved with hints",
+        "solveHintsHard": "Solved with hints (Hard)",
+        "hintPurchase": "Hint purchased",
+        "hintDiscountPurchase": "Hint Day Pass",
+        "makeupCost": "Make-up cost",
+        "makeupReward": "Make-up reward",
+        "streakFreezePurchase": "Streak Freeze",
+        "problemSkip": "Problem Skip",
+        "problemSkipUsed": "Problem skip used",
+        "dailyLoginBonus": "Daily login bonus",
+        "noProblemBonus": "Rest day bonus",
+        "quizReward": "Quiz reward",
+        "doubleStarsPurchase": "Double Stars",
+        "extraAttemptPurchase": "Second Chance",
+        "aiExplain": "AI Explanation",
+        "aiCodeReview": "AI Code Review",
+        "reportAccepted": "Report accepted",
+        "adminAdjustment": "Admin adjustment",
+        "hintDiscountUsed": "Hint discount used"
+      }
     }
   },
   "ai": {

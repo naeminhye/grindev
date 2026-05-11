@@ -17,6 +17,7 @@ type SolveRecord = {
   solvedAt: string;
   code: string;
   problem: {
+    description: string;
     id: string;
     title: string;
     slug: string;
@@ -33,11 +34,19 @@ type QuizAttemptRecord = {
   stars: number;
   isMakeup: boolean;
   solvedAt: string;
+  answers: { questionIndex: number; selectedIndex: number }[];
   quiz: {
     id: string;
     title: string;
     difficulty: Difficulty;
     topic: string;
+    questions: {
+      question: string
+      code?: string
+      options: string[]
+      correctIndex: number
+      explanation?: string
+    }[]
   };
 };
 
@@ -66,6 +75,7 @@ export default function HistoryPage() {
   const [tab, setTab] = useState<Tab>("DSA");
   const [filter, setFilter] = useState<DSAFilter>("ALL");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [expandedQuiz, setExpandedQuiz] = useState<string | null>(null)
 
   useEffect(() => {
     fetch("/api/history")
@@ -304,6 +314,18 @@ export default function HistoryPage() {
                     </button>
                     {isExpanded && (
                       <div className="border-t border-border">
+                        {/* Problem description */}
+                        <div className="px-3 md:px-4 py-3 bg-zinc-950 border-b border-border">
+                          <p className="text-xs font-mono text-zinc-400 leading-relaxed line-clamp-4">
+                            {solve.problem.description}
+                          </p>
+                          <a
+                            href={`/problems/${solve.problem.slug}`}
+                            className="text-[10px] font-mono text-lime-400 hover:underline mt-1 inline-block"
+                          >
+                            View problem →
+                          </a>
+                        </div>
                         <div className="flex sm:hidden items-center gap-2 px-3 py-2 bg-zinc-950 flex-wrap">
                           <DifficultyBadge
                             difficulty={solve.problem.difficulty}
@@ -323,6 +345,7 @@ export default function HistoryPage() {
                             {solve.attempts !== 1 ? "s" : ""}
                           </span>
                         </div>
+
                         <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-zinc-950">
                           <span className="text-xs font-mono text-zinc-500">
                             {(solve.problem.topics ?? [])
@@ -408,66 +431,103 @@ export default function HistoryPage() {
                 {quizAttempts.length !== 1 ? "s" : ""}
               </span>
               {quizAttempts.map((attempt) => {
-                const pct = Math.round((attempt.score / attempt.total) * 100);
+                const pct = Math.round((attempt.score / attempt.total) * 100)
                 const scoreColor =
-                  pct === 100
-                    ? "text-lime-400"
-                    : pct >= 80
-                      ? "text-green-400"
-                      : pct >= 60
-                        ? "text-yellow-400"
-                        : "text-red-400";
+                  pct === 100 ? 'text-lime-400' :
+                    pct >= 80 ? 'text-green-400' :
+                      pct >= 60 ? 'text-yellow-400' : 'text-red-400'
+                const isExpanded = expandedQuiz === attempt.id
+                const answersMap = Object.fromEntries(
+                  (attempt.answers ?? []).map((a) => [a.questionIndex, a.selectedIndex])
+                )
 
                 return (
-                  <div
-                    key={attempt.id}
-                    className="flex items-center gap-3 px-3 md:px-4 py-3 border border-border rounded-md bg-[hsl(var(--surface))]"
-                  >
-                    <div
-                      className={cn(
-                        "w-1.5 h-1.5 rounded-full shrink-0",
-                        attempt.passed ? "bg-lime-400" : "bg-red-400",
-                      )}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-sm font-medium truncate">
-                          {attempt.quiz.title}
-                        </span>
+                  <div key={attempt.id} className="border border-border rounded-md overflow-hidden bg-[hsl(var(--surface))]">
+                    {/* Header row */}
+                    <button
+                      onClick={() => setExpandedQuiz(isExpanded ? null : attempt.id)}
+                      className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 hover:bg-[hsl(var(--surface-raised))]/50 transition-colors text-left"
+                    >
+                      <div className={cn('w-1.5 h-1.5 rounded-full shrink-0', attempt.passed ? 'bg-lime-400' : 'bg-red-400')} />
+                      <span className="font-mono text-sm font-medium flex-1 truncate">{attempt.quiz.title}</span>
+                      <div className="hidden sm:flex items-center gap-2 shrink-0">
                         <DifficultyBadge difficulty={attempt.quiz.difficulty} />
                         <span className="text-xs font-mono text-blue-400 border border-blue-500/20 bg-blue-500/10 px-1.5 py-0.5 rounded">
-                          {TOPIC_LABELS[attempt.quiz.topic] ??
-                            attempt.quiz.topic}
+                          {TOPIC_LABELS[attempt.quiz.topic] ?? attempt.quiz.topic}
                         </span>
-                        {attempt.isMakeup && (
-                          <span className="text-xs font-mono text-purple-400 border border-purple-500/20 bg-purple-500/10 px-1.5 py-0.5 rounded">
-                            make-up
-                          </span>
-                        )}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span
-                        className={cn(
-                          "font-heading font-bold text-sm",
-                          scoreColor,
-                        )}
-                      >
+                      <span className={cn('font-heading font-bold text-sm shrink-0', scoreColor)}>
                         {attempt.score}/{attempt.total}
-                        <span className="text-xs font-mono ml-1">({pct}%)</span>
                       </span>
-                      {attempt.stars > 0 && (
-                        <span className="text-xs font-mono text-yellow-400">
-                          +{attempt.stars}
-                          <i className="ri-star-fill text-yellow-400 text-base ml-1" />
-                        </span>
-                      )}
-                      <span className="text-xs font-mono text-zinc-600">
-                        {formatDate(attempt.solvedAt, locale)}
-                      </span>
-                    </div>
+                      <span className="text-xs font-mono text-zinc-600 shrink-0">{formatDate(attempt.solvedAt, locale)}</span>
+                      <i className={cn('ri-arrow-down-s-line text-zinc-600 transition-transform shrink-0', isExpanded && 'rotate-180')} />
+                    </button>
+
+                    {/* Expanded questions */}
+                    {isExpanded && (
+                      <div className="border-t border-border divide-y divide-border">
+                        {attempt.quiz.questions.map((q, qi) => {
+                          const userAnswer = answersMap[qi] ?? -1
+                          const isCorrect = userAnswer === q.correctIndex
+                          return (
+                            <div key={qi} className="px-3 md:px-4 py-3 space-y-2 bg-zinc-950">
+                              {/* Question */}
+                              <div className="flex items-start gap-2">
+                                <span className={cn(
+                                  'text-xs font-mono shrink-0 mt-0.5',
+                                  isCorrect ? 'text-lime-400' : 'text-red-400'
+                                )}>
+                                  <i className={isCorrect ? 'ri-check-line' : 'ri-close-line'} /> Q{qi + 1}
+                                </span>
+                                <p className="text-xs font-mono text-zinc-300 leading-relaxed">{q.question}</p>
+                              </div>
+
+                              {/* Code block */}
+                              {q.code && (
+                                <pre className="ml-5 p-2 bg-zinc-900 border border-zinc-800 rounded text-[10px] font-mono text-zinc-300 overflow-x-auto">
+                                  {q.code}
+                                </pre>
+                              )}
+
+                              {/* Options */}
+                              <div className="ml-5 space-y-1">
+                                {q.options.map((opt, oi) => {
+                                  const isUserPick = oi === userAnswer
+                                  const isCorrectOpt = oi === q.correctIndex
+                                  return (
+                                    <div
+                                      key={oi}
+                                      className={cn(
+                                        'flex items-center gap-2 px-2 py-1 rounded text-[10px] font-mono',
+                                        isCorrectOpt
+                                          ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20'
+                                          : isUserPick && !isCorrectOpt
+                                            ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                            : 'text-zinc-600',
+                                      )}
+                                    >
+                                      <span className="shrink-0 w-4">{String.fromCharCode(65 + oi)}.</span>
+                                      <span className="flex-1">{opt}</span>
+                                      {isCorrectOpt && <i className="ri-check-line shrink-0" />}
+                                      {isUserPick && !isCorrectOpt && <i className="ri-close-line shrink-0" />}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+
+                              {/* Explanation */}
+                              {!isCorrect && q.explanation && (
+                                <p className="ml-5 text-[10px] font-mono text-zinc-500 leading-relaxed border-l-2 border-zinc-700 pl-2">
+                                  {q.explanation}
+                                </p>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
-                );
+                )
               })}
             </div>
           )}

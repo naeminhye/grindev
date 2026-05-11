@@ -7,6 +7,7 @@ export async function GET() {
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const [solves, quizAttempts] = await Promise.all([
+    // In history route, update the solves query:
     prisma.solve.findMany({
       where: { userId },
       include: {
@@ -17,16 +18,23 @@ export async function GET() {
             slug: true,
             difficulty: true,
             topics: true,
+            description: true
           },
         },
       },
-      orderBy: { solvedAt: "desc" },
+      orderBy: { solvedAt: 'desc' },
     }),
     prisma.quizAttempt.findMany({
       where: { userId },
       include: {
         quiz: {
-          select: { id: true, title: true, difficulty: true, topic: true },
+          select: {
+            id: true,
+            title: true,
+            difficulty: true,
+            topic: true,
+            questions: true,
+          },
         },
       },
       orderBy: { solvedAt: "desc" },

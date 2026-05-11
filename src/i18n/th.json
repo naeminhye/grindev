@@ -413,93 +413,81 @@
   },
   "shop": {
     "title": "ร้านค้าดาว",
-    "desc": "ใช้ดาวซื้อ power-up",
-    "available": "มีให้ซื้อ",
+    "desc": "ใช้ดาวเพื่อซื้อไอเทมเสริม",
+    "available": "ร้านค้า",
     "buy": "ซื้อ",
-    "buying": "กำลังซื้อ...",
-    "confirmLabel": "ยืนยัน",
-    "needMoreStars": "ต้องการ ⭐ เพิ่ม",
+    "needMore": "ดาวไม่พอ",
+    "starsCount": "{count} ดาว",
+    "owned": "มีแล้ว {count}",
     "items": {
       "streakFreeze": {
-        "title": "แช่แข็งสตรีก",
-        "desc": "ปกป้องสตรีกเมื่อพลาดหนึ่งวัน สตรีกของคุณจะยังอยู่แม้ข้ามไปหนึ่งวัน",
-        "stock": "คุณมีการแช่แข็ง {count} ครั้ง"
+        "title": "แช่แข็งสถิติ",
+        "desc": "รักษาสถิติต่อเนื่องแม้จะไม่ได้เข้าใช้งานหนึ่งวัน"
       },
       "problemSkip": {
         "title": "ข้ามโจทย์",
-        "desc": "ไม่อยากทำโจทย์วันนี้? ข้ามแล้วรับโจทย์สุ่มจากคลังโจทย์ทั้งหมดแทน",
-        "stock": "ใช้ได้ครั้งเดียว"
+        "desc": "ข้ามโจทย์วันนี้และสุ่มโจทย์ใหม่จากคลังข้อสอบ"
       },
       "hintDiscount": {
-        "title": "ส่วนลดคำใบ้",
-        "desc": "ลดค่าคำใบ้ทั้งหมดลง 1 ดาวสำหรับหนึ่งโจทย์ ระบบจะใช้อัตโนมัติกับโจทย์ถัดไป"
+        "title": "บัตรลดราคาคำใบ้",
+        "desc": "ลดราคาคำใบ้ทั้งหมด 50% ตลอดทั้งวันนี้"
       },
       "doubleStars": {
         "title": "ดาวสองเท่า",
-        "desc": "รับดาวสองเท่าเมื่อแก้โจทย์ถัดไปสำเร็จ ใช้กับการส่งคำตอบครั้งถัดไปเท่านั้น"
+        "desc": "รับดาวเป็นสองเท่าเมื่อแก้โจทย์ข้อถัดไปสำเร็จ"
       },
       "secondChance": {
-        "title": "โอกาสครั้งที่สอง",
-        "desc": "วันที่ไม่เป็นใจ? รีเซ็ตจำนวนครั้งที่ลองของโจทย์ที่เคยพลาด แล้วลองแก้แบบ clean อีกครั้ง"
+        "title": "โอกาสที่สอง",
+        "desc": "รีเซ็ตจำนวนครั้งที่พยายามในโจทย์ที่เคยล้มเหลว"
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "ซื้อแช่แข็งสตรีก",
-        "message": "ใช้ {cost}⭐ เพื่อซื้อการแช่แข็งสตรีกไหม? จะเปิดใช้อัตโนมัติครั้งถัดไปที่คุณพลาดหนึ่งวัน"
-      },
-      "problemSkip": {
-        "title": "ข้ามโจทย์วันนี้",
-        "message": "ใช้ {cost}⭐ เพื่อรับโจทย์สุ่มแทนโจทย์ที่กำหนดไว้วันนี้ไหม?"
-      }
+    "badges": {
+      "mostPopular": "ยอดนิยม",
+      "oneTimeUse": "ใช้ครั้งเดียว",
+      "dayPass": "บัตรวัน"
     },
     "messages": {
-      "streakFreezePurchased": "ซื้อการแช่แข็งสตรีกแล้ว! ตอนนี้คุณมี {count} ครั้ง",
-      "problemSkipped": "ข้ามโจทย์แล้ว! ไปที่หน้า วันนี้ เพื่อดูโจทย์ใหม่",
       "itemPurchased": "ซื้อ {item} สำเร็จ!"
     },
     "comingSoon": {
       "title": "เร็ว ๆ นี้",
       "desc": "กำลังจะมีวิธีรับและใช้ดาวเพิ่มขึ้น — รวมถึงแพ็กดาว การสมัครสมาชิก และฟีเจอร์พิเศษ"
     },
-    "transactions": {
-      "title": "ธุรกรรมล่าสุด",
-      "reasons": {
-        "solveCleanNormal": "แก้แบบคลีน (ปกติ)",
-        "solveCleanHard": "แก้แบบคลีน (ยาก)",
-        "solveHintsNormal": "แก้โดยใช้คำใบ้",
-        "solveHintsHard": "แก้โหมดยากโดยใช้คำใบ้",
-        "hintPurchase": "ปลดล็อกคำใบ้",
-        "makeupCost": "ลองโจทย์ชดเชย",
-        "makeupReward": "รางวัลโจทย์ชดเชย",
-        "streakFreezePurchase": "ซื้อแช่แข็งสตรีก",
-        "problemSkip": "ข้ามโจทย์",
-        "dailyLoginBonus": "โบนัสล็อกอินรายวัน",
-        "noProblemBonus": "โบนัสวันที่ไม่มีโจทย์",
-        "streakMilestone": "โบนัส milestone สตรีก",
-        "firstSolveBonus": "โบนัสแก้ครั้งแรก",
-        "adminAdjustment": "ปรับโดยแอดมิน",
-        "problemSkipUsed": "ใช้การข้ามโจทย์แล้ว",
-        "quizReward": "รางวัลควิซ",
-        "hintDiscountPurchase": "ส่วนลดคำใบ้",
-        "doubleStarsPurchase": "ดาวสองเท่า",
-        "extraAttemptPurchase": "โอกาสครั้งที่สอง",
-        "hintDiscountUsed": "ใช้ส่วนลดคำใบ้แล้ว",
-        "aiCodeReview": "AI รีวิวโค้ด",
-        "aiExplain": "AI อธิบายโจทย์"
-      }
+    "history": {
+      "balance": "ยอดคงเหลือ",
+      "totalEarned": "ได้รับทั้งหมด",
+      "totalSpent": "ใช้ไปทั้งหมด",
+      "empty": "ไม่มีรายการเดินบัญชี"
     },
     "date": {
       "today": "วันนี้",
-      "yesterday": "เมื่อวาน",
-      "daysAgo": "{count} วันที่แล้ว"
+      "yesterday": "เมื่อวาน"
     },
-    "starsCount": "{count} ดาว",
-    "owned": "คุณมี {count}",
-    "needMore": "ต้องการเพิ่ม",
-    "badges": {
-      "mostPopular": "ยอดนิยม",
-      "oneTimeUse": "ใช้ได้ครั้งเดียว"
+    "transactions": {
+      "title": "ประวัติ",
+      "reasons": {
+        "solveCleanNormal": "แก้โจทย์สำเร็จ",
+        "solveCleanHard": "แก้โจทย์สำเร็จ (ยาก)",
+        "solveHintsNormal": "แก้โจทย์ด้วยคำใบ้",
+        "solveHintsHard": "แก้โจทย์ด้วยคำใบ้ (ยาก)",
+        "hintPurchase": "ซื้อคำใบ้",
+        "hintDiscountPurchase": "ซื้อบัตรลดราคาคำใบ้",
+        "makeupCost": "ค่าธรรมเนียมทำย้อนหลัง",
+        "makeupReward": "รางวัลทำย้อนหลัง",
+        "streakFreezePurchase": "ซื้อแช่แข็งสถิติ",
+        "problemSkip": "ซื้อบัตรข้ามโจทย์",
+        "problemSkipUsed": "ใช้บัตรข้ามโจทย์",
+        "dailyLoginBonus": "โบนัสล็อคอิน",
+        "noProblemBonus": "โบนัสวันหยุด",
+        "quizReward": "รางวัลควิซ",
+        "doubleStarsPurchase": "ซื้อดาวสองเท่า",
+        "extraAttemptPurchase": "ซื้อโอกาสที่สอง",
+        "aiExplain": "AI อธิบาย",
+        "aiCodeReview": "AI ตรวจโค้ด",
+        "reportAccepted": "การรายงานได้รับการยอมรับ",
+        "adminAdjustment": "การปรับปรุงโดยผู้ดูแล",
+        "hintDiscountUsed": "ใช้ส่วนลดคำใบ้แล้ว"
+      }
     }
   },
   "ai": {

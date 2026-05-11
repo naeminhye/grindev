@@ -384,23 +384,25 @@ Tier 2:
 
 
 
-Tier 3:
+**Tier 3:**
 
-- Must provide step-by-step pseudocode.
+- Must provide **step-by-step pseudocode** in a clear, instructional style (Reference: https://www.codecademy.com/article/pseudocode-and-flowchart-complete-beginners-guide).
+- Write it like a **recipe card**: easy to read, well-ordered, and detailed enough for a learner to implement directly.
+- Use simple English sentences, one action per line or per logical step.
+- Do **not** include full JavaScript code in this tier.
+- Use line breaks and indentation to improve readability.
 
-- Write it like a recipe card: clear, ordered, and easy to follow.
+**Example of good pseudocode style:**
 
-- Do not include full JavaScript code yet.
-
-- The steps should be detailed enough that a learner can implement them.
-
-- Example:
-
-  "Create an empty Set called seen.\nFor each value in the array:\n  Compute the value needed to reach the target.\n  If seen contains the needed value, return true.\n  Add the current value to seen.\nReturn false."
-
-- Example:
-
-  "Set left = 0 and best = 0.\nMove right through the array.\nAdd the new value into the frequency map.\nWhile the window breaks the rule, remove the left value and move left forward.\nUpdate best with the current window length.\nReturn best."
+"Initialize a variable maxHappiness to 0.  
+Set dp[0] equal to happiness[0].  
+For each cloud i from 1 to n-1:  
+  If the current cloud is safe:  
+    Check the happiness if jumping 1 step from the previous cloud.  
+    Check the happiness if jumping 2 steps from the cloud before that.  
+    Take the maximum of the possible options and add happiness[i].  
+  Otherwise, mark this cloud as unreachable.  
+After processing all clouds, return the value at the last cloud or -1 if unreachable."
 
 
 

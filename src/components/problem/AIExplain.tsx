@@ -17,29 +17,41 @@ interface AIExplainProps {
 type AIState = "idle" | "confirm" | "loading" | "done" | "error";
 
 const CACHE_PREFIX = "grindev_ai_explain_";
-const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-function getCached(problemId: string): string | null {
-  try {
-    const raw = localStorage.getItem(CACHE_PREFIX + problemId);
-    if (!raw) return null;
-    const { explanation, savedAt } = JSON.parse(raw);
-    if (Date.now() - savedAt > CACHE_TTL_MS) {
-      localStorage.removeItem(CACHE_PREFIX + problemId);
-      return null;
-    }
-    return explanation;
-  } catch {
-    return null;
-  }
+function cacheKey(userId: string, problemId: string) {
+  return `grindev_ai_explain_${userId}_${problemId}`
 }
 
-function setCache(problemId: string, explanation: string) {
+function getCached(userId: string | null, problemId: string): string | null {
+  if (!userId) return null
+  try {
+    const raw = localStorage.getItem(cacheKey(userId, problemId))
+    if (!raw) return null
+    const { explanation, savedAt } = JSON.parse(raw)
+    if (Date.now() - savedAt > CACHE_TTL_MS) {
+      localStorage.removeItem(cacheKey(userId, problemId))
+      return null
+    }
+    return explanation
+  } catch { return null }
+}
+
+function setCache(userId: string | null, problemId: string, explanation: string) {
+  if (!userId) return
   try {
     localStorage.setItem(
-      CACHE_PREFIX + problemId,
-      JSON.stringify({ explanation, savedAt: Date.now() }),
-    );
+      cacheKey(userId, problemId),
+      JSON.stringify({ explanation, savedAt: Date.now() })
+    )
+  } catch { }
+}
+
+function clearCacheForUser(userId: string) {
+  try {
+    const prefix = `grindev_ai_explain_${userId}_`
+    const keys = Object.keys(localStorage).filter((k) => k.startsWith(prefix))
+    keys.forEach((k) => localStorage.removeItem(k))
   } catch { }
 }
 
@@ -106,9 +118,10 @@ export function AIExplain({
   const [open, setOpen] = useState(false);
   const [fromCache, setFromCache] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
-    const cached = getCached(problem.id);
+    const cached = getCached(userId, problem.id);
     if (cached) {
       setExplanation(cached);
       setState("done");
@@ -116,11 +129,19 @@ export function AIExplain({
     }
   }, [problem.id]);
 
+  useEffect(() => {
+    // Fetch session to get user ID for scoped cache key
+    fetch('/api/auth/session')
+      .then((r) => r.json())
+      .then((s) => setUserId(s?.user?.id ?? 'anonymous'))
+      .catch(() => setUserId('anonymous'))
+  }, []);
+
   function handleClick() {
     setOpen(true);
     if (state === "done" && explanation) return; // already loaded
 
-    const cached = getCached(problem.id);
+    const cached = getCached(userId, problem.id);
     if (cached) {
       setExplanation(cached);
       setState("done");
@@ -164,7 +185,7 @@ export function AIExplain({
       setExplanation(data.explanation);
       setState("done");
       setFromCache(false);
-      setCache(problem.id, data.explanation);
+      setCache(userId, problem.id, data.explanation);
       if (data.starsRemaining !== undefined) onStarsChange(data.starsRemaining);
     } catch {
       setErrorMsg(t("ai.errorFallback"));
@@ -175,6 +196,7 @@ export function AIExplain({
   async function handleRetry() {
     try {
       localStorage.removeItem(CACHE_PREFIX + problem.id);
+      localStorage.removeItem(cacheKey(userId as string, problem.id));
     } catch { }
     setState("confirm");
     setExplanation("");

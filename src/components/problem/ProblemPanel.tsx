@@ -174,6 +174,10 @@ export function ProblemPanel({
             tier.cost - ((hintDiscount ?? 0 > 0) ? 1 : 0),
           );
 
+          // When hintDiscount > 0, show the 50% off price with strikethrough:
+          // Original cost: hint.cost → display: Math.ceil(hint.cost * 0.5) with strikethrough on hint.cost
+          const discountedCost = (hintDiscount ?? 0 > 0) ? Math.ceil(tier.cost * 0.5) : tier.cost
+
           return (
             <div
               key={tier.tier}
@@ -217,15 +221,18 @@ export function ProblemPanel({
                     ) : (
                       <>
                         <i className="ri-star-fill" />
-                        {hintDiscount ? (
-                          <>
-                            <span className="line-through text-zinc-600 text-[10px]">
-                              {tier.cost}
-                            </span>
-                            <span>{effectiveCost}</span>
-                          </>
+                        {(hintDiscount ?? 0 > 0) ? (
+                          <div className="flex items-center gap-1">
+                            <span className="line-through text-zinc-600 text-[10px]">{tier.cost}</span>
+                            <span className="text-yellow-400 font-bold">{discountedCost}</span>
+                            <i className="ri-star-fill text-yellow-400 text-[10px]" />
+                            <span className="text-[9px] text-yellow-600">50% off</span>
+                          </div>
                         ) : (
-                          tier.cost
+                          <span className="flex items-center gap-0.5">
+                            <i className="ri-star-fill text-yellow-400 text-[10px]" />
+                            {tier.cost}
+                          </span>
                         )}
                       </>
                     )}

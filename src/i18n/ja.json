@@ -413,93 +413,81 @@
   },
   "shop": {
     "title": "スターショップ",
-    "desc": "星を使ってパワーアップを購入できます。",
-    "available": "利用可能",
+    "desc": "スターを使ってパワーアップを購入しましょう。",
+    "available": "ショップ",
     "buy": "購入",
-    "buying": "購入中...",
-    "confirmLabel": "確認",
-    "needMoreStars": "⭐ が足りません",
+    "needMore": "不足",
+    "starsCount": "{count} スター",
+    "owned": "{count} 個所有",
     "items": {
       "streakFreeze": {
         "title": "連続記録フリーズ",
-        "desc": "1日見逃しても連続記録を守ります。1日休んでも記録は維持されます。",
-        "stock": "{count}個のフリーズを所持"
+        "desc": "1日休んでも連続記録を維持できます。"
       },
       "problemSkip": {
-        "title": "問題スキップ",
-        "desc": "今日の問題の気分じゃない？スキップして全問題バンクからランダムな問題を受け取りましょう。",
-        "stock": "1回限り"
+        "title": "問題をスキップ",
+        "desc": "今日の問題を別のランダムな問題に変更します。"
       },
       "hintDiscount": {
-        "title": "ヒント割引",
-        "desc": "1問のすべてのヒント費用を1スター減らします。次の問題に自動で適用されます。"
+        "title": "ヒント1日券",
+        "desc": "今日一日のヒント料金がすべて50%OFFになります。"
       },
       "doubleStars": {
-        "title": "スター2倍",
-        "desc": "次に解いた問題で獲得スターが2倍になります。次の提出にのみ適用されます。"
+        "title": "ダブルスター",
+        "desc": "次の正解時に獲得できるスターが2倍になります。"
       },
       "secondChance": {
         "title": "セカンドチャンス",
-        "desc": "うまくいかない日もあります。以前失敗した問題の試行回数をリセットし、もう一度クリーンに挑戦できます。"
+        "desc": "失敗した問題の解答回数をリセットして再挑戦できます。"
       }
     },
-    "confirm": {
-      "streakFreeze": {
-        "title": "連続記録フリーズを購入",
-        "message": "{cost}⭐で連続記録フリーズを購入しますか？次に1日見逃したとき自動で有効になります。"
-      },
-      "problemSkip": {
-        "title": "今日の問題をスキップ",
-        "message": "{cost}⭐を使って、今日の予定問題の代わりにランダムな問題を受け取りますか？"
-      }
+    "badges": {
+      "mostPopular": "人気",
+      "oneTimeUse": "使い切り",
+      "dayPass": "1日券"
     },
     "messages": {
-      "streakFreezePurchased": "連続記録フリーズを購入しました！現在{count}個所持しています。",
-      "problemSkipped": "問題をスキップしました！今日ページで新しい問題を確認してください。",
-      "itemPurchased": "{item}を購入しました！"
+      "itemPurchased": "{item} を購入しました！"
     },
     "comingSoon": {
       "title": "近日公開",
       "desc": "星を獲得・使用する新しい方法が登場予定です — スターパック、サブスクリプション、限定機能など。"
     },
-    "transactions": {
-      "title": "最近の取引",
-      "reasons": {
-        "solveCleanNormal": "クリーン解答（通常）",
-        "solveCleanHard": "クリーン解答（ハード）",
-        "solveHintsNormal": "ヒント使用解答",
-        "solveHintsHard": "ハードでヒント使用解答",
-        "hintPurchase": "ヒント解除",
-        "makeupCost": "補習挑戦",
-        "makeupReward": "補習報酬",
-        "streakFreezePurchase": "連続記録フリーズ購入",
-        "problemSkip": "問題スキップ",
-        "dailyLoginBonus": "デイリーログインボーナス",
-        "noProblemBonus": "問題なし日のボーナス",
-        "streakMilestone": "連続記録マイルストーンボーナス",
-        "firstSolveBonus": "初回解答ボーナス",
-        "adminAdjustment": "管理者調整",
-        "problemSkipUsed": "問題スキップを使用",
-        "quizReward": "クイズ報酬",
-        "hintDiscountPurchase": "ヒント割引",
-        "doubleStarsPurchase": "スター2倍",
-        "extraAttemptPurchase": "セカンドチャンス",
-        "hintDiscountUsed": "ヒント割引を使用",
-        "aiCodeReview": "AIコードレビュー",
-        "aiExplain": "AI問題解説"
-      }
+    "history": {
+      "balance": "現在の残高",
+      "totalEarned": "獲得合計",
+      "totalSpent": "利用合計",
+      "empty": "履歴はありません。"
     },
     "date": {
       "today": "今日",
-      "yesterday": "昨日",
-      "daysAgo": "{count}日前"
+      "yesterday": "昨日"
     },
-    "starsCount": "{count}スター",
-    "owned": "{count}個所持",
-    "needMore": "スター不足",
-    "badges": {
-      "mostPopular": "人気",
-      "oneTimeUse": "1回限り"
+    "transactions": {
+      "title": "履歴",
+      "reasons": {
+        "solveCleanNormal": "正解",
+        "solveCleanHard": "正解 (難問)",
+        "solveHintsNormal": "ヒントを使用して正解",
+        "solveHintsHard": "ヒントを使用して正解 (難問)",
+        "hintPurchase": "ヒント購入",
+        "hintDiscountPurchase": "ヒント1日券購入",
+        "makeupCost": "メイクアップ費用",
+        "makeupReward": "メイクアップ報酬",
+        "streakFreezePurchase": "フリーズ購入",
+        "problemSkip": "スキップ購入",
+        "problemSkipUsed": "スキップ使用",
+        "dailyLoginBonus": "ログインボーナス",
+        "noProblemBonus": "休息日ボーナス",
+        "quizReward": "クイズ報酬",
+        "doubleStarsPurchase": "ダブルスター購入",
+        "extraAttemptPurchase": "再挑戦購入",
+        "aiExplain": "AI解説",
+        "aiCodeReview": "AIコードレビュー",
+        "reportAccepted": "通報が承認されました",
+        "adminAdjustment": "管理者調整",
+        "hintDiscountUsed": "ヒント割引を使用"
+      }
     }
   },
   "ai": {

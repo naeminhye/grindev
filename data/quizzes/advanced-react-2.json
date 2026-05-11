@@ -1,0 +1,97 @@
+{
+    "title": "Advanced React: Rendering, Hooks & Performance",
+    "topic": "REACT",
+    "difficulty": "HARD",
+    "questions": [
+        {
+            "question": "What is the correct order of execution for these effects in a functional component?",
+            "code": "useEffect(() => {}, []);\nuseLayoutEffect(() => {}, []);\nuseEffect(() => {}, [count]);",
+            "options": [
+                "Layout → Normal (mount) → Normal (update)",
+                "Normal (mount) → Layout → Normal (update)",
+                "Layout (mount) → Normal (mount) → Normal (update)",
+                "All effects run synchronously before browser paint"
+            ],
+            "correctIndex": 0,
+            "explanation": "useLayoutEffect runs synchronously after DOM mutations but before browser paint. useEffect runs asynchronously after paint. On updates, the dependency array determines re-execution."
+        },
+        {
+            "question": "When does React skip re-rendering a memoized component with React.memo()?",
+            "options": [
+                "Only when props are strictly equal using Object.is",
+                "When props shallow compare returns true",
+                "Always if the component is pure",
+                "Only when parent re-renders with the same props reference"
+            ],
+            "correctIndex": 1,
+            "explanation": "React.memo performs a shallow comparison of props. If the comparison returns true (props are shallowly equal), the component skips rendering."
+        },
+        {
+            "question": "What happens when you call setState during the render phase in React 18+?",
+            "options": [
+                "It throws an error",
+                "It is automatically batched and applied after render",
+                "It causes an infinite render loop",
+                "It works normally but warns in development"
+            ],
+            "correctIndex": 1,
+            "explanation": "In React 18, state updates during render are automatically batched and applied after the current render completes, preventing infinite loops in many cases."
+        },
+        {
+            "question": "Which statement about the React Fiber reconciler is true?",
+            "options": [
+                "Fiber allows synchronous rendering of the entire tree",
+                "Each Fiber node represents a component instance and can be paused/resumed",
+                "Reconciliation always traverses the full component tree",
+                "Fiber replaced the stack reconciler primarily for better memory usage"
+            ],
+            "correctIndex": 1,
+            "explanation": "The Fiber architecture breaks rendering work into units (Fibers) that can be paused, resumed, and prioritized, enabling features like concurrent rendering."
+        },
+        {
+            "question": "What is a common cause of 'stale closure' problems with useEffect?",
+            "code": "",
+            "options": [
+                "Using primitive values in the dependency array",
+                "Referencing state or props that changed since the effect was created",
+                "Using useCallback without proper dependencies",
+                "Returning a cleanup function from the effect"
+            ],
+            "correctIndex": 1,
+            "explanation": "Stale closures occur when an effect captures variables from the render scope in which it was defined. If those values change later, the effect still holds the old values unless properly listed in the dependency array."
+        },
+        {
+            "question": "How does React handle keys when rendering arrays of components?",
+            "options": [
+                "Keys are only required for performance, not correctness",
+                "Keys help React identify which items have changed, been added, or removed",
+                "Using index as key is always safe for static lists",
+                "Keys must be globally unique across the entire application"
+            ],
+            "correctIndex": 1,
+            "explanation": "Keys help React track element identity across renders, enabling efficient DOM updates by reusing, moving, or deleting specific elements."
+        },
+        {
+            "question": "What is the main benefit of using startTransition over a regular state update?",
+            "options": [
+                "It makes the state update completely synchronous",
+                "It allows marking non-urgent updates that can be interrupted",
+                "It automatically batches updates across multiple components",
+                "It reduces the number of re-renders"
+            ],
+            "correctIndex": 1,
+            "explanation": "startTransition marks updates as low priority / interruptible, allowing React to keep the UI responsive by prioritizing urgent updates (like user input) over transitions."
+        },
+        {
+            "question": "In which situation does React StrictMode intentionally double-invoke effects and renders?",
+            "options": [
+                "Only in production builds",
+                "In development to detect side effects and unsafe lifecycle usage",
+                "Only for components using legacy class components",
+                "Whenever a component re-renders due to parent updates"
+            ],
+            "correctIndex": 1,
+            "explanation": "In development, StrictMode intentionally mounts components twice to help developers find impure effects and other issues that might break in future concurrent features."
+        }
+    ]
+}

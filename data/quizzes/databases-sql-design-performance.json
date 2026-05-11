@@ -1,0 +1,96 @@
+{
+    "title": "Databases: SQL, Design & Performance",
+    "topic": "DATABASES",
+    "difficulty": "MEDIUM",
+    "questions": [
+        {
+            "question": "What is the main purpose of database normalization?",
+            "options": [
+                "To improve write performance by duplicating data",
+                "To reduce data redundancy and improve data integrity",
+                "To make queries run faster by using more joins",
+                "To increase storage space usage"
+            ],
+            "correctIndex": 1,
+            "explanation": "Normalization organizes tables to minimize redundancy and dependency, reducing anomalies during data modification while maintaining integrity."
+        },
+        {
+            "question": "What does a LEFT JOIN return?",
+            "options": [
+                "Only rows where there is a match in both tables",
+                "All rows from the left table and matching rows from the right table",
+                "All rows from both tables",
+                "Only rows from the right table"
+            ],
+            "correctIndex": 1,
+            "explanation": "LEFT JOIN returns all rows from the left table and the matched rows from the right table. Unmatched rows from the left get NULLs for right table columns."
+        },
+        {
+            "question": "Which index type is most suitable for columns with high cardinality?",
+            "options": [
+                "Hash index",
+                "B-tree index",
+                "Bitmap index",
+                "Full-text index"
+            ],
+            "correctIndex": 1,
+            "explanation": "B-tree indexes perform well on high-cardinality columns (many unique values) and support range queries, sorting, and equality checks efficiently."
+        },
+        {
+            "question": "What is a transaction in databases?",
+            "options": [
+                "A single SQL statement",
+                "A group of operations that must all succeed or fail together",
+                "A backup of the database",
+                "An index optimization process"
+            ],
+            "correctIndex": 1,
+            "explanation": "A transaction is a logical unit of work containing one or more SQL statements that must be executed atomically (ACID properties)."
+        },
+        {
+            "question": "What will this SQL query return?",
+            "code": "SELECT COUNT(*) FROM orders\nWHERE customer_id = 5\nGROUP BY status;",
+            "options": [
+                "The total number of orders for customer 5",
+                "The number of orders for each status of customer 5",
+                "All orders for customer 5",
+                "The distinct statuses for customer 5"
+            ],
+            "correctIndex": 1,
+            "explanation": "GROUP BY status combined with COUNT(*) will return one row per unique status with the count of orders for that status for the given customer."
+        },
+        {
+            "question": "Which normal form requires that every non-key attribute is fully functionally dependent on the primary key?",
+            "options": [
+                "1NF",
+                "2NF",
+                "3NF",
+                "BCNF"
+            ],
+            "correctIndex": 1,
+            "explanation": "Second Normal Form (2NF) requires the table to be in 1NF and every non-prime attribute to be fully functionally dependent on the entire primary key (no partial dependency)."
+        },
+        {
+            "question": "What is a key difference between SQL and NoSQL databases?",
+            "options": [
+                "SQL databases are always faster",
+                "NoSQL databases do not support transactions",
+                "SQL databases usually enforce strict schema while many NoSQL are schema-flexible",
+                "NoSQL databases cannot scale horizontally"
+            ],
+            "correctIndex": 2,
+            "explanation": "Relational (SQL) databases enforce a rigid schema. Many NoSQL databases (document, key-value, etc.) offer flexible schemas, making them suitable for rapidly evolving data models."
+        },
+        {
+            "question": "What problem does an index help solve?",
+            "options": [
+                "Data duplication",
+                "Slow SELECT queries on large tables with WHERE clauses",
+                "ACID compliance",
+                "Network latency between application and database"
+            ],
+            "correctIndex": 1,
+            "explanation": "Indexes create data structures (usually B-trees) that allow the database engine to find rows much faster instead of doing full table scans."
+        }
+    ]
+}

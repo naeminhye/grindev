@@ -33,6 +33,23 @@ export async function GET(req: Request) {
 
   const today = getTodayInTz(timeZone);
 
+  const [hintPassesToday, hintPassesUsedToday] = await Promise.all([
+    prisma.starTransaction.count({
+      where: {
+        userId,
+        reason: 'HINT_DISCOUNT_PURCHASE',
+        createdAt: { gte: new Date(today + 'T00:00:00') },
+      },
+    }),
+    prisma.starTransaction.count({
+      where: {
+        userId,
+        reason: 'HINT_DISCOUNT_USED' as any,
+        createdAt: { gte: new Date(today + 'T00:00:00') },
+      },
+    }),
+  ])
+
   // Daily login bonus
   const loginBonus = await checkDailyLoginBonus(userId, today);
 
@@ -80,6 +97,7 @@ export async function GET(req: Request) {
         lastSolvedAt: freshUser?.lastSolvedAt?.toISOString() ?? null,
         streakFreezeCount: freshUser?.streakFreezeCount ?? 0,
       },
+      hintDiscount: hintPassesToday > hintPassesUsedToday ? 1 : 0, // (1 = active pass, 0 = no pass — same field, same ProblemPanel behavior)
     });
   }
 
