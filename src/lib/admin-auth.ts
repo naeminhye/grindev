@@ -6,7 +6,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
   .map((e) => e.trim().toLowerCase());
 
 export async function getAdminUserId(): Promise<
-  { userId: string; error?: never } | { userId?: never; error: NextResponse }
+  { userId: string; email: string; error?: never } | { userId?: never; email?: never; error: NextResponse }
 > {
   const session = await auth();
   if (!session?.user?.id) {
@@ -20,7 +20,7 @@ export async function getAdminUserId(): Promise<
       error: NextResponse.json({ error: "Forbidden" }, { status: 403 }),
     };
   }
-  return { userId: session.user.id };
+  return { userId: session.user.id, email };
 }
 
 export function isAdmin(email: string): boolean {

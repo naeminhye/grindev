@@ -81,13 +81,13 @@ export default function DSATodayPage() {
   const timeLimitSeconds = daily
     ? (daily.hardTimeLimits?.[daily.problem.difficulty] ??
       TIME_LIMIT_DEFAULTS[
-        `HARD_TIME_${daily.problem.difficulty}` as keyof typeof TIME_LIMIT_DEFAULTS
+      `HARD_TIME_${daily.problem.difficulty}` as keyof typeof TIME_LIMIT_DEFAULTS
       ])
     : TIME_LIMIT_DEFAULTS.HARD_TIME_EASY;
 
   const timer = useTimer({
     initialSeconds: TIME_LIMIT_DEFAULTS.HARD_TIME_EASY, // placeholder — reset below when daily loads
-    onExpire: () => {},
+    onExpire: () => { },
   });
 
   // Reset to correct duration once daily data and time limits are known
@@ -365,9 +365,6 @@ export default function DSATodayPage() {
             <p className="text-xs font-mono text-zinc-400 mt-0.5">
               {t("today.streakDays", { count: currentStreak })}
             </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <StarCount stars={stars} />
           </div>
         </div>
 

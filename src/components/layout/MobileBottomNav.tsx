@@ -14,17 +14,6 @@ export function MobileBottomNav() {
     ...menu,
     label: t(menu.labelKey),
   }));
-  // [
-  //   { href: "/today", icon: "ri-code-s-slash-line", label: t("nav.today") },
-  //   { href: "/history", icon: "ri-history-line", label: t("nav.history") },
-  //   {
-  //     href: "/profile",
-  //     icon: "ri-bar-chart-box-line",
-  //     label: t("nav.profile"),
-  //   },
-  //   { href: "/shop", icon: "ri-settings-3-line", label: t("nav.shop") },
-  //   { href: "/settings", icon: "ri-settings-3-line", label: t("nav.settings") },
-  // ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-border bg-background/95 backdrop-blur-sm">

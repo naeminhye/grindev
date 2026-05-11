@@ -20,7 +20,8 @@ const ADMIN_MENUS = [
     icon: "ri-calendar-check-line",
   },
   { href: "/admin/config", label: "Config", icon: "ri-settings-3-line" },
-  { href: '/admin/reports', label: 'Reports', icon: 'ri-flag-line' }
+  { href: '/admin/reports', label: 'Reports', icon: 'ri-flag-line' },
+  { href: '/admin/star-codes', label: 'Star Codes', icon: 'ri-coupon-line' }
 ] as const;
 
 export function AdminNav() {
@@ -84,7 +85,7 @@ export function AdminNav() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen((o) => !o)}
-          className="md:hidden flex items-center justify-center w-9 h-9 rounded-md border border-border text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface-raised))] transition-colors"
+          className="lg:hidden flex items-center justify-center w-9 h-9 rounded-md border border-border text-zinc-400 hover:text-foreground hover:bg-[hsl(var(--surface-raised))] transition-colors"
         >
           <i
             className={
@@ -104,7 +105,7 @@ export function AdminNav() {
           />
           {/* Menu panel */}
           <div className="fixed top-14 left-0 right-0 z-50 md:hidden bg-background border-b border-border shadow-lg">
-            <div className="px-4 py-3 space-y-1">
+            <div className="px-4 py-3 space-y-1 bg-[hsl(var(--surface))]">
               {ADMIN_MENUS.map((menu) => {
                 const isActive =
                   menu.href === "/admin"

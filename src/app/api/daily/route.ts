@@ -6,7 +6,7 @@ import { getAuthUserId } from "@/lib/auth-helper";
 import { pickBestDifficulty } from "@/lib/daily-logic";
 import { checkDailyLoginBonus } from "@/lib/stars";
 import type { DailyResponse, HintData, StarterCode } from "@/types";
-import type { Difficulty } from "@prisma/client";
+import { StarTransactionReason, type Difficulty } from "@prisma/client";
 import { parseProblemExamples } from "@/lib/problem-utils";
 import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
 
@@ -37,14 +37,14 @@ export async function GET(req: Request) {
     prisma.starTransaction.count({
       where: {
         userId,
-        reason: 'HINT_DISCOUNT_PURCHASE',
+        reason: StarTransactionReason.HINT_DISCOUNT_PURCHASE,
         createdAt: { gte: new Date(today + 'T00:00:00') },
       },
     }),
     prisma.starTransaction.count({
       where: {
         userId,
-        reason: 'HINT_DISCOUNT_USED' as any,
+        reason: StarTransactionReason.HINT_DISCOUNT_USED,
         createdAt: { gte: new Date(today + 'T00:00:00') },
       },
     }),

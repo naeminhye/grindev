@@ -19,7 +19,7 @@ export function StarCount({ stars, className }: StarCountProps) {
       <span className="font-heading font-bold tabular-nums text-yellow-400">
         {stars}
       </span>
-      <span className="text-xs text-zinc-500">stars</span>
+      <span className="hidden md:inline text-xs text-zinc-500">stars</span>
     </div>
   );
 }
