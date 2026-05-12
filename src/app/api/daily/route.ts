@@ -246,6 +246,8 @@ export async function GET(req: Request) {
       topics: problem.topics,
       functionName: problem.functionName,
       starterCode: problem.starterCode as StarterCode,
+      sourceName: problem.sourceName,
+      sourceUrl: problem.sourceUrl,
     },
     difficultyNote,
     alreadySolved: !!anySolvedToday,

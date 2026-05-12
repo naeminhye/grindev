@@ -1,7 +1,7 @@
 // pnpm prisma generate # generates the Prisma Client based on the schema
 // pnpm prisma db push # pushes the schema to the database (creates tables, etc.)
-// npx tsx prisma/seed.ts   # re-seeds if seed.ts is modified
-// npx tsx --env-file=.env.local prisma/seed.ts # re-seeds with .env.local (e.g. for different DB connection string)
+// pnpm tsx prisma/seed.ts   # re-seeds if seed.ts is modified
+// pnpm tsx --env-file=.env.local prisma/seed.ts # re-seeds with .env.local (e.g. for different DB connection string)
 
 generator client {
   provider = "prisma-client-js"
@@ -48,25 +48,27 @@ model StarTransaction {
 }
 
 model Problem {
-  id           String     @id @default(cuid())
-  title        String
-  slug         String     @unique
-  description  String
-  examples     Json       @default("[]")
-  constraints  String     @default("")
-  difficulty   Difficulty
-  topics       Topic[]
-  functionName String     @default("solution")
-  starterCode  Json
-  testCases    Json
-  hints        Json
-  deletedAt    DateTime?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
+  id            String     @id @default(cuid())
+  title         String
+  slug          String     @unique
+  description   String
+  examples      Json       @default("[]")
+  constraints   String     @default("")
+  difficulty    Difficulty
+  topics        Topic[]
+  functionName  String     @default("solution")
+  starterCode   Json
+  testCases     Json
+  hints         Json
+  deletedAt     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+  sourceName    String?
+  sourceUrl     String?
 
-  dailySlots  DailyProblem[]
-  solves      Solve[]
-  reports     ProblemReport[]
+  dailySlots    DailyProblem[]
+  solves        Solve[]
+  reports       ProblemReport[]
 }
 
 model DailyProblem {

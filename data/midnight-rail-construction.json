@@ -1,0 +1,90 @@
+[
+    {
+        "title": "Midnight Rail Construction",
+        "slug": "midnight-rail-construction",
+        "functionName": "midnightRailConstruction",
+        "sourceName": "프로그래머스 스쿨",
+        "sourceUrl": "https://school.programmers.co.kr/learn/courses/30/lessons/468381",
+        "difficulty": "HARD",
+        "topics": [
+            "BACKTRACKING",
+            "DFS_BFS",
+            "DYNAMIC_PROGRAMMING",
+            "BIT_MANIPULATION"
+        ],
+        "description": "Late at night, you are building a magical railway in an old town. The town is represented as an `n × m` grid. You must place different types of rails so that a train starting from the top-left corner `(1,1)` can reach the bottom-right corner `(n,m)`.\n\nThere are 7 types of rails. Some cells already have rails, some are obstacles, and some are empty (you can choose to place a rail or leave them empty).\n\n**Rules:**\n- The train must pass through **every rail** you place at least once.\n- The special `#` shaped rail (Type 3) must be connected in all 4 directions.\n- The train starts moving **right** from `(1,1)` and must end at `(n,m)`.\n\nReturn the number of valid ways to place rails. If impossible, return `0`.\n\n**Note:** Due to small grid size, expect exponential solutions with memoization.",
+        "examples": [
+            {
+                "input": "`grid = [[1,0,-1],[0,0,7],[0,0,2]]`",
+                "output": "`2`",
+                "explanation": "There are 2 different valid ways to complete the railway."
+            },
+            {
+                "input": "`grid = [[1,0,0,0,0,-1,-1],[-1,0,0,1,0,0,1]]`",
+                "output": "`2`",
+                "explanation": "Only 2 configurations satisfy all conditions."
+            },
+            {
+                "input": "`grid = [[1,7],[0,2]]`",
+                "output": "`1`",
+                "explanation": "The railway is almost complete, only one valid way."
+            }
+        ],
+        "constraints": "- 2 ≤ n, m ≤ 8\n- n × m ≤ 20\n- `grid[i][j]` is -1 (obstacle), 0 (empty), or 1~7 (rail type)\n- `grid[0][0] = 1`\n- `grid[n-1][m-1]` is either 1 or 2\n- Expected time complexity: Optimized backtracking with state compression",
+        "starterCode": {
+            "JAVASCRIPT": "function midnightRailConstruction(grid) {\n  // Write your solution here.\n  return 0;\n}",
+            "TYPESCRIPT": "function midnightRailConstruction(grid: number[][]): number {\n  // Write your solution here.\n  return 0;\n}",
+            "PYTHON": "from typing import List\ndef midnight_rail_construction(grid: List[List[int]]) -> int:\n    # Write your solution here.\n    return 0",
+            "CPP": "#include <vector>\nusing namespace std;\n\nint midnightRailConstruction(vector<vector<int>>& grid) {\n    // Write your solution here.\n    return 0;\n}",
+            "JAVA": "class Solution {\n    public int midnightRailConstruction(int[][] grid) {\n        // Write your solution here.\n        return 0;\n    }\n}"
+        },
+        "testCases": [
+            {
+                "input": "[[1,0,-1],[0,0,7],[0,0,2]]",
+                "expected": "2"
+            },
+            {
+                "input": "[[1,0,0,0,0,-1,-1],[-1,0,0,1,0,0,1]]",
+                "expected": "2"
+            },
+            {
+                "input": "[[1,0,0,0,0],[0,0,3,0,2],[0,0,0,0,2]]",
+                "expected": "4"
+            },
+            {
+                "input": "[[1,7],[0,2]]",
+                "expected": "1"
+            },
+            {
+                "input": "[[1,-1,0,0],[-1,0,0,0],[0,0,0,-1],[0,0,-1,1]]",
+                "expected": "0"
+            },
+            {
+                "input": "[[1,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,1]]",
+                "expected": "644"
+            }
+        ],
+        "hints": [
+            {
+                "tier": 1,
+                "cost": 1,
+                "content": "Since the grid is small (n*m ≤ 20), you can think of each empty cell as a decision point — place a rail or leave it empty."
+            },
+            {
+                "tier": 2,
+                "cost": 3,
+                "content": "Pattern: Backtracking with state. You need to track current position, direction, and which rails have been visited."
+            },
+            {
+                "tier": 3,
+                "cost": 7,
+                "content": "BEGIN Build Railway\n    Start from (0,0) moving right.\n    At each empty cell, try placing each possible rail type (or none).\n    Keep track of visited rails using bitmask.\n    Ensure Type 3 rail has all 4 connections.\n    When reaching end, check if all placed rails were visited.\nEND"
+            },
+            {
+                "tier": 4,
+                "cost": 15,
+                "content": "Full working solution in JavaScript:\n\nfunction midnightRailConstruction(grid) {\n  // Complex backtracking + bitmask DP solution\n  // Track position, direction, and bitmask of used rails\n\n  // Time complexity: O(4^(empty cells) * states) with memoization\n  // Space complexity: O(n * m * direction * 2^rail_count)\n}\n\nTime complexity: Exponential with memoization (acceptable due to n*m ≤ 20)\nSpace complexity: Moderate"
+            }
+        ]
+    }
+]

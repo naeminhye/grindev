@@ -2,6 +2,8 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { HINT_TIERS } from "@/lib/hints";
@@ -22,6 +24,26 @@ interface ProblemPanelProps {
   explainCost?: number;
   onStarsChange: (stars: number) => void;
 }
+
+const markdownComponents = {
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement> & { node?: unknown }) => {
+    const { src, alt, ...rest } = props;
+
+    if (typeof src !== "string") return null;
+
+    return (
+      <img
+        src={src}
+        alt={alt || "Problem illustration"}
+        className="max-w-full h-auto rounded-md border border-zinc-800 my-4 cursor-pointer hover:border-zinc-600 transition-colors"
+        loading="lazy"
+        onClick={() => window.open(src, "_blank", "noopener,noreferrer")}
+        title="Click to view full size"
+        {...rest}
+      />
+    );
+  },
+};
 
 export function ProblemPanel({
   problem,
@@ -61,12 +83,32 @@ export function ProblemPanel({
           </div>
         )}
         <ProblemMarkdownSection>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={markdownComponents}>
             {problem.description}
           </ReactMarkdown>
         </ProblemMarkdownSection>
 
-        <div className="px-4 md:px-6 pb-3 flex justify-end">
+        <div className={`flex flex-col md:flex-row gap-3 ${problem?.sourceName ? 'justify-between' : 'justify-end'}`}>
+          {problem.sourceName && (
+            <div className="text-xs text-zinc-500 flex items-center gap-1.5">
+              <i className="ri-links-line text-zinc-600" />
+              {problem.sourceUrl ? (
+                <a
+                  href={problem.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-zinc-300 underline underline-offset-2 transition-colors"
+                >
+                  {problem.sourceName}
+                </a>
+              ) : (
+                <span>{problem.sourceName}</span>
+              )}
+            </div>
+          )}
           <ReportProblemButton problemId={problem.id} problemTitle={problem.title} />
         </div>
 
@@ -94,7 +136,10 @@ export function ProblemPanel({
                       {t("problem.input")}
                     </p>
                     <ProblemMarkdownSection compact>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                        components={markdownComponents}>
                         {example.input}
                       </ReactMarkdown>
                     </ProblemMarkdownSection>
@@ -104,7 +149,10 @@ export function ProblemPanel({
                       {t("problem.output")}
                     </p>
                     <ProblemMarkdownSection compact>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                        components={markdownComponents}>
                         {example.output}
                       </ReactMarkdown>
                     </ProblemMarkdownSection>
@@ -115,7 +163,10 @@ export function ProblemPanel({
                         {t("problem.explanation")}
                       </p>
                       <ProblemMarkdownSection compact>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm, remarkMath]}
+                          rehypePlugins={[rehypeKatex]}
+                          components={markdownComponents}>
                           {example.explanation}
                         </ReactMarkdown>
                       </ProblemMarkdownSection>
@@ -136,7 +187,10 @@ export function ProblemPanel({
               </h2>
             </div>
             <ProblemMarkdownSection>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={markdownComponents}>
                 {problem.constraints}
               </ReactMarkdown>
             </ProblemMarkdownSection>
@@ -225,12 +279,12 @@ export function ProblemPanel({
                           <div className="flex items-center gap-1">
                             <span className="line-through text-zinc-600 text-[10px]">{tier.cost}</span>
                             <span className="text-yellow-400 font-bold">{discountedCost}</span>
-                            <i className="ri-star-fill text-yellow-400 text-[10px]" />
+                            {/* <i className="ri-star-fill text-yellow-400 text-[10px]" /> */}
                             <span className="text-[9px] text-yellow-600">50% off</span>
                           </div>
                         ) : (
                           <span className="flex items-center gap-0.5">
-                            <i className="ri-star-fill text-yellow-400 text-[10px]" />
+                            {/* <i className="ri-star-fill text-yellow-400 text-[10px]" /> */}
                             {tier.cost}
                           </span>
                         )}

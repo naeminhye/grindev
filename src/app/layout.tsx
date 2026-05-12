@@ -44,6 +44,11 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <SessionProvider>

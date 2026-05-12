@@ -31,6 +31,14 @@ const schema = z.object({
   hints: z.array(
     z.object({ tier: z.number(), cost: z.number(), content: z.string() }),
   ),
+  sourceName: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.string().max(255).nullable().default(null)
+  ),
+  sourceUrl: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.string().url().max(500).nullable().default(null)
+  ),
 });
 
 export async function GET(req: Request) {
