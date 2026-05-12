@@ -22,6 +22,10 @@ Each problem must follow this exact structure:
 
   "functionName": "string",
 
+  "sourceName": "string",
+
+  "sourceUrl": "string",
+
   "difficulty": "EASY | MEDIUM | HARD",
 
   "topics": ["TOPIC_ENUM"],
@@ -392,18 +396,21 @@ Tier 2:
 - Do **not** include full JavaScript code in this tier.
 - Use line breaks and indentation to improve readability.
 
-**Example of good pseudocode style:**
+Here’s a simple example of pseudocode for finding the largest number in a list:
 
-"Initialize a variable maxHappiness to 0.  
-Set dp[0] equal to happiness[0].  
-For each cloud i from 1 to n-1:  
-  If the current cloud is safe:  
-    Check the happiness if jumping 1 step from the previous cloud.  
-    Check the happiness if jumping 2 steps from the cloud before that.  
-    Take the maximum of the possible options and add happiness[i].  
-  Otherwise, mark this cloud as unreachable.  
-After processing all clouds, return the value at the last cloud or -1 if unreachable."
+BEGIN 
 
+SET largest_number to 0 
+
+FOR each number in the list: 
+
+IF number is greater than largest_number: 
+
+SET largest_number to number 
+
+DISPLAY largest_number 
+
+END 
 
 
 Tier 4:

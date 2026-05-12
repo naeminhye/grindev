@@ -27,6 +27,8 @@ export default async function EditProblemPage({
     starterCode: problem.starterCode as any,
     testCases: problem.testCases as any,
     hints: problem.hints as any,
+    sourceName: problem.sourceName,
+    sourceUrl: problem.sourceUrl
   };
 
   return <ProblemForm initial={initial} problemId={problem.id} />;

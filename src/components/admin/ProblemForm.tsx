@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { LANGUAGES } from "@/lib/languages";
@@ -58,6 +60,8 @@ export type ProblemFormData = {
   starterCode: Record<string, string>;
   testCases: { input: string; expected: string }[];
   hints: { tier: number; cost: number; content: string }[];
+  sourceName: string | null;
+  sourceUrl: string | null;
 };
 
 interface ProblemFormProps {
@@ -89,6 +93,8 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
       Object.fromEntries(LANGUAGES.map((l) => [l.id, ""])),
     testCases: initial?.testCases ?? [{ input: "", expected: "" }],
     hints: initial?.hints ?? HINT_DEFAULTS,
+    sourceName: initial?.sourceName ?? null,
+    sourceUrl: initial?.sourceUrl ?? null,
   });
 
   const [activeTab, setActiveTab] = useState<
@@ -223,6 +229,18 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
       setActiveTab("tests");
       return;
     }
+
+    // Validate URL nếu có nhập
+    if (form.sourceUrl && form.sourceUrl.trim() !== "") {
+      try {
+        new URL(form.sourceUrl);
+      } catch {
+        setError("Source URL is not a valid URL.");
+        setActiveTab("basic");
+        return;
+      }
+    }
+
     setError("");
     setSaving(true);
 
@@ -231,10 +249,17 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
         ? `/api/admin/problems/${problemId}`
         : "/api/admin/problems";
       const method = isEditing ? "PATCH" : "POST";
+
+      const payload = {
+        ...form,
+        sourceName: form.sourceName?.trim() || null,
+        sourceUrl: form.sourceUrl?.trim() || null,
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       // Guard against empty response
@@ -378,6 +403,31 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
                     setForm((f) => ({ ...f, slug: e.target.value }))
                   }
                   placeholder="two-sum"
+                  className={inputCls}
+                />
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Source Name">
+                <input
+                  value={form.sourceName ?? ""}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, sourceName: e.target.value || null }))
+                  }
+                  placeholder="LeetCode, GeeksforGeeks..."
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Source URL">
+                <input
+                  value={form.sourceUrl ?? ""}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, sourceUrl: e.target.value || null }))
+                  }
+                  placeholder="https://leetcode.com/problems/..."
+                  type="url"
                   className={inputCls}
                 />
               </Field>
@@ -567,6 +617,8 @@ export default function ProblemForm({ initial, problemId }: ProblemFormProps) {
                   description={form.description}
                   examples={form.examples}
                   constraints={form.constraints}
+                  sourceName={form.sourceName}
+                  sourceUrl={form.sourceUrl}
                 />
               </div>
             </div>
@@ -782,14 +834,36 @@ function Field({
   );
 }
 
+const adminPreviewComponents = {
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement> & { node?: unknown }) => {
+    const { src, alt, ...rest } = props;
+
+    if (typeof src !== "string") return null;
+
+    return (
+      <img
+        src={src}
+        alt={alt || "Problem illustration"}
+        className="max-w-full h-auto rounded-md border border-zinc-800 my-4"
+        loading="lazy"
+        {...rest}
+      />
+    );
+  },
+};
+
 function ProblemMarkdownPreview({
   description,
   examples,
   constraints,
+  sourceName,
+  sourceUrl,
 }: {
   description: string;
   examples: ProblemExample[];
   constraints: string;
+  sourceName?: string | null;
+  sourceUrl?: string | null;
 }) {
   return (
     <article
@@ -805,11 +879,34 @@ function ProblemMarkdownPreview({
         prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2"
     >
       {description ? (
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex]}
+          components={adminPreviewComponents}>
+          {description}
+        </ReactMarkdown>
       ) : (
         <p className="text-zinc-600">
           Problem description preview will appear here.
         </p>
+      )}
+
+      {sourceName && (
+        <div className="not-prose text-xs text-zinc-500 flex items-center gap-1.5 mt-2 border-t border-zinc-800 pt-2">
+          <i className="ri-links-line text-zinc-600" />
+          {sourceUrl ? (
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-300 underline underline-offset-2 transition-colors"
+            >
+              {sourceName}
+            </a>
+          ) : (
+            <span>{sourceName}</span>
+          )}
+        </div>
       )}
 
       {examples.length > 0 && (
@@ -824,7 +921,9 @@ function ProblemMarkdownPreview({
                 <strong>Input:</strong>
               </p>
               {example.input ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]} components={adminPreviewComponents}>
                   {example.input}
                 </ReactMarkdown>
               ) : (
@@ -835,7 +934,9 @@ function ProblemMarkdownPreview({
                 <strong>Output:</strong>
               </p>
               {example.output ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]} components={adminPreviewComponents}>
                   {example.output}
                 </ReactMarkdown>
               ) : (
@@ -847,7 +948,9 @@ function ProblemMarkdownPreview({
                   <p>
                     <strong>Explanation:</strong>
                   </p>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]} components={adminPreviewComponents}>
                     {example.explanation}
                   </ReactMarkdown>
                 </>
@@ -860,7 +963,9 @@ function ProblemMarkdownPreview({
       {constraints && (
         <>
           <h2>Constraints</h2>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]} components={adminPreviewComponents}>
             {constraints}
           </ReactMarkdown>
         </>

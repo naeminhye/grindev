@@ -3,23 +3,37 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const REASONS = [
+const FULL_REASONS = [
     { id: 'WRONG_TEST_CASE', label: 'Wrong test case', icon: 'ri-bug-line' },
     { id: 'WRONG_EXPECTED_OUTPUT', label: 'Wrong expected output', icon: 'ri-error-warning-line' },
     { id: 'UNCLEAR_DESCRIPTION', label: 'Unclear description', icon: 'ri-question-line' },
     { id: 'BROKEN_STARTER_CODE', label: 'Broken starter code', icon: 'ri-code-s-slash-line' },
     { id: 'OTHER', label: 'Other', icon: 'ri-more-line' },
-] as const
+] as const;
 
-type Reason = typeof REASONS[number]['id']
+type ReportReasonId =
+    | 'WRONG_TEST_CASE'
+    | 'WRONG_EXPECTED_OUTPUT'
+    | 'UNCLEAR_DESCRIPTION'
+    | 'BROKEN_STARTER_CODE'
+    | 'OTHER';
+
+export type ReportReasonItem = {
+    id: ReportReasonId;
+    label: string;
+    icon: string;
+};
+
+type Reason = typeof FULL_REASONS[number]['id']
 type State = 'idle' | 'open' | 'submitting' | 'done' | 'error'
 
 interface ReportProblemButtonProps {
     problemId: string
     problemTitle: string
+    reasons?: ReportReasonItem[];
 }
 
-export function ReportProblemButton({ problemId, problemTitle }: ReportProblemButtonProps) {
+export function ReportProblemButton({ problemId, problemTitle, reasons }: ReportProblemButtonProps) {
     const [state, setState] = useState<State>('idle')
     const [reason, setReason] = useState<Reason | null>(null)
     const [description, setDescription] = useState('')
@@ -122,7 +136,7 @@ export function ReportProblemButton({ problemId, problemTitle }: ReportProblemBu
                                             What's the issue? <span className="text-red-400">*</span>
                                         </label>
                                         <div className="space-y-1.5">
-                                            {REASONS.map((r) => (
+                                            {(reasons || FULL_REASONS).map((r) => (
                                                 <button
                                                     key={r.id}
                                                     onClick={() => setReason(r.id)}

@@ -32,6 +32,14 @@ const schema = z.object({
       z.object({ tier: z.number(), cost: z.number(), content: z.string() }),
     )
     .optional(),
+  sourceName: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.string().max(255).nullable().default(null)
+  ),
+  sourceUrl: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.string().url().max(500).nullable().default(null)
+  ),
 });
 
 export async function PATCH(

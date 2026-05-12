@@ -22,6 +22,12 @@ export type TestCase = {
 
 export type StarterCode = Record<Language, string>;
 
+export interface ProblemHint {
+  tier: number;
+  cost: number;
+  content: string | null;
+}
+
 export type PublicProblem = {
   id: string;
   title: string;
@@ -33,6 +39,8 @@ export type PublicProblem = {
   topics: Topic[];
   functionName: string;
   starterCode: StarterCode;
+  sourceName?: string | null;
+  sourceUrl?: string | null;
 };
 
 export type TestResult = {

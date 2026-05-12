@@ -1,0 +1,80 @@
+[
+    {
+        "title": "Midnight Snowman Workshop",
+        "slug": "midnight-snowman-workshop",
+        "functionName": "midnightSnowmanWorkshop",
+        "difficulty": "HARD",
+        "topics": [
+            "DFS_BFS",
+            "GRAPHS",
+            "HASH_MAP"
+        ],
+        "sourceName": "프로그래머스 스쿨",
+        "sourceUrl": "https://school.programmers.co.kr/learn/courses/30/lessons/389631",
+        "description": "Late at night, heavy snow has fallen in the park. The park is represented as an `n × m` grid. There are exactly two snowballs (`o`) placed on the grid.\n\nYou can roll each snowball up, down, left, or right to adjacent non-wall cells. Rolling over a snow cell (`.`) increases the snowball's size by 1. \n\nWhen one snowball is rolled onto the other:\n- The moving snowball becomes the **head**.\n- The stationary snowball becomes the **body**.\n- A snowman is successfully formed **only if** the head's size is **less than or equal to** the body's size. Otherwise, it collapses.\n\nYour task is to find **how many distinct snowman types** (different pairs of (body size, head size)) you can create by different rolling strategies.\n\n**Note:** Position doesn't matter — only the final sizes of head and body matter.",
+        "examples": [
+            {
+                "input": "`grid = [\"#.##.\", \"#o###\", \".o.#.\", \"#..#.\"]`",
+                "output": "`12`",
+                "explanation": "There are 12 distinct possible (body, head) size combinations."
+            },
+            {
+                "input": "`grid = [\"##..\", \"##..\", \"##.#\", \".oo#\", \"####\"]`",
+                "output": "`15`",
+                "explanation": "15 different snowman size combinations are possible."
+            }
+        ],
+        "constraints": "- 1 ≤ n, m ≤ 500\n- `grid[i][j]` is one of `'.'`, `'o'`, or `'#'`\n- Exactly two `'o'` appear in the grid\n- It is guaranteed that at least one snowman can be made\n- Expected time complexity: Better than O(n² × m²)",
+        "starterCode": {
+            "JAVASCRIPT": "function midnightSnowmanWorkshop(grid) {\n  // Write your solution here.\n  return 0;\n}",
+            "TYPESCRIPT": "function midnightSnowmanWorkshop(grid: string[]): number {\n  // Write your solution here.\n  return 0;\n}",
+            "PYTHON": "from typing import List\ndef midnight_snowman_workshop(grid: List[str]) -> int:\n    # Write your solution here.\n    return 0",
+            "CPP": "#include <vector>\n#include <string>\nusing namespace std;\n\nint midnightSnowmanWorkshop(vector<string>& grid) {\n    // Write your solution here.\n    return 0;\n}",
+            "JAVA": "class Solution {\n    public int midnightSnowmanWorkshop(String[] grid) {\n        // Write your solution here.\n        return 0;\n    }\n}"
+        },
+        "testCases": [
+            {
+                "input": "[\"#.##.\",\"#o###\",\".o.#.\",\"#..#.\"]",
+                "expected": "12"
+            },
+            {
+                "input": "[\"##..\",\"##..\",\"##.#\",\".oo#\",\"####\"]",
+                "expected": "15"
+            },
+            {
+                "input": "[\"###########\",\"...o.....o.\",\"###########\"]",
+                "expected": "20"
+            },
+            {
+                "input": "[\"###########\",\"......o..o.\",\"###########\"]",
+                "expected": "25"
+            },
+            {
+                "input": "[\".o.\",\".#.\",\".o.\"]",
+                "expected": "1"
+            }
+        ],
+        "hints": [
+            {
+                "tier": 1,
+                "cost": 1,
+                "content": "First, find the positions of the two snowballs. Each snowball can move around the grid and collect snow ('.') to grow."
+            },
+            {
+                "tier": 2,
+                "cost": 3,
+                "content": "Pattern: For each snowball, compute all possible sizes it can reach when it is the moving one (head) or the stationary one (body)."
+            },
+            {
+                "tier": 3,
+                "cost": 7,
+                "content": "BEGIN Calculate Possible Sizes\n    Find both snowball starting positions.\n    For each snowball, explore all reachable cells and count maximum snow it can collect.\n    Consider that one snowball stays still while the other moves to it.\n    Collect all possible (body_size, head_size) pairs where head_size <= body_size.\n    Use a Set to store unique pairs.\nEND"
+            },
+            {
+                "tier": 4,
+                "cost": 15,
+                "content": "Full working solution in JavaScript:\n\nfunction midnightSnowmanWorkshop(grid) {\n  // Implementation using BFS from both snowball positions\n  // Track reachable snow collection amounts for head and body roles\n  \n  // Time complexity: O(n * m)\n  // Space complexity: O(n * m)\n}\n\nTime complexity: O(n * m)\nSpace complexity: O(n * m)"
+            }
+        ]
+    }
+]
