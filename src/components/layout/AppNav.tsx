@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import { HelpButton } from "@/components/ui/HelpButton";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { StreakBadge } from "@/components/streak/StreakBadge";
-import { StarCount } from '@/components/ui/StarCount'
-import { RedeemCodeButton } from '@/components/ui/RedeemCodeButton'
+import { StarCount } from "@/components/ui/StarCount";
+import { RedeemCodeButton } from "@/components/ui/RedeemCodeButton";
 import { useI18n } from "@/lib/i18n";
 import { APP_MENUS } from "@/lib/menus";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
+import { useTheme } from "@/lib/theme";
 
 interface AppNavProps {
   userName: string;
@@ -20,40 +21,60 @@ interface AppNavProps {
   stars: number;
 }
 
-export function AppNav({ userName, userImage, streak, isAdmin, stars }: AppNavProps) {
+export function AppNav({
+  userName,
+  userImage,
+  streak,
+  isAdmin,
+  stars,
+}: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
-  const [currentStars, setCurrentStars] = useState(stars)
+  const [currentStars, setCurrentStars] = useState(stars);
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => { setCurrentStars(stars) }, [stars])
+  useEffect(() => {
+    setCurrentStars(stars);
+  }, [stars]);
 
   async function handleSignOut() {
     // Clear AI explain cache for this user before signing out
-    const session = await fetch('/api/auth/session').then(r => r.json())
+    const session = await fetch("/api/auth/session").then((r) => r.json());
     if (session?.user?.id) {
-      const prefix = `grindev_ai_explain_${session.user.id}_`
+      const prefix = `grindev_ai_explain_${session.user.id}_`;
       Object.keys(localStorage)
-        .filter(k => k.startsWith(prefix))
-        .forEach(k => localStorage.removeItem(k))
+        .filter((k) => k.startsWith(prefix))
+        .forEach((k) => localStorage.removeItem(k));
     }
-    await signOut({ callbackUrl: '/sign-in' })
+    await signOut({ callbackUrl: "/sign-in" });
   }
 
   return (
     <nav className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0">
       <div className="flex items-center gap-4 md:gap-6">
-        <Link
-          href="/today"
-          className="font-heading font-bold text-base tracking-tight"
-        >
-          Grin<span className="text-lime-400">Dev</span>
+        <Link href="/today" className="flex items-center gap-2 shrink-0">
+          <img
+            src={
+              theme === "light"
+                ? "/lockup-horizontal-light.svg"
+                : "/lockup-horizontal-dark.svg"
+            }
+            alt="GrinDev"
+            className="h-8 w-auto"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          {/* Fallback text shown if SVG fails to load */}
+          <span className="font-heading font-bold text-base tracking-tight sr-only">
+            Grin<span className="text-lime-400">Dev</span>
+          </span>
         </Link>
-
         <div className="hidden md:flex items-center gap-1">
           {APP_MENUS.map((menu) => (
             <Link

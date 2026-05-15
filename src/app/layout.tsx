@@ -14,8 +14,22 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GrinDev — Sharpen Your Edge",
-  description: "One DSA problem a day. No copy-paste. No Googling.",
+  title: "GrinDev",
+  description: "Daily DSA & Quiz practice",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: "/favicon-192.png",
+  },
+  openGraph: {
+    title: "GrinDev",
+    description: "Daily DSA & Quiz practice",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
