@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200.52 270.00" width="200.52" height="270.00">
+  <g transform="translate(-9.06 -23.68) scale(0.9102)">
+  <path d="M19.11 133.12 Q10.24 128.00 19.11 122.88 L178.01 31.14 Q186.88 26.02 186.88 36.26 L186.88 219.74 Q186.88 229.98 178.01 224.86 Z" fill="#f4f4ef"></path>
+  <path d="M133.12 236.89 Q128.00 245.76 122.88 236.89 L31.14 77.99 Q26.02 69.12 36.26 69.12 L219.74 69.12 Q229.98 69.12 224.86 77.99 Z" fill="#7a8088"></path>
+  <path d="M213.34 122.88 Q222.21 128.00 213.34 133.12 L89.76 204.47 Q80.90 209.59 80.90 199.35 L80.90 56.65 Q80.90 46.41 89.76 51.53 Z" fill="rgb(163, 230, 53)"></path>
+  </g>
+  <text x="100.26" y="258.00" font-family="JetBrains Mono, ui-monospace, Menlo, Consolas, monospace" font-weight="700" font-size="56" letter-spacing="-2.5" fill="#f4f4ef" text-anchor="middle">grin<tspan fill="rgb(163, 230, 53)">dev</tspan></text>
+</svg>

@@ -3,9 +3,11 @@
 import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 export default function SignInPage() {
   const { t } = useI18n();
+  const { theme } = useTheme();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -13,16 +15,22 @@ export default function SignInPage() {
 
       <div className="relative space-y-6 md:space-y-8 text-center w-full max-w-sm">
         <div>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight">
-            Grin<span className="text-lime-400">Dev</span>
-          </h1>
-          <p className="text-sm text-zinc-500 font-mono mt-2">
+          <img
+            src={
+              theme === "light"
+                ? "/lockup-stacked-light.svg"
+                : "/lockup-stacked-dark.svg"
+            }
+            alt="GrinDev"
+            className="h-32 w-auto mx-auto"
+          />
+          <p className="text-sm text-foreground font-mono mt-2">
             {t("auth.tagline")}
           </p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-6 md:p-8 space-y-3">
-          <p className="font-mono text-sm text-zinc-400 mb-5">
+        <div className="bg-[hsl(var(--surface))] border border-zinc-800 rounded-md p-6 md:p-8 space-y-3">
+          <p className="font-mono text-sm text-foreground mb-5">
             {t("auth.signInToContinue")}
           </p>
 
@@ -30,9 +38,9 @@ export default function SignInPage() {
             onClick={() => signIn("google", { callbackUrl: "/today" })}
             className={cn(
               "w-full flex items-center justify-center gap-3",
-              "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
-              "font-mono text-sm text-zinc-200",
+              "px-4 py-3 rounded border border-border cursor-pointer",
+              "bg-[hsl(var(--surface))] hover:bg-[hsl(var(--surface-raised))] active:scale-95 transition-all",
+              "font-mono text-sm text-foreground",
             )}
           >
             <svg
@@ -65,9 +73,9 @@ export default function SignInPage() {
             onClick={() => signIn("github", { callbackUrl: "/today" })}
             className={cn(
               "w-full flex items-center justify-center gap-3",
-              "px-4 py-3 rounded border border-zinc-700",
-              "bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all",
-              "font-mono text-sm text-zinc-200",
+              "px-4 py-3 rounded border border-border cursor-pointer",
+              "bg-[hsl(var(--surface))] hover:bg-[hsl(var(--surface-raised))] active:scale-95 transition-all",
+              "font-mono text-sm text-foreground",
             )}
           >
             <svg

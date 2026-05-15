@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { LandingLanguageSelector } from "@/components/landing/LandingLanguageSelector";
+import { useTheme } from "@/lib/theme";
 
 const FEATURES = [
   { icon: "ri-fire-line", key: "dailyStreaks" },
@@ -45,14 +46,28 @@ const HINT_TIERS = [
 
 export function LandingContent() {
   const { t } = useI18n();
+  const { theme } = useTheme();
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--border)/0.25)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border)/0.25)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-lime-400/5 blur-3xl pointer-events-none" />
 
-      <nav className="relative z-[100] flex items-center justify-between gap-3 px-4 sm:px-6 md:px-10 py-5 border-b border-border">
-        <span className="font-heading font-bold text-lg tracking-tight">
+      <nav className="relative z-[100] flex items-center justify-between gap-3 px-4 sm:px-6 md:px-10 py-3 border-b border-border">
+        <img
+          src={
+            theme === "light"
+              ? "/lockup-horizontal-light.svg"
+              : "/lockup-horizontal-dark.svg"
+          }
+          alt="GrinDev"
+          className="h-12 w-auto"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+        {/* Fallback text shown if SVG fails to load */}
+        <span className="font-heading font-bold text-lg tracking-tight sr-only">
           Grin<span className="text-lime-400">Dev</span>
         </span>
         <div className="flex items-center gap-2 md:gap-3 min-w-0">
