@@ -5,7 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { runCode } from "@/lib/piston";
 import { calculateStarDelta } from "@/lib/challenge";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { getTodayInTz, recalculateStreak } from "@/lib/streak";
+import {
+  getTodayInTz,
+  resolveAtRiskAfterMakeup,
+  recalculateStreak,
+} from "@/lib/streak";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
 import { STAR_REWARD_DEFAULTS } from "@/lib/game-config";
@@ -196,17 +200,21 @@ export async function POST(
   ) as StarRewardConfig;
 
   let starDelta = 0;
+  let streakResult: Awaited<ReturnType<typeof recalculateStreak>> | undefined;
 
   if (allPassed) {
-    await recalculateStreak(userId, timeZone);
+    // Always update lastSolvedAt first
+    await prisma.user.update({
+      where: { id: userId },
+      data: { lastSolvedAt: new Date() },
+    });
+
+    await resolveAtRiskAfterMakeup(userId, date, timeZone);
+    streakResult = await recalculateStreak(userId, timeZone);
 
     const makeupRewardGivenToday = user?.lastMakeupDate === today;
 
-    // Deduct makeup cost first
-    const costDeducted = Math.max(0, (user?.stars ?? 0) - starCost);
-
     if (!makeupRewardGivenToday) {
-      // First makeup solve today — give reward on top
       const reward = calculateStarDelta({
         mode: challengeMode,
         passed: true,
@@ -215,19 +223,27 @@ export async function POST(
         difficulty: problem.difficulty,
         config: starConfig,
       });
-      starDelta = reward - starCost; // net: reward minus cost
+      starDelta = reward - starCost;
       const newStars = Math.max(0, (user?.stars ?? 0) + starDelta);
       await prisma.user.update({
         where: { id: userId },
         data: { stars: newStars, lastMakeupDate: today },
       });
+      await prisma.starTransaction.create({
+        data: { userId, amount: -starCost, reason: "MAKEUP_COST" },
+      });
+      await prisma.starTransaction.create({
+        data: { userId, amount: reward, reason: "MAKEUP_REWARD" },
+      });
     } else {
-      // Subsequent makeup today — only deduct cost, no reward
       starDelta = -starCost;
       const newStars = Math.max(0, (user?.stars ?? 0) - starCost);
       await prisma.user.update({
         where: { id: userId },
         data: { stars: newStars },
+      });
+      await prisma.starTransaction.create({
+        data: { userId, amount: -starCost, reason: "MAKEUP_COST" },
       });
     }
   }
@@ -236,6 +252,7 @@ export async function POST(
     passed: allPassed,
     results,
     starDelta,
+    streak: streakResult,
   } satisfies SolveResponse);
 }
 

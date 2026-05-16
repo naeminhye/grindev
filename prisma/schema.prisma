@@ -25,15 +25,21 @@ model User {
   preferredDifficulty PreferredDifficulty @default(ANY)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @default(now()) @updatedAt
+  skipRequestedAt     DateTime?
+  skippedProblemId    String?
+  streakStatus        StreakStatus        @default(ACTIVE)
+  streakAtRiskSince   DateTime? // timestamp when AT_RISK was triggered
+  streakAtRiskDate    String? // YYYY-MM-DD — the missed day being protected
+  frozenStreakValue   Int                 @default(0) // streak value preserved when FROZEN
 
   solves             Solve[]
   hintPurchases      HintPurchase[]
   starTransactions   StarTransaction[]
   quizAttempts       QuizAttempt[]
-  practiceMode       PracticeMode      @default(DSA)
+  practiceMode       PracticeMode         @default(DSA)
   preferredQuizTopic QuizTopic?
-  problemReports    ProblemReport[]
-  codeRedemptions   StarCodeRedemption[]
+  problemReports     ProblemReport[]
+  codeRedemptions    StarCodeRedemption[]
 }
 
 model StarTransaction {
@@ -48,27 +54,27 @@ model StarTransaction {
 }
 
 model Problem {
-  id            String     @id @default(cuid())
-  title         String
-  slug          String     @unique
-  description   String
-  examples      Json       @default("[]")
-  constraints   String     @default("")
-  difficulty    Difficulty
-  topics        Topic[]
-  functionName  String     @default("solution")
-  starterCode   Json
-  testCases     Json
-  hints         Json
-  deletedAt     DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now()) @updatedAt
-  sourceName    String?
-  sourceUrl     String?
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  description  String
+  examples     Json       @default("[]")
+  constraints  String     @default("")
+  difficulty   Difficulty
+  topics       Topic[]
+  functionName String     @default("solution")
+  starterCode  Json
+  testCases    Json
+  hints        Json
+  deletedAt    DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  sourceName   String?
+  sourceUrl    String?
 
-  dailySlots    DailyProblem[]
-  solves        Solve[]
-  reports       ProblemReport[]
+  dailySlots DailyProblem[]
+  solves     Solve[]
+  reports    ProblemReport[]
 }
 
 model DailyProblem {
@@ -183,6 +189,7 @@ enum StarTransactionReason {
   MAKEUP_COST
   MAKEUP_REWARD
   STREAK_FREEZE_PURCHASE
+  STREAK_FREEZE_USED
   PROBLEM_SKIP
   PROBLEM_SKIP_USED
   DAILY_LOGIN_BONUS
@@ -199,6 +206,13 @@ enum StarTransactionReason {
   AI_CODE_REVIEW
   REPORT_ACCEPTED
   STAR_CODE_REDEMPTION
+}
+
+enum StreakStatus {
+  ACTIVE // streak is current and intact
+  AT_RISK // missed a day, awaiting user decision (shield or make-up)
+  FROZEN // shield applied, must solve today to thaw
+  BROKEN // missed too long ago, will reset on next solve
 }
 
 /////////////////////////////////////////////////////
@@ -295,13 +309,13 @@ enum ReportStatus {
 }
 
 model StarCode {
-  id          String    @id @default(cuid())
-  code        String    @unique
+  id          String               @id @default(cuid())
+  code        String               @unique
   stars       Int
   maxUses     Int?
-  usedCount   Int       @default(0)
+  usedCount   Int                  @default(0)
   expiresAt   DateTime?
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime             @default(now())
   createdBy   String
   note        String?
   redemptions StarCodeRedemption[]
@@ -312,7 +326,8 @@ model StarCodeRedemption {
   codeId     String
   userId     String
   redeemedAt DateTime @default(now())
-  code StarCode @relation(fields: [codeId], references: [id])
-  user User    @relation(fields: [userId], references: [id])
+  code       StarCode @relation(fields: [codeId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
   @@unique([codeId, userId])
 }

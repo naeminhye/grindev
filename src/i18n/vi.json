@@ -307,16 +307,33 @@
           }
         ]
       },
+
       "streaks": {
-        "title": "Chuỗi ngày",
+        "title": "Chuỗi & Khiên",
         "items": [
           {
-            "label": "Giữ chuỗi",
-            "desc": "Giải ít nhất một bài mỗi ngày để duy trì chuỗi. Nếu bỏ lỡ một ngày, chuỗi sẽ về 0."
+            "label": "Chuỗi hàng ngày",
+            "desc": "Chuỗi của bạn tăng thêm 1 mỗi ngày bạn giải quyết một vấn đề. Bỏ lỡ một ngày sẽ đưa chuỗi của bạn vào trạng thái Nguy hiểm — bạn có một khoảng thời gian ngắn để khôi phục nó."
           },
           {
-            "label": "Bộ đếm chuỗi",
-            "desc": "Hiển thị ở góc trên bên phải. Chuỗi dài nhất của bạn được lưu trên trang Hồ sơ."
+            "label": "Trạng thái chuỗi",
+            "desc": "Hoạt động (🔥 xanh chanh) — đã giải hôm nay. Nguy hiểm (🔥 cam, nhấp nháy) — đã bỏ lỡ hôm qua, hãy hành động nhanh. Đóng băng (❄️ xanh lơ) — đã dùng khiên, hãy giải hôm nay để rã đông. Đứt quãng — chuỗi đặt lại về 0."
+          },
+          {
+            "label": "Khiên Chuỗi là gì?",
+            "desc": "Mua từ Cửa hàng Sao với giá 20★. Khi chuỗi của bạn chuyển sang Nguy hiểm, một cửa sổ pop-up sẽ hỏi bạn có muốn áp dụng nó không. Khiên giữ nguyên giá trị chuỗi cho ngày bị bỏ lỡ."
+          },
+          {
+            "label": "Sau khi áp dụng khiên",
+            "desc": "Chuỗi của bạn chuyển sang trạng thái Đóng băng — số lượng được giữ nguyên nhưng hiển thị kèm ❄️. Bạn vẫn phải giải bài toán hôm nay để rã băng và tiếp tục chuỗi."
+          },
+          {
+            "label": "Làm bài bù như một giải pháp thay thế",
+            "desc": "Không có khiên? Thay vào đó, hãy hoàn thành nhiệm vụ bù cho ngày bị bỏ lỡ trên trang Hôm nay. Điều này cũng khôi phục chuỗi của bạn mà không tốn sao."
+          },
+          {
+            "label": "Hết hạn & Giới hạn",
+            "desc": "Cửa sổ Nguy hiểm kéo dài 2 ngày. Sau đó, chuỗi sẽ đứt vĩnh viễn. Khiên chỉ bù cho một ngày bị bỏ lỡ — bạn vẫn cần giải bài toán hôm nay."
           }
         ]
       },
@@ -422,7 +439,7 @@
     "items": {
       "streakFreeze": {
         "title": "Đóng băng chuỗi",
-        "desc": "Bảo vệ chuỗi ngày của bạn khi lỡ mất một ngày học."
+        "desc": "Tự động bảo vệ chuỗi ngày liên tiếp của bạn vào lần tiếp theo bạn bỏ lỡ. Phải được mua trước khi ngày bỏ lỡ được phát hiện."
       },
       "problemSkip": {
         "title": "Bỏ qua thử thách",

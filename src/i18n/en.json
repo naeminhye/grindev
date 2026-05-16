@@ -308,15 +308,31 @@
         ]
       },
       "streaks": {
-        "title": "Streaks",
+        "title": "Streaks & Shield",
         "items": [
           {
-            "label": "Keep it alive",
-            "desc": "Solve at least one problem per day to maintain your streak. Miss a day and it resets to 0."
+            "label": "Daily streak",
+            "desc": "Your streak increases by 1 each day you solve a problem. Missing a day puts your streak At Risk — you have a short window to recover it."
           },
           {
-            "label": "Streak counter",
-            "desc": "Shown in the top-right corner. Your longest streak is tracked on your Profile page."
+            "label": "Streak states",
+            "desc": "Active (🔥 lime) — solved today. At Risk (🔥 orange, pulsing) — missed yesterday, act fast. Frozen (❄️ cyan) — shield applied, solve today to thaw. Broken — streak reset to 0."
+          },
+          {
+            "label": "What is a Streak Shield?",
+            "desc": "Bought from the Star Shop for 20★. When your streak goes At Risk, a popup asks if you want to apply it. The shield preserves your streak value for the missed day."
+          },
+          {
+            "label": "After applying a shield",
+            "desc": "Your streak enters Frozen state — the count is preserved but shown with ❄️. You must still solve today's problem to thaw it and continue the streak."
+          },
+          {
+            "label": "Make-Up as an alternative",
+            "desc": "No shield? Complete a make-up task for the missed day on the Today page instead. This also restores your streak without spending any stars."
+          },
+          {
+            "label": "Expiry & limits",
+            "desc": "The At Risk window lasts 2 days. After that the streak breaks permanently for that run. A shield only covers one missed day — you still need to solve today's problem."
           }
         ]
       },
@@ -422,7 +438,7 @@
     "items": {
       "streakFreeze": {
         "title": "Streak Freeze",
-        "desc": "Protect your streak for one missed day. Your streak stays intact even if you skip a day."
+        "desc": "Automatically protects your streak the next time you miss a day. Must be purchased before the missed day is detected."
       },
       "problemSkip": {
         "title": "Problem Skip",

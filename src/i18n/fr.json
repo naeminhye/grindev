@@ -308,15 +308,31 @@
         ]
       },
       "streaks": {
-        "title": "Séries",
+        "title": "Séries & Bouclier",
         "items": [
           {
-            "label": "Garde-la active",
-            "desc": "Résous au moins un problème par jour pour maintenir ta série. Si tu manques un jour, elle retombe à 0."
+            "label": "Série quotidienne",
+            "desc": "Votre série augmente de 1 chaque jour où vous résolvez un problème. Manquer un jour met votre série En Danger — vous avez une courte fenêtre pour la récupérer."
           },
           {
-            "label": "Compteur de série",
-            "desc": "Affiché en haut à droite. Ta plus longue série est suivie sur la page Profil."
+            "label": "États de la série",
+            "desc": "Active (🔥 vert citron) — résolue aujourd'hui. En Danger (🔥 orange, clignotant) — manquée hier, agissez vite. Gelée (❄️ cyan) — bouclier appliqué, résolvez aujourd'hui pour dégeler. Brisée — série réinitialisée à 0."
+          },
+          {
+            "label": "Qu'est-ce qu'un Bouclier de Série ?",
+            "desc": "Acheté à la Boutique d'Étoiles pour 20★. Quand votre série passe En Danger, une fenêtre vous demande si vous voulez l'appliquer. Le bouclier préserve la valeur de votre série pour le jour manqué."
+          },
+          {
+            "label": "Après l'application d'un bouclier",
+            "desc": "Votre série entre dans l'état Gelée — le compte est préservé mais affiché avec ❄️. Vous devez toujours résoudre le problème d'aujourd'hui pour la dégeler et continuer la série."
+          },
+          {
+            "label": "Rattrapage comme alternative",
+            "desc": "Pas de bouclier ? Complétez une tâche de rattrapage pour le jour manqué sur la page Aujourd'hui à la place. Cela restaure aussi votre série sans dépenser d'étoiles."
+          },
+          {
+            "label": "Expiration et limites",
+            "desc": "La fenêtre En Danger dure 2 jours. Après cela, la série est brisée définitivement pour cette tentative. Un bouclier ne couvre qu'un jour manqué — vous devez toujours résoudre le problème d'aujourd'hui."
           }
         ]
       },

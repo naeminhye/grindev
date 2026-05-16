@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getAuthUserId } from "@/lib/auth-helper";
-import { updateStreak } from "@/lib/streak";
-import { getTodayInTz } from "@/lib/streak";
+import { recalculateStreak, getTodayInTz } from "@/lib/streak";
 import {
   calculateQuizStars,
   quizPassed,
@@ -114,7 +113,8 @@ export async function POST(req: Request) {
   }
 
   // ── Update stars + streak ─────────────────────────────────────────────
-  let streakUpdate;
+  let streakUpdate: Awaited<ReturnType<typeof recalculateStreak>> | undefined;
+
   if (passed) {
     if (starDelta > 0) {
       const user = await prisma.user.findUnique({
@@ -154,7 +154,7 @@ export async function POST(req: Request) {
       });
     }
 
-    streakUpdate = await updateStreak(userId, timeZone);
+    streakUpdate = await recalculateStreak(userId, timeZone);
   }
 
   return NextResponse.json({

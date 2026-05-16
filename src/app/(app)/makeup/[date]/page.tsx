@@ -167,6 +167,8 @@ export default function MakeupPage() {
         return;
       }
       const result: SolveResponse = await res.json();
+      console.log("[MakeupPage/handleSubmit] result:", result);
+
       setSolveResult(result);
       setAttempts((a) => a + 1);
       if (result.passed) {
@@ -175,6 +177,29 @@ export default function MakeupPage() {
           setStarDelta(result.starDelta);
           setStars((s) => Math.max(0, s + result.starDelta!));
         }
+      } else {
+        setPageState("ready");
+        setMobileTab("code");
+      }
+      if (result.passed) {
+        setPageState("solved");
+        if (result.starDelta !== undefined) {
+          setStarDelta(result.starDelta);
+          setStars((s) => Math.max(0, s + result.starDelta!));
+        }
+        window.dispatchEvent(
+          new CustomEvent("streak-updated", {
+            detail: {
+              currentStreak: result.streak?.currentStreak ?? 0,
+              lastSolvedAt: new Date().toISOString(),
+              streakStatus: "ACTIVE",
+            },
+          }),
+        );
+        console.log(
+          "[MakeupPage/handleSubmit] dispatched streak-updated:",
+          result.streak?.currentStreak,
+        );
       } else {
         setPageState("ready");
         setMobileTab("code");
