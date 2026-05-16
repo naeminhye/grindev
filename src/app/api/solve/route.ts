@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { runCode } from "@/lib/piston";
-import { updateStreak } from "@/lib/streak";
+import { recalculateStreak } from "@/lib/streak";
 import { calculateStarDelta } from "@/lib/challenge";
 import type { SolveResponse, TestCase } from "@/types";
 import type { Language } from "@/lib/languages";
@@ -153,11 +153,41 @@ export async function POST(req: Request) {
     ]),
   ) as StarRewardConfig;
 
-  let streakUpdate;
+  let streakResult: Awaited<ReturnType<typeof recalculateStreak>> | undefined;
+
   let starDelta = 0;
 
   if (allPassed) {
-    streakUpdate = await updateStreak(userId, timeZone);
+    const userBefore = await prisma.user.findUnique({ where: { id: userId } });
+
+    // If solving today while frozen, thaw the streak
+    if (userBefore?.streakStatus === "FROZEN") {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "ACTIVE",
+          streakAtRiskDate: null,
+          streakAtRiskSince: null,
+          frozenStreakValue: 0,
+        },
+      });
+    }
+
+    // If solving today while at-risk (user dismissed modal but solved anyway),
+    // mark as ACTIVE so streak isn't reset by next checkStreakStatus run
+    if (userBefore?.streakStatus === "AT_RISK") {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "ACTIVE",
+          // Keep streakAtRiskDate so future makeup of that day still resolves
+        },
+      });
+    }
+
+    streakResult = await recalculateStreak(userId, timeZone);
+    console.log("[solve] streakResult:", streakResult);
+
     starDelta = calculateStarDelta({
       mode: challengeMode,
       passed: true,
@@ -174,7 +204,11 @@ export async function POST(req: Request) {
     const newStars = Math.max(0, (user?.stars ?? 0) + starDelta);
     await prisma.user.update({
       where: { id: userId },
-      data: { stars: newStars },
+      data: {
+        stars: newStars,
+        skipRequestedAt: null,
+        skippedProblemId: null,
+      },
     });
 
     await prisma.starTransaction.create({
@@ -196,7 +230,7 @@ export async function POST(req: Request) {
     passed: allPassed,
     results,
     starDelta,
-    ...(allPassed && streakUpdate ? { streak: streakUpdate } : {}),
+    streak: streakResult,
   } satisfies SolveResponse);
 }
 

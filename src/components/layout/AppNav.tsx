@@ -19,20 +19,32 @@ interface AppNavProps {
   streak: number;
   isAdmin: boolean;
   stars: number;
+  lastSolvedAt: string | null;
+  streakStatus?: "ACTIVE" | "AT_RISK" | "FROZEN" | "BROKEN";
+  frozenStreakValue?: number;
 }
 
 export function AppNav({
   userName,
   userImage,
   streak,
+  lastSolvedAt,
   isAdmin,
   stars,
+  streakStatus,
+  frozenStreakValue,
 }: AppNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
+  const { theme } = useTheme();
+
   const [mounted, setMounted] = useState(false);
   const [currentStars, setCurrentStars] = useState(stars);
-  const { theme } = useTheme();
+  const [currentStreak, setCurrentStreak] = useState(streak);
+  const [currentStreakStatus, setCurrentStreakStatus] = useState(
+    streakStatus ?? "ACTIVE",
+  );
+  const [currentLastSolvedAt, setCurrentLastSolvedAt] = useState(lastSolvedAt);
 
   useEffect(() => {
     setMounted(true);
@@ -41,6 +53,30 @@ export function AppNav({
   useEffect(() => {
     setCurrentStars(stars);
   }, [stars]);
+
+  useEffect(() => {
+    console.log("[AppNav] registering streak-updated listener");
+
+    function handleStreakUpdate(e: CustomEvent) {
+      console.log("[AppNav] streak-updated received:", e.detail);
+
+      setCurrentStreak(e.detail.currentStreak);
+      setCurrentStreakStatus(e.detail.streakStatus ?? "ACTIVE");
+      setCurrentLastSolvedAt(e.detail.lastSolvedAt);
+    }
+
+    window.addEventListener(
+      "streak-updated",
+      handleStreakUpdate as EventListener,
+    );
+    return () => {
+      console.log("[AppNav] removing streak-updated listener");
+      window.removeEventListener(
+        "streak-updated",
+        handleStreakUpdate as EventListener,
+      );
+    };
+  }, []);
 
   async function handleSignOut() {
     // Clear AI explain cache for this user before signing out
@@ -115,7 +151,12 @@ export function AppNav({
             <span className="hidden sm:inline">Admin</span>
           </Link>
         )}
-        <StreakBadge streak={streak} />
+        <StreakBadge
+          streak={currentStreak}
+          lastSolvedAt={currentLastSolvedAt}
+          streakStatus={currentStreakStatus}
+          frozenStreakValue={frozenStreakValue}
+        />
         <StarCount stars={currentStars} />
         <RedeemCodeButton onStarsChange={setCurrentStars} />
         <HelpButton />

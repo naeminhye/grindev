@@ -1,179 +1,24 @@
-// import { isYesterday, isToday, parseISO } from "date-fns";
-import { prisma } from "./prisma";
+import { subDays, addDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { addDays, subDays } from "date-fns";
+import { prisma } from "@/lib/prisma";
+import { StarTransactionReason } from "@prisma/client";
 
-/**
- * Get today's date string in the user's timezone.
- * Falls back to UTC if no timezone provided.
- */
 export function getTodayInTz(timeZone = "UTC"): string {
-  try {
-    return formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd");
-  } catch {
-    return formatInTimeZone(new Date(), "UTC", "yyyy-MM-dd");
-  }
-}
-
-/**
- * Legacy — used by server-side routes that don't have user timezone.
- * Use getTodayInTz() with the user's timezone when available.
- */
-export function getTodayUTC(): string {
-  return formatInTimeZone(new Date(), "UTC", "yyyy-MM-dd");
-}
-
-function getTodayStr(timeZone: string) {
   return formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd");
 }
 
-function getDateStr(date: Date, timeZone: string) {
+export function getDateStr(date: Date, timeZone = "UTC"): string {
   return formatInTimeZone(date, timeZone, "yyyy-MM-dd");
 }
 
-export async function checkAndResetStreak(userId: string, timeZone = "UTC") {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user || !user.lastSolvedAt) return;
-
-  const today = getTodayStr(timeZone);
-  const yesterday = formatInTimeZone(
-    subDays(new Date(), 1),
-    timeZone,
-    "yyyy-MM-dd",
-  );
-  const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
-
-  console.log("[streak check]", {
-    today,
-    yesterday,
-    lastSolvedDay,
-    timeZone,
-    currentStreak: user.currentStreak,
-  });
-
-  const missedYesterday =
-    lastSolvedDay !== today && lastSolvedDay !== yesterday;
-  if (missedYesterday && user.currentStreak > 0) {
-    console.log("[streak reset] resetting to 0");
-    await prisma.user.update({
-      where: { id: userId },
-      data: { currentStreak: 0 },
-    });
-  }
+function yesterdayInTz(timeZone = "UTC"): string {
+  return formatInTimeZone(subDays(new Date(), 1), timeZone, "yyyy-MM-dd");
 }
 
-export async function updateStreak(
-  userId: string,
-  timeZone = "UTC",
-): Promise<{
-  currentStreak: number;
-  longestStreak: number;
-  isNewRecord: boolean;
-}> {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new Error("User not found");
-
-  const today = getTodayStr(timeZone);
-  const yesterday = formatInTimeZone(
-    subDays(new Date(), 1),
-    timeZone,
-    "yyyy-MM-dd",
-  );
-
-  if (user.lastSolvedAt) {
-    const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
-    if (lastSolvedDay === today) {
-      return {
-        currentStreak: user.currentStreak,
-        longestStreak: user.longestStreak,
-        isNewRecord: false,
-      };
-    }
-  }
-
-  const newStreak =
-    user.lastSolvedAt && getDateStr(user.lastSolvedAt, timeZone) === yesterday
-      ? user.currentStreak + 1
-      : 1;
-
-  const newLongest = Math.max(newStreak, user.longestStreak);
-  const isNewRecord = newStreak > user.longestStreak;
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      currentStreak: newStreak,
-      longestStreak: newLongest,
-      lastSolvedAt: new Date(),
-    },
-  });
-
-  return { currentStreak: newStreak, longestStreak: newLongest, isNewRecord };
-}
-
-export async function updateStreakForDate(
-  userId: string,
-  solveDate: string, // the date being made up e.g. '2026-05-06'
-  timeZone = "UTC",
-): Promise<{
-  currentStreak: number;
-  longestStreak: number;
-  isNewRecord: boolean;
-}> {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new Error("User not found");
-
-  const today = getTodayInTz(timeZone);
-
-  // If already solved today (normal solve), don't let makeup override lastSolvedAt
-  const lastSolvedDay = user.lastSolvedAt
-    ? getDateStr(user.lastSolvedAt, timeZone)
-    : null;
-
-  // Don't decrement streak if user already solved today
-  if (lastSolvedDay === today) {
-    return {
-      currentStreak: user.currentStreak,
-      longestStreak: user.longestStreak,
-      isNewRecord: false,
-    };
-  }
-
-  // For streak purposes, treat solveDate as the solved day
-  const yesterday = formatInTimeZone(
-    subDays(new Date(), 1),
-    timeZone,
-    "yyyy-MM-dd",
-  );
-  const dayBeforeYesterday = formatInTimeZone(
-    subDays(new Date(), 2),
-    timeZone,
-    "yyyy-MM-dd",
-  );
-
-  // Extend streak if makeup date is yesterday or fills a gap
-  const newStreak =
-    lastSolvedDay === yesterday || lastSolvedDay === dayBeforeYesterday
-      ? user.currentStreak + 1
-      : user.currentStreak > 0
-        ? user.currentStreak // makeup doesn't reset, just maintains
-        : 1;
-
-  const newLongest = Math.max(newStreak, user.longestStreak);
-  const isNewRecord = newStreak > user.longestStreak;
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      currentStreak: newStreak,
-      longestStreak: newLongest,
-      lastSolvedAt: new Date(), // still use now for lastSolvedAt
-    },
-  });
-
-  return { currentStreak: newStreak, longestStreak: newLongest, isNewRecord };
-}
-
+/**
+ * Recalculates streak from full solve history including makeup dates.
+ * Counts both DSA solves (using makeupDate if isMakeup) and quiz attempts.
+ */
 export async function recalculateStreak(
   userId: string,
   timeZone = "UTC",
@@ -185,88 +30,261 @@ export async function recalculateStreak(
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Get all active dates — normal solves use solvedAt date, makeup solves use makeupDate
-  const solves = await prisma.solve.findMany({
-    where: { userId, passed: true },
-    select: { solvedAt: true, isMakeup: true, makeupDate: true },
-  });
+  const [solves, quizAttempts] = await Promise.all([
+    prisma.solve.findMany({
+      where: { userId, passed: true },
+      select: { solvedAt: true, isMakeup: true, makeupDate: true },
+    }),
+    prisma.quizAttempt.findMany({
+      where: { userId, passed: true },
+      select: { solvedAt: true, isMakeup: true, makeupDate: true },
+    }),
+  ]);
 
-  // Also get passed quiz attempts
-  const quizAttempts = await prisma.quizAttempt.findMany({
-    where: { userId, passed: true },
-    select: { solvedAt: true, isMakeup: true, makeupDate: true },
-  });
-
-  // Build set of active dates
   const activeDates = new Set<string>();
   for (const s of [...solves, ...quizAttempts]) {
-    if (s.isMakeup && s.makeupDate) {
-      activeDates.add(s.makeupDate); // use the date being made up
-    } else {
-      activeDates.add(getDateStr(s.solvedAt, timeZone));
-    }
+    if (s.isMakeup && s.makeupDate) activeDates.add(s.makeupDate);
+    else activeDates.add(getDateStr(s.solvedAt, timeZone));
   }
 
   const today = getTodayInTz(timeZone);
-  const sortedDates = [...activeDates].sort().reverse(); // newest first
+  const yesterday = yesterdayInTz(timeZone);
+  const sortedDesc = [...activeDates].sort().reverse();
 
-  // Calculate current streak — consecutive days ending today or yesterday
+  // Current streak — consecutive days ending today or yesterday
   let currentStreak = 0;
-  const todayOrYesterday =
-    sortedDates[0] === today ||
-    sortedDates[0] ===
-      formatInTimeZone(subDays(new Date(), 1), timeZone, "yyyy-MM-dd");
-
-  if (todayOrYesterday) {
-    let checkDate = sortedDates[0];
-    for (const date of sortedDates) {
-      if (date === checkDate) {
+  const startsRecent = sortedDesc[0] === today || sortedDesc[0] === yesterday;
+  if (startsRecent) {
+    let check = sortedDesc[0];
+    for (const date of sortedDesc) {
+      if (date === check) {
         currentStreak++;
-        checkDate = formatInTimeZone(
-          subDays(new Date(checkDate), 1),
+        check = formatInTimeZone(
+          subDays(new Date(check), 1),
           timeZone,
           "yyyy-MM-dd",
         );
-      } else {
-        break;
-      }
+      } else break;
     }
   }
 
-  // Calculate longest streak
+  // Longest streak
   let longestStreak = 0;
-  let tempStreak = 0;
-  let prevDate: string | null = null;
-
-  for (const date of [...sortedDates].reverse()) {
-    // oldest first
-    if (!prevDate) {
-      tempStreak = 1;
-    } else {
+  let temp = 0;
+  let prev: string | null = null;
+  for (const date of [...sortedDesc].reverse()) {
+    if (!prev) temp = 1;
+    else {
       const expected = formatInTimeZone(
-        addDays(new Date(prevDate), 1),
+        addDays(new Date(prev), 1),
         timeZone,
         "yyyy-MM-dd",
       );
-      tempStreak = date === expected ? tempStreak + 1 : 1;
+      temp = date === expected ? temp + 1 : 1;
     }
-    longestStreak = Math.max(longestStreak, tempStreak);
-    prevDate = date;
+    longestStreak = Math.max(longestStreak, temp);
+    prev = date;
   }
 
+  longestStreak = Math.max(longestStreak, user.longestStreak);
   const isNewRecord = currentStreak > user.longestStreak;
 
   await prisma.user.update({
     where: { id: userId },
     data: {
       currentStreak,
-      longestStreak: Math.max(longestStreak, user.longestStreak),
+      longestStreak,
+      ...(currentStreak > 0
+        ? {
+            streakStatus: "ACTIVE",
+            streakAtRiskDate: null,
+            streakAtRiskSince: null,
+          }
+        : {}),
     },
   });
 
-  return {
-    currentStreak,
-    longestStreak: Math.max(longestStreak, user.longestStreak),
-    isNewRecord,
-  };
+  return { currentStreak, longestStreak, isNewRecord };
+}
+
+/**
+ * Checks the user's streak status on login.
+ * - If solved today: ACTIVE
+ * - If solved yesterday: ACTIVE (still alive, just hasn't done today yet)
+ * - If last solved 2 days ago: AT_RISK (missed yesterday)
+ * - If last solved 3+ days ago: BROKEN (will reset on next solve)
+ *
+ * Should be called on every authenticated route (e.g. in daily route).
+ */
+export async function checkStreakStatus(
+  userId: string,
+  timeZone = "UTC",
+): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.lastSolvedAt) return;
+
+  const today = getTodayInTz(timeZone);
+  const yesterday = yesterdayInTz(timeZone);
+  const dayBeforeYesterday = formatInTimeZone(
+    subDays(new Date(), 2),
+    timeZone,
+    "yyyy-MM-dd",
+  );
+
+  const lastSolvedDay = getDateStr(user.lastSolvedAt, timeZone);
+
+  // Clear stale skip/skipProblem from previous days
+  if (user.skipRequestedAt) {
+    const skipDate = getDateStr(user.skipRequestedAt, timeZone);
+    if (skipDate !== today) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { skipRequestedAt: null, skippedProblemId: null },
+      });
+    }
+  }
+
+  // ── Status transitions ────────────────────────────────────────────────
+
+  // If user is FROZEN and has now solved today, thaw → ACTIVE
+  if (user.streakStatus === "FROZEN" && lastSolvedDay === today) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        streakStatus: "ACTIVE",
+        streakAtRiskSince: null,
+        streakAtRiskDate: null,
+        frozenStreakValue: 0,
+      },
+    });
+    return;
+  }
+
+  // If user is FROZEN but still hasn't solved today, stay FROZEN
+  // (the frozen state persists for one day — they have today to solve)
+  if (user.streakStatus === "FROZEN") {
+    // If they haven't solved today AND it's now past today (e.g. tomorrow),
+    // the frozen streak breaks
+    if (lastSolvedDay !== today && lastSolvedDay !== yesterday) {
+      // Frozen state expired — reset
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "BROKEN",
+          currentStreak: 0,
+          frozenStreakValue: 0,
+          streakAtRiskDate: null,
+          streakAtRiskSince: null,
+        },
+      });
+    }
+    return;
+  }
+
+  // If user is AT_RISK
+  if (user.streakStatus === "AT_RISK") {
+    // Check if they've now resolved it — either by makeup of the at-risk date
+    // (handled by makeup solve route calling resolveAtRiskAfterMakeup)
+    // or by it being too late (more than 1 day past)
+    const atRiskDate = user.streakAtRiskDate;
+    if (atRiskDate) {
+      // If we're now more than 2 days past the at-risk date, it expires
+      const daysPast = Math.floor(
+        (new Date(today).getTime() - new Date(atRiskDate).getTime()) / 86400000,
+      );
+      if (daysPast >= 2) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            streakStatus: "BROKEN",
+            currentStreak: 0,
+            streakAtRiskDate: null,
+            streakAtRiskSince: null,
+          },
+        });
+        return;
+      }
+    }
+    // Still AT_RISK — do nothing
+    return;
+  }
+
+  // With — only check for ACTIVE status, not streak value:
+  if (user.streakStatus === "ACTIVE") {
+    // But only show modal if there's something worth protecting
+    // i.e. user has a shield AND missed days (even if streak already shows 0)
+    const [purchased, used] = await Promise.all([
+      prisma.starTransaction.count({
+        where: { userId, reason: "STREAK_FREEZE_PURCHASE" },
+      }),
+      prisma.starTransaction.count({
+        where: {
+          userId,
+          reason: "STREAK_FREEZE_USED" as StarTransactionReason,
+        },
+      }),
+    ]);
+    const hasShield = purchased - used > 0;
+
+    const missedDays = lastSolvedDay !== today && lastSolvedDay !== yesterday;
+
+    if (!missedDays) return; // solved today or yesterday — all good
+
+    if (lastSolvedDay === dayBeforeYesterday || hasShield) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "AT_RISK",
+          streakAtRiskSince: new Date(),
+          streakAtRiskDate: yesterday,
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "BROKEN",
+          currentStreak: 0,
+          streakAtRiskDate: null,
+          streakAtRiskSince: null,
+        },
+      });
+    }
+  }
+}
+
+/**
+ * Called after a successful makeup solve. If the makeup date matches
+ * the at-risk date, the streak is restored (status → ACTIVE).
+ */
+export async function resolveAtRiskAfterMakeup(
+  userId: string,
+  makeupDate: string,
+  timeZone = "UTC",
+): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) return;
+
+  if (user.streakStatus === "AT_RISK" && user.streakAtRiskDate === makeupDate) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        streakStatus: "ACTIVE",
+        streakAtRiskDate: null,
+        streakAtRiskSince: null,
+      },
+    });
+    // Recalculate streak — makeup now counts
+    await recalculateStreak(userId, timeZone);
+  }
+}
+
+/**
+ * Legacy alias — kept for backward compat. Now delegates to checkStreakStatus.
+ */
+export async function checkAndResetStreak(
+  userId: string,
+  timeZone = "UTC",
+): Promise<void> {
+  await checkStreakStatus(userId, timeZone);
 }

@@ -78,6 +78,8 @@ export type UserStats = {
   stars: number;
   lastSolvedAt: string | null;
   streakFreezeCount: number;
+  streakStatus?: "ACTIVE" | "AT_RISK" | "FROZEN" | "BROKEN";
+  frozenStreakValue?: number;
 };
 
 export type DailyResponse = {

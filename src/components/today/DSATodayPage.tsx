@@ -81,13 +81,13 @@ export default function DSATodayPage() {
   const timeLimitSeconds = daily
     ? (daily.hardTimeLimits?.[daily.problem.difficulty] ??
       TIME_LIMIT_DEFAULTS[
-      `HARD_TIME_${daily.problem.difficulty}` as keyof typeof TIME_LIMIT_DEFAULTS
+        `HARD_TIME_${daily.problem.difficulty}` as keyof typeof TIME_LIMIT_DEFAULTS
       ])
     : TIME_LIMIT_DEFAULTS.HARD_TIME_EASY;
 
   const timer = useTimer({
     initialSeconds: TIME_LIMIT_DEFAULTS.HARD_TIME_EASY, // placeholder — reset below when daily loads
-    onExpire: () => { },
+    onExpire: () => {},
   });
 
   // Reset to correct duration once daily data and time limits are known
@@ -123,7 +123,6 @@ export default function DSATodayPage() {
         setExplainCost(dailyData.explainCost ?? DEFAULT_EXPLAIN_COST);
 
         setCurrentStreak(dailyData.userStats.currentStreak);
-        if (dailyData.alreadySolved) setModeLocked(true);
       })
       .catch((err) => {
         if (err.name === "AbortError") return;
@@ -196,6 +195,8 @@ export default function DSATodayPage() {
         }),
       });
       const result: SolveResponse = await res.json();
+      console.log("[DSATodayPage/handleSubmit] result:", result);
+
       setSolveResult(result);
       setAttempts((a) => a + 1);
       if (result.passed) {
@@ -205,6 +206,34 @@ export default function DSATodayPage() {
           setStarDelta(result.starDelta);
           setStars((s) => Math.max(0, s + result.starDelta!));
         }
+        // Notify AppNav to refresh streak
+        if (result.passed) {
+          setPageState("solved");
+          timer.stop();
+          if (result.starDelta !== undefined) {
+            setStarDelta(result.starDelta);
+            setStars((s) => Math.max(0, s + result.starDelta!));
+          }
+          // Always dispatch — use streak from result or fall back to currentStreak + 1
+          window.dispatchEvent(
+            new CustomEvent("streak-updated", {
+              detail: {
+                currentStreak:
+                  result.streak?.currentStreak ?? currentStreak + 1,
+                lastSolvedAt: new Date().toISOString(),
+                streakStatus: "ACTIVE",
+              },
+            }),
+          );
+          console.log(
+            "[DSATodayPage/handleSubmit] dispatched streak-updated:",
+            result.streak?.currentStreak,
+          );
+
+          setCurrentStreak(result.streak?.currentStreak ?? currentStreak + 1);
+          setShowSuccessModal(true);
+        }
+
         setShowSuccessModal(true);
       } else {
         setPageState("ready");
@@ -245,6 +274,8 @@ export default function DSATodayPage() {
     const res = await fetch("/api/shop/use-skip", { method: "POST" });
     if (res.ok) {
       setSkipCount((c) => c - 1);
+      // Small delay to ensure DB write completes before refetch
+      await new Promise((resolve) => setTimeout(resolve, 300));
       window.location.reload();
     }
   }, [daily, skipCount, modeLocked]);
@@ -345,9 +376,7 @@ export default function DSATodayPage() {
       <div className="flex-1 flex flex-col">
         {showSuccessModal && solveResult && (
           <SuccessModal
-            streak={
-              solveResult.streak?.currentStreak ?? userStats.currentStreak
-            }
+            streak={solveResult.streak?.currentStreak ?? currentStreak}
             isNewRecord={solveResult.streak?.isNewRecord ?? false}
             starDelta={starDelta}
             isHard={isHard}
@@ -462,7 +491,7 @@ export default function DSATodayPage() {
     <>
       {showSuccessModal && solveResult && (
         <SuccessModal
-          streak={solveResult.streak?.currentStreak ?? userStats.currentStreak}
+          streak={solveResult.streak?.currentStreak ?? currentStreak}
           isNewRecord={solveResult.streak?.isNewRecord ?? false}
           starDelta={starDelta}
           isHard={isHard}

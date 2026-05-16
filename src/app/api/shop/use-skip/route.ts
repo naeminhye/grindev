@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUserId } from "@/lib/auth-helper";
+import { getTodayInTz } from "@/lib/streak";
 
-export async function POST() {
+export async function POST(req: Request) {
   const { userId, error } = await getAuthUserId();
   if (error) return error;
 
@@ -17,9 +18,16 @@ export async function POST() {
     return NextResponse.json({ error: "No skips available" }, { status: 400 });
   }
 
-  await prisma.starTransaction.create({
-    data: { userId, amount: 0, reason: "PROBLEM_SKIP_USED" },
-  });
+  // Record skip as used and set skipRequestedAt to now
+  await Promise.all([
+    prisma.starTransaction.create({
+      data: { userId, amount: 0, reason: "PROBLEM_SKIP_USED" },
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { skipRequestedAt: new Date() },
+    }),
+  ]);
 
   return NextResponse.json({ ok: true });
 }

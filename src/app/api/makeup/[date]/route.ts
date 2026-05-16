@@ -2,7 +2,7 @@ import { getAuthUserId } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getMakeupCost, getDaysAgo } from "@/lib/makeup";
-import { getTodayInTz, getTodayUTC } from "@/lib/streak";
+import { getTodayInTz } from "@/lib/streak";
 import { type MakeupProblemResponse, type HintData } from "@/types";
 import { parseProblemExamples } from "@/lib/problem-utils";
 import { DEFAULT_EXPLAIN_COST } from "../../ai/explain/route";

@@ -11,7 +11,8 @@ type HelpSectionKey =
   | "hints"
   | "challengeModes"
   | "makeUpTasks"
-  | "codeEditor";
+  | "codeEditor"
+  | "streakShield";
 
 type Section = {
   key: HelpSectionKey;
@@ -31,7 +32,7 @@ const SECTIONS: Section[] = [
     key: "streaks",
     icon: "ri-fire-line",
     color: "text-orange-400",
-    itemCount: 2,
+  itemCount: 6,
   },
   {
     key: "stars",
