@@ -8,7 +8,7 @@ import { checkDailyLoginBonus } from "@/lib/stars";
 import type { DailyResponse, HintData, StarterCode } from "@/types";
 import { StarTransactionReason, type Difficulty } from "@prisma/client";
 import { parseProblemExamples } from "@/lib/problem-utils";
-import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
+import { TIME_LIMIT_DEFAULTS, STAR_REWARD_DEFAULTS } from "@/lib/game-config";
 import { fromZonedTime } from "date-fns-tz";
 
 const NO_PROBLEM_BONUS_KEY = "NO_PROBLEM_BONUS_STARS";
@@ -69,14 +69,27 @@ export async function GET(req: Request) {
     (s) => s.problem && !s.problem.deletedAt,
   );
 
-  // ── Helper: pick a random problem ────────────────────────────────────
+  // ── Helper: pick a random problem ─────────────────────────────────────
   async function pickRandomProblem(excludeId?: string) {
-    return prisma.problem.findMany({
+    // Get all problems the user has already solved
+    const solvedIds = await prisma.solve.findMany({
+      where: { userId, passed: true },
+      select: { problemId: true },
+    });
+    const solvedSet = new Set(solvedIds.map((s) => s.problemId));
+
+    const problems = await prisma.problem.findMany({
       where: {
         deletedAt: null,
         ...(excludeId ? { id: { not: excludeId } } : {}),
       },
     });
+
+    // Filter out already solved problems
+    const unsolved = problems.filter((p) => !solvedSet.has(p.id));
+
+    // Fall back to all problems if everything is solved
+    return unsolved.length > 0 ? unsolved : problems;
   }
 
   // ── Helper: build common tail of the response ─────────────────────────
@@ -129,6 +142,8 @@ export async function GET(req: Request) {
           a.daysAgo - b.daysAgo || a.difficulty.localeCompare(b.difficulty),
       );
 
+    const starRewardKeys = Object.keys(STAR_REWARD_DEFAULTS);
+
     const [
       freshUser,
       skipPurchases,
@@ -138,6 +153,9 @@ export async function GET(req: Request) {
       hintDiscountUsed,
       explainCostConfig,
       reviewCostConfig,
+      starRewardConfigs,
+      doubleStarsPurchased,
+      doubleStarsUsed,
     ] = await Promise.all([
       prisma.user.findUnique({ where: { id: userId } }),
       prisma.starTransaction.count({
@@ -159,11 +177,34 @@ export async function GET(req: Request) {
       }),
       prisma.appConfig.findUnique({ where: { key: "AI_EXPLAIN_COST" } }),
       prisma.appConfig.findUnique({ where: { key: "AI_CODE_REVIEW_COST" } }),
+      prisma.appConfig.findMany({
+        where: { key: { in: starRewardKeys } },
+      }),
+      prisma.starTransaction.count({
+        where: { userId, reason: "DOUBLE_STARS_PURCHASE" },
+      }),
+      prisma.starTransaction.count({
+        where: { userId, reason: "DOUBLE_STARS_USED" as any },
+      }),
     ]);
 
     const timeLimitMap = Object.fromEntries(
       timeLimitConfigs.map((c) => [c.key, parseInt(c.value)]),
     );
+
+    const starRewardMap = Object.fromEntries(
+      starRewardConfigs.map((c) => [c.key, parseInt(c.value)]),
+    );
+
+    const starRewards = Object.fromEntries(
+      starRewardKeys.map((k) => [
+        k,
+        starRewardMap[k] ??
+          STAR_REWARD_DEFAULTS[k as keyof typeof STAR_REWARD_DEFAULTS],
+      ]),
+    );
+
+    const doubleStarsActive = doubleStarsPurchased - doubleStarsUsed > 0;
 
     return {
       makeupDays,
@@ -191,12 +232,13 @@ export async function GET(req: Request) {
       hintDiscount: Math.max(0, hintDiscountBought - hintDiscountUsed),
       explainCost: explainCostConfig ? parseInt(explainCostConfig.value) : 5,
       reviewCost: reviewCostConfig ? parseInt(reviewCostConfig.value) : 5,
+      starRewards,
+      doubleStarsActive,
     };
   }
 
   // ── No problem scheduled today ────────────────────────────────────────
   if (availableSlots.length === 0) {
-    // If skip is active, serve a random problem instead of no-problem screen
     if (skipActive) {
       const allProblems = await pickRandomProblem();
       if (allProblems.length > 0) {
@@ -300,7 +342,6 @@ export async function GET(req: Request) {
       });
     }
   } else if (user?.skippedProblemId) {
-    // Skip was already applied — keep showing the same skipped problem until solved
     const skipped = await prisma.problem.findUnique({
       where: { id: user.skippedProblemId, deletedAt: null },
     });
@@ -319,7 +360,6 @@ export async function GET(req: Request) {
   const todayStartUTC = fromZonedTime(`${today}T00:00:00`, timeZone);
   const todayEndUTC = fromZonedTime(`${today}T23:59:59`, timeZone);
 
-  // Check solved status
   const anySolvedToday = await prisma.solve.findFirst({
     where: {
       userId,

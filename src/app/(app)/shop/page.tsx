@@ -158,6 +158,11 @@ const REASON_LABELS: Record<
     icon: "ri-star-smile-line",
     color: "text-lime-400",
   },
+  DOUBLE_STARS_USED: {
+    labelKey: "Double Stars used",
+    icon: "ri-star-smile-line",
+    color: "text-lime-400",
+  },
   EXTRA_ATTEMPT_PURCHASE: {
     labelKey: "shop.transactions.reasons.extraAttemptPurchase",
     icon: "ri-restart-line",

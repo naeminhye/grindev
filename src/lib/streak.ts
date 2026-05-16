@@ -183,12 +183,21 @@ export async function checkStreakStatus(
 
   // If user is AT_RISK
   if (user.streakStatus === "AT_RISK") {
-    // Check if they've now resolved it — either by makeup of the at-risk date
-    // (handled by makeup solve route calling resolveAtRiskAfterMakeup)
-    // or by it being too late (more than 1 day past)
+    // If user solved today, they've broken the at-risk by continuing — resolve it
+    if (lastSolvedDay === today) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          streakStatus: "ACTIVE",
+          streakAtRiskDate: null,
+          streakAtRiskSince: null,
+        },
+      });
+      return;
+    }
+
     const atRiskDate = user.streakAtRiskDate;
     if (atRiskDate) {
-      // If we're now more than 2 days past the at-risk date, it expires
       const daysPast = Math.floor(
         (new Date(today).getTime() - new Date(atRiskDate).getTime()) / 86400000,
       );

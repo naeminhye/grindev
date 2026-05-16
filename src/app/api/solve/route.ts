@@ -50,7 +50,8 @@ export async function POST(req: Request) {
   const existing = await prisma.solve.findUnique({
     where: { userId_problemId: { userId, problemId } },
   });
-  if (existing?.passed) {
+  // Block only if already solved as a normal (non-makeup) daily solve
+  if (existing?.passed && !existing.isMakeup) {
     return NextResponse.json({ error: "Already solved" }, { status: 400 });
   }
 
@@ -142,6 +143,7 @@ export async function POST(req: Request) {
   const rewardConfigs = await prisma.appConfig.findMany({
     where: { key: { in: rewardKeys } },
   });
+
   const rewardMap = Object.fromEntries(
     rewardConfigs.map((c) => [c.key, parseInt(c.value)]),
   );
@@ -186,7 +188,16 @@ export async function POST(req: Request) {
     }
 
     streakResult = await recalculateStreak(userId, timeZone);
-    console.log("[solve] streakResult:", streakResult);
+
+    const [doubleStarsPurchased, doubleStarsUsed] = await Promise.all([
+      prisma.starTransaction.count({
+        where: { userId, reason: "DOUBLE_STARS_PURCHASE" },
+      }),
+      prisma.starTransaction.count({
+        where: { userId, reason: "DOUBLE_STARS_USED" as any },
+      }),
+    ]);
+    const hasDoubleStars = doubleStarsPurchased - doubleStarsUsed > 0;
 
     starDelta = calculateStarDelta({
       mode: challengeMode,
@@ -196,6 +207,14 @@ export async function POST(req: Request) {
       difficulty: problem.difficulty,
       config: starConfig,
     });
+
+    if (hasDoubleStars) {
+      starDelta = starDelta * 2;
+      // Consume one Double Stars
+      await prisma.starTransaction.create({
+        data: { userId, amount: 0, reason: "DOUBLE_STARS_USED" as any },
+      });
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },

@@ -50,7 +50,8 @@ export default function MakeupPage() {
   const [hintDiscount, setHintDiscount] = useState(0);
   const [explainCost, setExplainCost] = useState(DEFAULT_EXPLAIN_COST);
   const [reviewCost, setReviewCost] = useState(DEFAULT_REVIEW_COST);
-
+  const [previewStars, setPreviewStars] = useState(0);
+  const [doubleStarsActive, setDoubleStarsActive] = useState(false);
   const hasStartedTyping = useRef(false);
 
   useEffect(() => {
@@ -85,6 +86,38 @@ export default function MakeupPage() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [pageState]);
+
+  useEffect(() => {
+    if (!data) return;
+    const diff = data.problem.difficulty as "EASY" | "MEDIUM" | "HARD";
+    const rewards = (data as any).starRewards ?? {};
+    const isDoubleActive = (data as any).doubleStarsActive ?? false;
+    setDoubleStarsActive(isDoubleActive);
+
+    const defaults: Record<string, number> = {
+      CLEAN_NORMAL_EASY: 3,
+      CLEAN_NORMAL_MEDIUM: 4,
+      CLEAN_NORMAL_HARD: 5,
+      HINTS_NORMAL_EASY: 1,
+      HINTS_NORMAL_MEDIUM: 2,
+      HINTS_NORMAL_HARD: 3,
+    };
+
+    const cleanKey = `CLEAN_NORMAL_${diff}`;
+    const hintKey = `HINTS_NORMAL_${diff}`;
+
+    let preview =
+      hintsUnlocked.length > 0
+        ? (rewards[hintKey] ?? defaults[hintKey] ?? 1)
+        : (rewards[cleanKey] ?? defaults[cleanKey] ?? 3);
+
+    // Subtract makeup cost
+    preview = preview - data.starCost;
+
+    if (isDoubleActive) preview *= 2;
+
+    setPreviewStars(preview);
+  }, [data, hintsUnlocked]);
 
   const handleCodeChange = useCallback(
     (value: string) => {
@@ -167,7 +200,6 @@ export default function MakeupPage() {
         return;
       }
       const result: SolveResponse = await res.json();
-      console.log("[MakeupPage/handleSubmit] result:", result);
 
       setSolveResult(result);
       setAttempts((a) => a + 1);
@@ -318,6 +350,14 @@ export default function MakeupPage() {
               <i className="ri-information-line" /> {t("makeup.noRewardToday")}
             </div>
           )}
+          <div className="flex items-center gap-1 text-xs font-mono text-zinc-500 border border-zinc-700 rounded px-2 h-8">
+            {doubleStarsActive && (
+              <span className="text-lime-400 text-[10px]">2×</span>
+            )}
+            <i className="ri-arrow-up-line text-lime-400" />
+            <span className="text-lime-400 font-bold">+{previewStars}</span>
+            <i className="ri-star-fill text-yellow-400 text-[10px]" />
+          </div>
           <StarCount stars={stars} />
         </div>
       </div>

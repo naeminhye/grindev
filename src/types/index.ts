@@ -97,6 +97,8 @@ export type DailyResponse = {
   hintDiscount: number;
   explainCost: number;
   reviewCost: number;
+  starRewards?: Record<string, number>;
+  doubleStarsActive?: boolean;
 };
 
 export type NoProblemResponse = {
