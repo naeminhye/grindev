@@ -33,7 +33,7 @@ import type {
   NoProblemResponse,
   Settings,
 } from "@/types";
-import type { ChallengeMode } from "@/lib/challenge";
+import { calculateStarDelta, type ChallengeMode } from "@/lib/challenge";
 import { MakeupCard } from "@/components/problem/MakeupCard";
 
 import { TIME_LIMIT_DEFAULTS } from "@/lib/game-config";
@@ -75,9 +75,10 @@ export default function DSATodayPage() {
   const [reviewCost, setReviewCost] = useState(DEFAULT_REVIEW_COST);
   const [explainCost, setExplainCost] = useState(DEFAULT_EXPLAIN_COST);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [previewStars, setPreviewStars] = useState(0);
+  const [doubleStarsActive, setDoubleStarsActive] = useState(false);
 
   const hasStartedTyping = useRef(false);
-
   const timeLimitSeconds = daily
     ? (daily.hardTimeLimits?.[daily.problem.difficulty] ??
       TIME_LIMIT_DEFAULTS[
@@ -89,6 +90,44 @@ export default function DSATodayPage() {
     initialSeconds: TIME_LIMIT_DEFAULTS.HARD_TIME_EASY, // placeholder — reset below when daily loads
     onExpire: () => {},
   });
+
+  useEffect(() => {
+    if (!daily) return;
+    const rewards = (daily as any).starRewards ?? {};
+    const diff = daily.problem.difficulty as "EASY" | "MEDIUM" | "HARD";
+    const mode = challengeMode as "NORMAL" | "HARD";
+
+    const cleanKey =
+      mode === "NORMAL" ? `CLEAN_NORMAL_${diff}` : `CLEAN_HARD_${diff}`;
+    const hintKey =
+      mode === "NORMAL" ? `HINTS_NORMAL_${diff}` : `HINTS_HARD_${diff}`;
+
+    const defaults: Record<string, number> = {
+      CLEAN_NORMAL_EASY: 3,
+      CLEAN_NORMAL_MEDIUM: 4,
+      CLEAN_NORMAL_HARD: 5,
+      CLEAN_HARD_EASY: 6,
+      CLEAN_HARD_MEDIUM: 8,
+      CLEAN_HARD_HARD: 10,
+      HINTS_NORMAL_EASY: 1,
+      HINTS_NORMAL_MEDIUM: 2,
+      HINTS_NORMAL_HARD: 3,
+      HINTS_HARD_EASY: 2,
+      HINTS_HARD_MEDIUM: 3,
+      HINTS_HARD_HARD: 5,
+    };
+
+    let preview =
+      hintsUnlocked.length > 0
+        ? (rewards[hintKey] ?? defaults[hintKey] ?? 1)
+        : (rewards[cleanKey] ?? defaults[cleanKey] ?? 3);
+
+    const isDoubleActive = (daily as any).doubleStarsActive ?? false;
+    setDoubleStarsActive(isDoubleActive);
+    if (isDoubleActive) preview *= 2;
+
+    setPreviewStars(preview);
+  }, [daily, challengeMode, hintsUnlocked]);
 
   // Reset to correct duration once daily data and time limits are known
   useEffect(() => {
@@ -128,6 +167,13 @@ export default function DSATodayPage() {
         if (err.name === "AbortError") return;
         setPageState("error");
       });
+
+    fetch("/api/shop")
+      .then((r) => r.json())
+      .then((d) => {
+        setDoubleStarsActive((d.owned?.["double-stars"] ?? 0) > 0);
+      });
+
     return () => controller.abort();
   }, []);
 
@@ -195,7 +241,6 @@ export default function DSATodayPage() {
         }),
       });
       const result: SolveResponse = await res.json();
-      console.log("[DSATodayPage/handleSubmit] result:", result);
 
       setSolveResult(result);
       setAttempts((a) => a + 1);
@@ -578,6 +623,14 @@ export default function DSATodayPage() {
                   {t("shop.items.problemSkip.title")} ({skipCount})
                 </span>
               </button>
+              <div className="flex items-center gap-1 text-xs font-mono text-zinc-500 border border-zinc-700 rounded px-2 h-8">
+                {doubleStarsActive && (
+                  <span className="text-lime-400 text-[10px]">2×</span>
+                )}
+                <i className="ri-arrow-up-line text-lime-400" />
+                <span className="text-lime-400 font-bold">+{previewStars}</span>
+                <i className="ri-star-fill text-yellow-400 text-[10px]" />
+              </div>
               <StarCount stars={stars} />
             </div>
           </div>

@@ -17,10 +17,14 @@ export function StreakBadge({
   frozenStreakValue = 0,
 }: StreakBadgeProps) {
   const solvedToday = lastSolvedAt
-    ? new Date(lastSolvedAt).toLocaleDateString("en-CA") ===
-      new Date().toLocaleDateString("en-CA")
+    ? new Date(lastSolvedAt).toLocaleDateString("en-CA", {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }) ===
+      new Date().toLocaleDateString("en-CA", {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
     : false;
-
+    
   // ── FROZEN ──
   if (streakStatus === "FROZEN") {
     const displayValue = frozenStreakValue || streak;

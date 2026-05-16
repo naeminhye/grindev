@@ -55,11 +55,7 @@ export function AppNav({
   }, [stars]);
 
   useEffect(() => {
-    console.log("[AppNav] registering streak-updated listener");
-
     function handleStreakUpdate(e: CustomEvent) {
-      console.log("[AppNav] streak-updated received:", e.detail);
-
       setCurrentStreak(e.detail.currentStreak);
       setCurrentStreakStatus(e.detail.streakStatus ?? "ACTIVE");
       setCurrentLastSolvedAt(e.detail.lastSolvedAt);
@@ -70,7 +66,6 @@ export function AppNav({
       handleStreakUpdate as EventListener,
     );
     return () => {
-      console.log("[AppNav] removing streak-updated listener");
       window.removeEventListener(
         "streak-updated",
         handleStreakUpdate as EventListener,
